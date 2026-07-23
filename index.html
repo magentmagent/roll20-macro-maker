@@ -1,77 +1,82 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Roll20용 Discord 및 LINE 스타일 채팅 매크로 생성기">
-<title>Roll20 채팅 매크로 생성기</title>
+<meta name="description" content="Roll20用Discord・LINE風チャットマクロ生成ツール">
+<title>Roll20 チャットマクロ生成ツール</title>
 <style>
-:root{
-  color-scheme:dark;
-  --bg:#17181b;--panel:#24262b;--line:#3d4047;--text:#f2f3f5;
-  --muted:#a5aab3;--discord:#5865f2;--line:#06c755
-}
+:root{color-scheme:dark;--bg:#17181b;--panel:#24262b;--line:#3d4047;--text:#f2f3f5;--muted:#a5aab3;--discord:#5865f2;--linec:#06c755}
 *{box-sizing:border-box}
-body{
-  margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;
-  background:linear-gradient(145deg,#17181b,#202329);color:var(--text);
-  font-family:Arial,"Noto Sans KR",sans-serif
-}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(145deg,#17181b,#202329);color:var(--text);font-family:Arial,"Noto Sans JP","Noto Sans KR",sans-serif}
 main{width:min(880px,100%)}
-header{margin-bottom:22px}
+.top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}
 h1{font-size:28px;margin:0 0 8px}
 p{margin:0;color:var(--muted);line-height:1.65}
+.language-control{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.language-control label{font-size:11px;color:var(--muted)}
+select{border:1px solid var(--line);border-radius:7px;background:#202228;color:var(--text);padding:7px 9px}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.card{
-  display:flex;flex-direction:column;min-height:250px;padding:22px;
-  border:1px solid var(--line);border-radius:14px;background:var(--panel);
-  box-shadow:0 14px 36px rgba(0,0,0,.22)
-}
-.badge{
-  width:max-content;border-radius:999px;padding:4px 9px;
-  font-size:11px;font-weight:bold;margin-bottom:16px
-}
-.discord .badge{background:rgba(88,101,242,.2);color:#c9cdfb}
-.line .badge{background:rgba(6,199,85,.17);color:#83e6aa}
-h2{font-size:21px;margin:0 0 9px}
-.card p{flex:1}
-.button{
-  display:block;margin-top:22px;padding:11px 14px;border-radius:8px;
-  color:white;text-align:center;text-decoration:none;font-weight:bold
-}
-.discord .button{background:var(--discord)}
-.line .button{background:#087d36}
+.card{display:flex;flex-direction:column;min-height:250px;padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--panel);box-shadow:0 14px 36px rgba(0,0,0,.22)}
+.badge{width:max-content;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:bold;margin-bottom:16px}
+.discord .badge{background:rgba(88,101,242,.2);color:#c9cdfb}.line .badge{background:rgba(6,199,85,.17);color:#83e6aa}
+h2{font-size:21px;margin:0 0 9px}.card p{flex:1}
+.button{display:block;margin-top:22px;padding:11px 14px;border-radius:8px;color:white;text-align:center;text-decoration:none;font-weight:bold}
+.discord .button{background:var(--discord)}.line .button{background:#087d36}
 footer{margin-top:18px;color:var(--muted);font-size:12px;line-height:1.6}
-@media(max-width:680px){.grid{grid-template-columns:1fr}h1{font-size:23px}}
+@media(max-width:680px){.grid{grid-template-columns:1fr}.top{display:block}.language-control{margin-top:12px}h1{font-size:23px}}
 </style>
 </head>
 <body>
 <main>
-  <header>
-    <h1>Roll20 채팅 매크로 생성기</h1>
-    <p>브라우저에서 설정한 뒤 생성된 매크로를 Roll20 채팅 매크로에 붙여 넣으세요. 입력 내용과 저장 구성은 브라우저의 localStorage에 저장됩니다.</p>
-  </header>
-
+  <div class="top">
+    <header>
+      <h1 data-k="title"></h1>
+      <p data-k="intro"></p>
+    </header>
+    <div class="language-control">
+      <label for="languageSelect" data-k="language"></label>
+      <select id="languageSelect">
+        <option value="auto" data-k="browser"></option>
+        <option value="ja">日本語</option>
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+  </div>
   <section class="grid">
     <article class="card discord">
       <div class="badge">Discord DM</div>
-      <h2>디스코드 메시지 생성기</h2>
-      <p>프로필, 이름, 시각, 메시지, 멘션, 이모지와 다중 행·열 구성을 Discord DM 스타일 카드로 생성합니다.</p>
-      <a class="button" href="./discord.html">Discord 생성기 열기</a>
+      <h2 data-k="discordTitle"></h2>
+      <p data-k="discordDesc"></p>
+      <a class="button" href="./discord.html" data-k="discordOpen"></a>
     </article>
-
     <article class="card line">
       <div class="badge">LINE</div>
-      <h2>라인 메시지 생성기</h2>
-      <p>상대·내 메시지, 프로필, 시각, 읽음 표시, 이모지와 이미지 메시지를 LINE 스타일 말풍선으로 생성합니다.</p>
-      <a class="button" href="./line.html">LINE 생성기 열기</a>
+      <h2 data-k="lineTitle"></h2>
+      <p data-k="lineDesc"></p>
+      <a class="button" href="./line.html" data-k="lineOpen"></a>
     </article>
   </section>
-
-  <footer>
-    이 사이트는 정적 HTML로만 작동하며 서버에 설정값을 전송하지 않습니다.
-    이미지 출력에는 외부 이미지의 직접 URL이 필요합니다.
-  </footer>
+  <footer data-k="footer"></footer>
 </main>
+<script>
+const LANG_KEY='r20MacroLanguageV1';
+const COPY={
+ ja:{title:'Roll20 チャットマクロ生成ツール',intro:'ブラウザーで設定し、生成されたマクロをRoll20に貼り付けてください。設定と保存構成はブラウザーのlocalStorageに保存されます。',language:'言語',browser:'ブラウザーの言語',discordTitle:'Discordメッセージ生成ツール',discordDesc:'プロフィール、名前、時刻、メッセージ、メンション、絵文字、複数行・列をDiscord DM風カードとして生成します。',discordOpen:'Discord生成ツールを開く',lineTitle:'LINEメッセージ生成ツール',lineDesc:'相手・自分のメッセージ、プロフィール、時刻、既読、絵文字、画像をLINE風の吹き出しとして生成します。',lineOpen:'LINE生成ツールを開く',footer:'このサイトは静的HTMLのみで動作し、設定値をサーバーへ送信しません。画像表示には外部画像の直接URLが必要です。'},
+ ko:{title:'Roll20 채팅 매크로 생성기',intro:'브라우저에서 설정한 뒤 생성된 매크로를 Roll20에 붙여 넣으세요. 설정과 저장 구성은 브라우저 localStorage에 저장됩니다.',language:'언어',browser:'브라우저 언어',discordTitle:'Discord 메시지 생성기',discordDesc:'프로필, 이름, 시각, 메시지, 멘션, 이모지와 다중 행·열 구성을 Discord DM 스타일 카드로 생성합니다.',discordOpen:'Discord 생성기 열기',lineTitle:'LINE 메시지 생성기',lineDesc:'상대·내 메시지, 프로필, 시각, 읽음 표시, 이모지와 이미지를 LINE 스타일 말풍선으로 생성합니다.',lineOpen:'LINE 생성기 열기',footer:'이 사이트는 정적 HTML로만 작동하며 설정값을 서버로 전송하지 않습니다. 이미지 출력에는 외부 이미지의 직접 URL이 필요합니다.'},
+ en:{title:'Roll20 Chat Macro Generators',intro:'Configure a generator in your browser, then paste the generated macro into Roll20. Settings and saved layouts are stored in browser localStorage.',language:'Language',browser:'Browser language',discordTitle:'Discord Message Generator',discordDesc:'Generate Discord DM-style cards with profiles, names, time, messages, mentions, emoji, and multi-row/column layouts.',discordOpen:'Open Discord generator',lineTitle:'LINE Message Generator',lineDesc:'Generate LINE-style bubbles with other/self messages, profiles, time, read indicators, emoji, and images.',lineOpen:'Open LINE generator',footer:'This static site does not send settings to a server. Image output requires a direct external image URL.'}
+};
+function browserLang(){for(const v of(navigator.languages||[navigator.language||''])){const c=String(v).toLowerCase().split('-')[0];if(['ja','ko','en'].includes(c))return c}return'ja'}
+function savedMode(){try{const v=localStorage.getItem(LANG_KEY);return['auto','ja','ko','en'].includes(v)?v:'auto'}catch(e){return'auto'}}
+let mode=savedMode();
+function apply(){
+ const lang=mode==='auto'?browserLang():mode;document.documentElement.lang=lang;document.title=COPY[lang].title;
+ document.querySelectorAll('[data-k]').forEach(el=>el.textContent=COPY[lang][el.dataset.k]);
+ document.getElementById('languageSelect').value=mode;
+}
+document.getElementById('languageSelect').addEventListener('change',e=>{mode=e.target.value;try{localStorage.setItem(LANG_KEY,mode)}catch(err){}apply()});
+apply();
+</script>
 </body>
 </html>
