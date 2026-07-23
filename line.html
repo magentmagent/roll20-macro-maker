@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roll20 LINE 메시지 매크로 생성기 v4</title>
+<style>
+:root{
+  --bg:#1e1f22;--panel:#2b2d31;--panel2:#313338;--line:#41434a;
+  --text:#f2f3f5;--muted:#a7abb3;--green:#06c755;--danger:#da373c;
+}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:var(--bg);color:var(--text);
+  font:13px/1.45 Arial,"Noto Sans KR",sans-serif}
+button,input,select,textarea{font:inherit}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:16px}
+h1{font-size:20px;margin:0 0 5px}
+.subtitle,.status,.hint{color:var(--muted)}
+.status{text-align:right;min-width:130px}
+.main{display:grid;grid-template-columns:minmax(460px,1.18fr) minmax(350px,.82fr);gap:16px;align-items:start}
+.panel{background:var(--panel);border:1px solid #3c3f45;border-radius:10px;padding:14px}
+.section{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:12px}
+.section:last-child{margin-bottom:0}
+h2{font-size:14px;margin:0 0 10px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.field{min-width:0}
+.field>label{display:block;color:#d6d9df;font-size:11px;margin:0 0 4px}
+input[type=text],input[type=url],select,textarea{
+  width:100%;border:1px solid #4e5058;border-radius:6px;background:#1e1f22;
+  color:var(--text);padding:8px 9px;outline:none
+}
+textarea{min-height:74px;resize:vertical;line-height:1.5}
+input[type=color]{width:100%;height:36px;border:1px solid #4e5058;border-radius:6px;background:#1e1f22;padding:3px}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+.check{display:flex;gap:7px;align-items:center;color:#d8dbe1;font-size:12px}
+.check input{margin:0}
+.btn{border:1px solid #4e5058;border-radius:6px;background:#3a3d44;color:#f2f3f5;padding:7px 10px;cursor:pointer}
+.btn:hover{background:#454950}
+.btn.primary{background:#087d36;border-color:#0a9c47}
+.btn.primary:hover{background:#0a9341}
+.btn.danger{background:#51282b;border-color:#743238}
+.btn.small{padding:4px 7px;font-size:11px}
+.toolbar,.savebar,.message-actions{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.savebar{margin-top:9px}
+.savebar input{flex:1;min-width:150px}
+.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.message-card{border:1px solid #4a4d54;background:#292b30;border-radius:8px;padding:10px;margin-top:9px}
+.message-head{display:grid;grid-template-columns:72px 112px 100px 1fr auto;gap:7px;align-items:center}
+.message-head .index{font-weight:bold;color:#d9dce2}
+.message-specific{margin-top:9px;padding-top:9px;border-top:1px solid #41434a}
+.message-inline{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.message-inline>.field{min-width:110px;flex:1}
+.empty{padding:14px;text-align:center;border:1px dashed #565961;border-radius:7px;color:var(--muted)}
+.preview-stage{background:#9fb8d5;border-radius:8px;padding:18px 10px;min-height:260px;overflow:hidden}
+.preview-chat{max-width:380px;margin:0 auto}
+.preview-row{margin-bottom:10px}
+.preview-name{font-size:11px;color:#465663;margin:0 0 3px 50px}
+.preview-in-line{display:flex;align-items:flex-start;gap:7px}
+.preview-avatar{width:36px;height:36px;flex:0 0 36px;border-radius:50%;background:#6a7783 center/cover no-repeat}
+.preview-bubble{display:inline-block;max-width:75%;padding:8px 10px;border-radius:5px 16px 16px 16px;
+  background:#fff;color:#111;line-height:20px;white-space:pre-wrap;overflow-wrap:anywhere}
+.preview-row.outgoing{text-align:right}
+.preview-row.outgoing .preview-bubble{border-radius:16px 5px 16px 16px;background:#a8e98b;text-align:left}
+.preview-meta{font-size:10px;color:#52616d;margin-top:2px}
+.preview-row.incoming .preview-meta{margin-left:50px}
+.preview-row.outgoing .preview-meta{text-align:right}
+.preview-system{text-align:center}
+.preview-system span{display:inline-block;background:rgba(50,65,80,.45);color:#fff;border-radius:12px;padding:3px 10px;font-size:11px}
+.preview-media{
+  display:flex!important;flex:0 0 auto!important;min-width:0;max-width:none!important;
+  align-items:center;justify-content:center;padding:0!important;background:transparent!important;
+  border-radius:0!important;overflow:visible!important;line-height:0!important
+}
+.preview-media img{
+  display:block;max-width:100%;max-height:100%;width:auto;height:auto;
+  object-fit:contain;object-position:center;border:0
+}
+.saved-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.saved-list{min-height:45px}
+.saved-item{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #41434a}
+.saved-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.saved-actions{display:flex;gap:5px}
+.codebox{width:100%;min-height:230px;background:#111214;color:#d9dbe0;border:1px solid #4e5058;
+  border-radius:8px;padding:11px;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;
+  resize:vertical;white-space:pre-wrap;word-break:break-all}
+.notice{margin-top:10px;border-left:3px solid var(--green);background:rgba(6,199,85,.08);
+  padding:9px 10px;border-radius:5px;color:#d7dae0;font-size:11px;line-height:1.6}
+.hidden{display:none!important}
+@media(max-width:980px){
+  body{padding:11px}.main{grid-template-columns:1fr}.top{display:block}.status{text-align:left;margin-top:8px}
+  .row2,.row3,.saved-grid{grid-template-columns:1fr}.message-head{grid-template-columns:1fr 1fr}
+  .preset-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <div>
+    <h1>Roll20 LINE 메시지 매크로 생성기 v4</h1>
+    <div class="subtitle">상대 메시지, 내 메시지, 시각, 읽음 표시, 이모지와 이미지 메시지를 LINE풍 말풍선으로 조립합니다.</div>
+  </div>
+  <div id="status" class="status">자동 저장됨</div>
+</div>
+
+<div class="main">
+  <div class="panel">
+    <div class="section">
+      <h2>1. 상대 프로필과 기본 시각</h2>
+      <div class="row2">
+        <div class="field">
+          <label for="displayName">상대 이름</label>
+          <input id="displayName" type="text" value="캐릭터명">
+        </div>
+        <div class="field">
+          <label for="profileUrl">프로필 이미지 직접 URL</label>
+          <input id="profileUrl" type="url" placeholder="https://.../profile.png">
+        </div>
+      </div>
+      <div class="row2" style="margin-top:9px">
+        <label class="check"><input id="useCharacterAttr" type="checkbox"> 이름에 @{character_name} 사용</label>
+        <label class="check"><input id="useProfileAttr" type="checkbox"> 이미지에 @{profile_image} 사용</label>
+      </div>
+
+      <div class="row2" style="margin-top:11px">
+        <div class="field">
+          <label for="timeMode">기본 시각 입력 방식</label>
+          <select id="timeMode">
+            <option value="periodQuery">실행 시 오전/오후 선택</option>
+            <option value="fixed">고정 문구</option>
+            <option value="textQuery">실행 시 전체 문구 입력</option>
+            <option value="hidden">숨김</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="timeText">기본 시각 문구</label>
+          <input id="timeText" type="text" value="XX:XX" placeholder="예: XX:XX, 방금">
+        </div>
+      </div>
+      <div class="row2" style="margin-top:9px">
+        <div class="field">
+          <label for="timePrompt">전체 문구 입력 질문</label>
+          <input id="timePrompt" type="text" value="시각 표시">
+        </div>
+        <div class="field">
+          <label for="profileQuick">저장 프로필</label>
+          <select id="profileQuick"><option value="">선택</option></select>
+        </div>
+      </div>
+      <div class="savebar">
+        <input id="profileLabel" type="text" placeholder="프로필 저장 이름">
+        <button id="saveProfileBtn" class="btn primary">프로필 저장</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>2. 말풍선 스타일</h2>
+      <div class="row3">
+        <div class="field"><label for="incomingColor">상대 말풍선</label><input id="incomingColor" type="color" value="#ffffff"></div>
+        <div class="field"><label for="outgoingColor">내 말풍선</label><input id="outgoingColor" type="color" value="#a8e98b"></div>
+        <div class="field"><label for="metaColor">시각·읽음 색상</label><input id="metaColor" type="color" value="#5f6d78"></div>
+      </div>
+      <div class="row3" style="margin-top:9px">
+        <div class="field">
+          <label for="fontSize">본문 크기</label>
+          <select id="fontSize"><option>12</option><option>13</option><option selected>14</option><option>15</option><option>16</option></select>
+        </div>
+        <div class="field">
+          <label for="rowGap">메시지 간격</label>
+          <select id="rowGap"><option value="4">4px</option><option value="7" selected>7px</option><option value="10">10px</option><option value="14">14px</option></select>
+        </div>
+        <div class="field">
+          <label for="avatarSize">프로필 크기</label>
+          <select id="avatarSize"><option value="30">30px</option><option value="34">34px</option><option value="36" selected>36px</option><option value="40">40px</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>3. 빠른 구성</h2>
+      <div class="preset-grid">
+        <button class="btn" data-preset="conversation">대화 예시</button>
+        <button class="btn" data-preset="incoming">상대 메시지</button>
+        <button class="btn" data-preset="outgoing">내 메시지</button>
+        <button class="btn" data-preset="emoji">이모지 답장</button>
+        <button class="btn" data-preset="image">이미지 메시지</button>
+        <button class="btn danger" data-preset="blank">모두 지우기</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="toolbar">
+        <h2 style="margin:0 auto 0 0">4. 메시지 조립</h2>
+        <button id="addIncomingBtn" class="btn small">+ 상대</button>
+        <button id="addOutgoingBtn" class="btn small">+ 내 메시지</button>
+        <button id="addSystemBtn" class="btn small">+ 시스템</button>
+      </div>
+      <div id="messageBuilder"></div>
+      <div class="hint" style="margin-top:9px">
+        상대 메시지는 왼쪽 프로필 옆에, 내 메시지는 오른쪽에 정렬됩니다. 폭 설정은 고정 폭이 아니라 말풍선의 최대 폭이며,
+        짧은 문장은 내용만큼만 줄어듭니다. 메시지별로 시각과 읽음 표시를 따로 설정할 수 있습니다.
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>5. 저장</h2>
+      <div class="savebar">
+        <input id="layoutLabel" type="text" placeholder="대화 구성 저장 이름">
+        <button id="saveLayoutBtn" class="btn primary">구성 저장</button>
+      </div>
+      <div class="saved-grid" style="margin-top:10px">
+        <div><div class="hint">프로필</div><div id="profileList" class="saved-list"></div></div>
+        <div><div class="hint">대화 구성</div><div id="layoutList" class="saved-list"></div></div>
+      </div>
+      <div class="toolbar" style="margin-top:10px">
+        <button id="exportBtn" class="btn small">JSON 내보내기</button>
+        <button id="importBtn" class="btn small">JSON 가져오기</button>
+        <input id="importFile" class="hidden" type="file" accept="application/json">
+        <button id="resetBtn" class="btn small danger">초기화</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="section">
+      <h2>미리보기</h2>
+      <div class="preview-stage"><div id="previewChat" class="preview-chat"></div></div>
+    </div>
+    <div class="section">
+      <div class="toolbar">
+        <h2 style="margin:0 auto 0 0">Roll20 매크로</h2>
+        <button id="copyBtn" class="btn primary">복사</button>
+        <button id="downloadBtn" class="btn">TXT 저장</button>
+      </div>
+      <textarea id="macroOutput" class="codebox" readonly></textarea>
+      <div class="notice">
+        Roll20 바깥 채팅 배경은 수정하지 않습니다. LINE풍 요소만 개별 링크로 출력하므로 사용자별 채팅 배경색과 충돌하지 않습니다.
+        일반 매크로는 실제 채팅창 폭을 읽을 수 없으므로 메시지별 선택값을 최대 폭으로 사용합니다.
+        실제 말풍선 폭은 내용 길이에 따라 그보다 작아질 수 있습니다.
+        이미지·이모지 미리보기는 CSS 배경이 아니라 실제 img 요소로 표시합니다.
+        원본 비율을 유지하며, 미리보기의 실측 가용 폭보다 클 때만 전체가 들어오도록 축소합니다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const els={
+  status:$('status'),displayName:$('displayName'),profileUrl:$('profileUrl'),
+  useCharacterAttr:$('useCharacterAttr'),useProfileAttr:$('useProfileAttr'),
+  timeMode:$('timeMode'),timeText:$('timeText'),timePrompt:$('timePrompt'),
+  incomingColor:$('incomingColor'),outgoingColor:$('outgoingColor'),metaColor:$('metaColor'),
+  fontSize:$('fontSize'),rowGap:$('rowGap'),avatarSize:$('avatarSize'),
+  messageBuilder:$('messageBuilder'),previewChat:$('previewChat'),macroOutput:$('macroOutput'),
+  profileQuick:$('profileQuick')
+};
+const KEYS={
+  profiles:'r20LineProfilesV2',
+  layouts:'r20LineLayoutsV2',
+  draft:'r20LineDraftV2'
+};
+const canStore=(()=>{
+  try{localStorage.setItem('__r20line__','1');localStorage.removeItem('__r20line__');return true}
+  catch(e){return false}
+})();
+function uid(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)}
+function setStatus(text,bad=false){
+  els.status.textContent=text;els.status.style.color=bad?'#ffb6b8':'var(--muted)';
+  clearTimeout(setStatus.t);setStatus.t=setTimeout(()=>{els.status.textContent='자동 저장됨';els.status.style.color='var(--muted)'},1700)
+}
+function escapeHtml(value){
+  return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+}
+function rollText(value){
+  return String(value??'')
+    .replace(/&/g,'&amp;').replace(/\[/g,'&#91;').replace(/\]/g,'&#93;')
+    .replace(/\(/g,'&#40;').replace(/\)/g,'&#41;').replace(/"/g,'&quot;')
+    .replace(/\|/g,'&#124;').replace(/\{/g,'&#123;').replace(/\}/g,'&#125;')
+}
+function cssUrl(value){
+  return String(value??'').trim().replace(/"/g,'%22').replace(/\(/g,'%28').replace(/\)/g,'%29')
+}
+function link(label,style){return`[${label}](#" style="${style}")`}
+function safeColor(value,fallback){return/^#[0-9a-f]{6}$/i.test(String(value||''))?value:fallback}
+function readArray(key){
+  if(!canStore)return[];
+  try{const v=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(v)?v:[]}
+  catch(e){return[]}
+}
+function writeArray(key,value){if(canStore)localStorage.setItem(key,JSON.stringify(value))}
+function newMessage(side='incoming',type='text'){
+  return{
+    id:uid(),side,type,text:type==='system'?'대화가 시작되었습니다.':'내용을 입력하세요',
+    query:type==='text'||type==='mention',url:'',size:'64',width:'70',
+    showAvatar:side==='incoming',showName:side==='incoming',
+    timeMode:'default',timeText:'',read:side==='outgoing'?'읽음':'hidden'
+  }
+}
+function preset(name){
+  if(name==='incoming')return[newMessage('incoming','text')];
+  if(name==='outgoing')return[newMessage('outgoing','text')];
+  if(name==='emoji'){
+    const a=newMessage('incoming','emoji');a.query=false;a.url='';
+    const b=newMessage('outgoing','text');b.query=false;b.text='귀엽다.';
+    return[a,b]
+  }
+  if(name==='image'){
+    const a=newMessage('incoming','image');a.query=false;a.url='';a.size='160';a.width='55';
+    return[a]
+  }
+  if(name==='conversation'){
+    const a=newMessage('incoming','text');a.query=false;a.text='지금 어디야?';
+    const b=newMessage('outgoing','text');b.query=false;b.text='곧 도착해.';b.read='읽음';
+    const c=newMessage('system','system');c.query=false;c.text='오후 3:20';
+    return[a,b,c]
+  }
+  return[]
+}
+let messages=preset('conversation');
+
+function normalizeMessage(message){
+  const side=['incoming','outgoing','system'].includes(message?.side)?message.side:'incoming';
+  const type=['text','mention','emoji','image','system'].includes(message?.type)?message.type:'text';
+  const base=newMessage(side,type);
+  const result={...base,...(message||{}),id:message?.id||uid(),side,type};
+  if(side==='system')result.type='system';
+  if(!['40','55','70','85'].includes(String(result.width)))result.width='70';
+  if(!['default','fixed','query','hidden'].includes(result.timeMode))result.timeMode='default';
+  if(!['hidden','읽음','1'].includes(result.read))result.read='hidden';
+  return result
+}
+function normalizeMessages(value){
+  if(!Array.isArray(value))return preset('conversation');
+  return value.map(normalizeMessage)
+}
+function sideOptions(value){
+  return[
+    ['incoming','상대'],['outgoing','나'],['system','시스템']
+  ].map(([v,t])=>`<option value="${v}"${value===v?' selected':''}>${t}</option>`).join('')
+}
+function typeOptions(value,side){
+  const list=side==='system'?[['system','시스템 문구']]:[
+    ['text','텍스트'],['mention','멘션'],['emoji','이모지'],['image','이미지']
+  ];
+  return list.map(([v,t])=>`<option value="${v}"${value===v?' selected':''}>${t}</option>`).join('')
+}
+function widthOptions(value){
+  return[['40','40%'],['55','55%'],['70','70%'],['85','85%']]
+    .map(([v,t])=>`<option value="${v}"${String(value)===v?' selected':''}>${t}</option>`).join('')
+}
+function timeModeOptions(value){
+  return[
+    ['default','기본값'],['fixed','고정'],['query','실행 시 입력'],['hidden','숨김']
+  ].map(([v,t])=>`<option value="${v}"${value===v?' selected':''}>${t}</option>`).join('')
+}
+function renderBuilder(){
+  els.messageBuilder.innerHTML='';
+  if(!messages.length){els.messageBuilder.innerHTML='<div class="empty">메시지가 없습니다.</div>';return}
+  messages.forEach((message,index)=>{
+    const card=document.createElement('div');card.className='message-card';
+    card.innerHTML=`
+      <div class="message-head">
+        <div class="index">${index+1}번</div>
+        <select data-side>${sideOptions(message.side)}</select>
+        <select data-type>${typeOptions(message.type,message.side)}</select>
+        <select data-width title="말풍선 최대 폭"${message.side==='system'?' disabled':''}>${widthOptions(message.width)}</select>
+        <div class="message-actions">
+          <button class="btn small" data-up>↑</button>
+          <button class="btn small" data-down>↓</button>
+          <button class="btn small danger" data-del>×</button>
+        </div>
+      </div>
+      <div class="message-specific"></div>`;
+    const specific=card.querySelector('.message-specific');
+
+    if(message.type==='text'||message.type==='mention'||message.type==='system'){
+      specific.innerHTML=`
+        <div class="field">
+          <label>${message.type==='mention'?'멘션 이름':message.type==='system'?'시스템 문구':'메시지'}</label>
+          <textarea data-text>${escapeHtml(message.text)}</textarea>
+        </div>
+        <div class="message-inline" style="margin-top:8px">
+          ${message.type!=='system'?`<label class="check"><input data-query type="checkbox"${message.query?' checked':''}> 실행 시 입력</label>`:''}
+          ${message.side==='incoming'?`<label class="check"><input data-avatar type="checkbox"${message.showAvatar?' checked':''}> 프로필 표시</label>
+            <label class="check"><input data-name type="checkbox"${message.showName?' checked':''}> 이름 표시</label>`:''}
+        </div>`;
+    }else{
+      specific.innerHTML=`
+        <div class="row2">
+          <div class="field"><label>이미지 직접 URL</label><input data-url type="url" value="${escapeHtml(message.url)}" placeholder="https://.../image.png"></div>
+          <div class="field"><label>출력 크기</label><select data-size>
+            ${[24,32,40,48,56,64,96,120,160,200].map(n=>`<option value="${n}"${String(message.size)===String(n)?' selected':''}>${n}px</option>`).join('')}
+          </select></div>
+        </div>
+        <div class="message-inline" style="margin-top:8px">
+          <label class="check"><input data-query type="checkbox"${message.query?' checked':''}> 실행 시 URL 입력</label>
+          ${message.side==='incoming'?`<label class="check"><input data-avatar type="checkbox"${message.showAvatar?' checked':''}> 프로필 표시</label>
+            <label class="check"><input data-name type="checkbox"${message.showName?' checked':''}> 이름 표시</label>`:''}
+        </div>`;
+    }
+
+    if(message.side!=='system'){
+      const meta=document.createElement('div');meta.className='message-inline';meta.style.marginTop='9px';
+      meta.innerHTML=`
+        <div class="field"><label>시각</label><select data-time-mode>${timeModeOptions(message.timeMode)}</select></div>
+        <div class="field"><label>개별 시각 문구</label><input data-time-text type="text" value="${escapeHtml(message.timeText)}" placeholder="비우면 기본값"></div>
+        ${message.side==='outgoing'?`<div class="field"><label>읽음 표시</label><select data-read>
+          <option value="hidden"${message.read==='hidden'?' selected':''}>숨김</option>
+          <option value="읽음"${message.read==='읽음'?' selected':''}>읽음</option>
+          <option value="1"${message.read==='1'?' selected':''}>1</option>
+        </select></div>`:''}`;
+      specific.appendChild(meta)
+    }
+
+    card.querySelector('[data-side]').onchange=e=>{
+      const nextSide=e.target.value;
+      message.side=nextSide;
+      if(nextSide==='system'){message.type='system';message.read='hidden'}
+      else if(message.type==='system')message.type='text';
+      if(nextSide==='outgoing')message.read=message.read==='hidden'?'읽음':message.read;
+      renderBuilder();update()
+    };
+    card.querySelector('[data-type]').onchange=e=>{message.type=e.target.value;renderBuilder();update()};
+    card.querySelector('[data-width]').onchange=e=>{message.width=e.target.value;update()};
+    const textInput=card.querySelector('[data-text]');
+    if(textInput)textInput.oninput=e=>{message.text=e.target.value;update()};
+    const urlInput=card.querySelector('[data-url]');
+    if(urlInput)urlInput.oninput=e=>{message.url=e.target.value;update()};
+    const sizeInput=card.querySelector('[data-size]');
+    if(sizeInput)sizeInput.onchange=e=>{message.size=e.target.value;update()};
+    const queryInput=card.querySelector('[data-query]');
+    if(queryInput)queryInput.onchange=e=>{message.query=e.target.checked;update()};
+    const avatarInput=card.querySelector('[data-avatar]');
+    if(avatarInput)avatarInput.onchange=e=>{message.showAvatar=e.target.checked;update()};
+    const nameInput=card.querySelector('[data-name]');
+    if(nameInput)nameInput.onchange=e=>{message.showName=e.target.checked;update()};
+    const timeMode=card.querySelector('[data-time-mode]');
+    if(timeMode)timeMode.onchange=e=>{message.timeMode=e.target.value;update()};
+    const timeText=card.querySelector('[data-time-text]');
+    if(timeText)timeText.oninput=e=>{message.timeText=e.target.value;update()};
+    const read=card.querySelector('[data-read]');
+    if(read)read.onchange=e=>{message.read=e.target.value;update()};
+    card.querySelector('[data-up]').onclick=()=>{if(index){[messages[index-1],messages[index]]=[messages[index],messages[index-1]];renderBuilder();update()}};
+    card.querySelector('[data-down]').onclick=()=>{if(index<messages.length-1){[messages[index+1],messages[index]]=[messages[index],messages[index+1]];renderBuilder();update()}};
+    card.querySelector('[data-del]').onclick=()=>{messages.splice(index,1);renderBuilder();update()};
+    els.messageBuilder.appendChild(card)
+  })
+}
+
+function globalTimePreview(){
+  if(els.timeMode.value==='hidden')return'';
+  if(els.timeMode.value==='periodQuery')return`오후 ${els.timeText.value.trim()||'XX:XX'}`;
+  return els.timeText.value.trim()||'오후 XX:XX'
+}
+function messageTimePreview(message){
+  if(message.timeMode==='hidden')return'';
+  if(message.timeMode==='fixed'||message.timeMode==='query')return message.timeText.trim()||globalTimePreview();
+  return globalTimePreview()
+}
+function previewMediaSize(message,side){
+  const requested=Math.max(16,Math.min(240,Number(message.size)||64));
+  const rect=els.previewChat.getBoundingClientRect();
+  const parentWidth=els.previewChat.parentElement
+    ? els.previewChat.parentElement.getBoundingClientRect().width-20
+    : 0;
+  const chatWidth=Math.max(48,Math.floor(rect.width||parentWidth||360));
+  const avatarSpace=side==='incoming'
+    ? Math.max(26,Math.min(44,Number(els.avatarSize.value)||36))+15
+    : 16;
+  const available=Math.max(24,chatWidth-avatarSpace);
+  return Math.min(requested,available);
+}
+function fillPreviewMedia(box,message,side){
+  const size=previewMediaSize(message,side);
+  box.classList.add('preview-media');
+  box.textContent='';
+  box.style.width=size+'px';
+  box.style.height=size+'px';
+  box.style.minWidth=size+'px';
+  box.style.maxWidth='none';
+  box.style.flex='0 0 '+size+'px';
+  box.style.backgroundImage='';
+
+  if(message.url){
+    const img=document.createElement('img');
+    img.src=message.url;
+    img.alt='';
+    img.loading='eager';
+    img.decoding='async';
+    box.appendChild(img);
+  }
+}
+function renderPreview(){
+  els.previewChat.innerHTML='';
+  messages.forEach(message=>{
+    const row=document.createElement('div');
+    row.className=`preview-row ${message.side}`;
+    if(message.side==='system'){
+      row.className+=' preview-system';
+      row.innerHTML=`<span>${escapeHtml(message.text||'시스템 문구')}</span>`;
+      els.previewChat.appendChild(row);return
+    }
+    const time=messageTimePreview(message);
+    const content=message.type==='mention'?`@${message.text||'캐릭터명'}`:(message.text||'내용을 입력하세요');
+    const width=message.width+'%';
+    if(message.side==='incoming'){
+      if(message.showName){
+        const name=document.createElement('div');name.className='preview-name';
+        name.textContent=els.useCharacterAttr.checked?'@{character_name}':(els.displayName.value.trim()||'캐릭터명');
+        row.appendChild(name)
+      }
+      const line=document.createElement('div');line.className='preview-in-line';
+      if(message.showAvatar){
+        const avatar=document.createElement('div');avatar.className='preview-avatar';
+        const url=els.profileUrl.value.trim();
+        avatar.style.width=els.avatarSize.value+'px';avatar.style.height=els.avatarSize.value+'px';
+        avatar.style.flexBasis=els.avatarSize.value+'px';
+        if(url)avatar.style.backgroundImage=`url("${url.replace(/"/g,'\\"')}")`;
+        line.appendChild(avatar)
+      }else{
+        const blank=document.createElement('div');blank.style.width=els.avatarSize.value+'px';blank.style.flex='0 0 '+els.avatarSize.value+'px';
+        line.appendChild(blank)
+      }
+      const bubble=document.createElement('div');bubble.className='preview-bubble';
+      bubble.style.background=els.incomingColor.value;bubble.style.fontSize=els.fontSize.value+'px';
+      bubble.style.width='auto';bubble.style.maxWidth=width;
+      if(message.type==='emoji'||message.type==='image'){
+        fillPreviewMedia(bubble,message,'incoming');
+      }else{
+        bubble.textContent=content;
+        if(message.type==='mention')bubble.style.color='#06a84f'
+      }
+      line.appendChild(bubble);row.appendChild(line);
+      if(time){const meta=document.createElement('div');meta.className='preview-meta';meta.textContent=time;meta.style.color=els.metaColor.value;row.appendChild(meta)}
+    }else{
+      const bubble=document.createElement('div');bubble.className='preview-bubble';
+      bubble.style.display='table';bubble.style.marginLeft='auto';
+      bubble.style.background=els.outgoingColor.value;bubble.style.fontSize=els.fontSize.value+'px';
+      bubble.style.width='auto';bubble.style.maxWidth=width;
+      if(message.type==='emoji'||message.type==='image'){
+        fillPreviewMedia(bubble,message,'outgoing');
+        bubble.style.marginLeft='auto';
+      }else{
+        bubble.textContent=content;
+        if(message.type==='mention')bubble.style.color='#087d36'
+      }
+      row.appendChild(bubble);
+      const metaText=[message.read!=='hidden'?message.read:'',time].filter(Boolean).join('  ');
+      if(metaText){const meta=document.createElement('div');meta.className='preview-meta';meta.textContent=metaText;meta.style.color=els.metaColor.value;row.appendChild(meta)}
+    }
+    row.style.marginBottom=els.rowGap.value+'px';
+    els.previewChat.appendChild(row)
+  })
+}
+
+function profileNameMacro(){
+  return els.useCharacterAttr.checked?'@{character_name}':rollText(els.displayName.value.trim()||'캐릭터명')
+}
+function profileUrlMacro(){
+  return els.useProfileAttr.checked?'@{profile_image}':cssUrl(els.profileUrl.value)
+}
+function globalTimeMacro(){
+  const mode=els.timeMode.value;
+  const text=els.timeText.value.trim();
+  if(mode==='hidden')return'';
+  if(mode==='periodQuery')return`?{시간대|오전|오후} ${rollText(text||'XX:XX')}`;
+  if(mode==='textQuery')return`?{${rollText(els.timePrompt.value.trim()||'시각 표시')}|${rollText(text||'오후 XX:XX')}}`;
+  return rollText(text||'오후 XX:XX')
+}
+function messageTimeMacro(message,index){
+  if(message.timeMode==='hidden')return'';
+  if(message.timeMode==='default')return globalTimeMacro();
+  const text=message.timeText.trim();
+  if(message.timeMode==='query')return`?{${index+1}번 시각|${rollText(text||'오후 XX:XX')}}`;
+  return rollText(text||'오후 XX:XX')
+}
+function messageContentMacro(message,index){
+  if(message.type==='mention'){
+    return message.query?`@?{${index+1}번 멘션|캐릭터명}`:'@'+rollText(message.text||'캐릭터명')
+  }
+  if(message.type==='text'||message.type==='system'){
+    return message.query?`?{${index+1}번 메시지|내용을 입력하세요}`:rollText(message.text||'내용을 입력하세요')
+  }
+  return'　'
+}
+function mediaUrlMacro(message,index){
+  return message.query?`?{${index+1}번 이미지 URL|https://example.com/image.png}`:cssUrl(message.url)
+}
+function spacerMacro(height){
+  return link('　',[
+    'display:block',`height:${height}px`,'margin:0','padding:0',
+    'background:transparent','color:transparent','font-size:0','line-height:0',
+    'text-decoration:none','cursor:default'
+  ].join(';')+';')
+}
+function generateMessageMacro(message,index){
+  const rowGap=Math.max(0,Math.min(20,Number(els.rowGap.value)||7));
+  const fontSize=Math.max(11,Math.min(18,Number(els.fontSize.value)||14));
+  const avatarSize=Math.max(26,Math.min(44,Number(els.avatarSize.value)||36));
+  const incomingColor=safeColor(els.incomingColor.value,'#ffffff');
+  const outgoingColor=safeColor(els.outgoingColor.value,'#a8e98b');
+  const metaColor=safeColor(els.metaColor.value,'#5f6d78');
+  const width=Math.max(35,Math.min(90,Number(message.width)||70));
+  const content=messageContentMacro(message,index);
+  const time=messageTimeMacro(message,index);
+
+  if(message.side==='system'){
+    const system=link(content,[
+      'display:block','width:max-content','max-width:80%','margin:2px auto',
+      'padding:3px 10px','background:rgba&#40;50,65,80,0.48&#41;',
+      'border-radius:12px','color:#ffffff','font-family:Arial,sans-serif',
+      'font-size:11px','font-weight:normal','line-height:17px','text-align:center',
+      'white-space:normal','overflow-wrap:anywhere','text-decoration:none','cursor:default'
+    ].join(';')+';');
+    return system+spacerMacro(rowGap)
+  }
+
+  const media=message.type==='emoji'||message.type==='image';
+  const size=Math.max(16,Math.min(240,Number(message.size)||64));
+  const mediaUrl=mediaUrlMacro(message,index);
+  const textColor=message.type==='mention'?(message.side==='incoming'?'#06a84f':'#087d36'):'#111111';
+  let output='';
+
+  if(message.side==='incoming'){
+    const left=avatarSize+20;
+    if(message.showName){
+      output+=link(profileNameMacro(),[
+        'display:block',`margin:0 0 3px ${left}px`,'padding:0',
+        'background:transparent','color:#4e5e6a','font-family:Arial,sans-serif',
+        'font-size:11px','font-weight:normal','line-height:14px','text-align:left',
+        'white-space:nowrap','overflow:hidden','text-overflow:ellipsis',
+        'text-decoration:none','cursor:default'
+      ].join(';')+';')
+    }
+    if(message.showAvatar){
+      const url=profileUrlMacro();
+      output+=link('　',[
+        'display:inline-block','position:relative','vertical-align:top',
+        `width:${avatarSize}px`,`height:${avatarSize}px`,'margin:0 0 0 8px','padding:0',
+        'background-color:#6a7783',url?`background-image:url&#40;${url}&#41;`:'',
+        'background-size:cover','background-position:center','background-repeat:no-repeat',
+        'border-radius:50%','color:transparent','font-size:0','line-height:0',
+        'text-decoration:none','cursor:default','overflow:hidden'
+      ].filter(Boolean).join(';')+';')
+    }else{
+      output+=link('　',[
+        'display:inline-block','vertical-align:top',`width:${avatarSize}px`,`height:1px`,
+        'margin:0 0 0 8px','padding:0','background:transparent','color:transparent',
+        'font-size:0','line-height:0','text-decoration:none','cursor:default'
+      ].join(';')+';')
+    }
+
+    if(media){
+      output+=link('　',[
+        'display:inline-block','vertical-align:top',`width:${size}px`,`height:${size}px`,
+        'margin:0 0 0 7px','padding:0','background-color:transparent',
+        mediaUrl?`background-image:url&#40;${mediaUrl}&#41;`:'',
+        `background-size:${size}px ${size}px`,'background-position:left top','background-repeat:no-repeat',
+        'color:transparent','font-size:0','line-height:0','text-decoration:none','cursor:default','overflow:hidden'
+      ].filter(Boolean).join(';')+';')
+    }else{
+      output+=link(content,[
+        'display:inline-block','vertical-align:top','box-sizing:border-box',
+        'width:auto',`max-width:${width}%`,
+        'margin:0 0 0 7px','padding:8px 10px',`background:${incomingColor}`,
+        'border-radius:5px 16px 16px 16px',`color:${textColor}`,
+        'font-family:Arial,sans-serif',`font-size:${fontSize}px`,
+        'font-weight:normal','line-height:20px','text-align:left',
+        'white-space:normal','overflow-wrap:anywhere','word-break:break-word',
+        'text-decoration:none','cursor:default'
+      ].join(';')+';')
+    }
+    if(time){
+      output+=link(time,[
+        'display:block','width:auto',`max-width:${width}%`,
+        `margin:2px 0 0 ${left}px`,'padding:0','background:transparent',
+        `color:${metaColor}`,'font-family:Arial,sans-serif','font-size:10px',
+        'font-weight:normal','line-height:14px','text-align:left',
+        'white-space:nowrap','overflow:hidden','text-overflow:ellipsis',
+        'text-decoration:none','cursor:default'
+      ].join(';')+';')
+    }
+  }else{
+    if(media){
+      output+=link('　',[
+        'display:block',`width:${size}px`,`height:${size}px`,
+        'margin:0 8px 0 auto','padding:0','background-color:transparent',
+        mediaUrl?`background-image:url&#40;${mediaUrl}&#41;`:'',
+        `background-size:${size}px ${size}px`,'background-position:left top','background-repeat:no-repeat',
+        'color:transparent','font-size:0','line-height:0','text-decoration:none','cursor:default','overflow:hidden'
+      ].filter(Boolean).join(';')+';')
+    }else{
+      output+=link(content,[
+        'display:table','box-sizing:border-box','width:auto',`max-width:${width}%`,
+        'margin:0 8px 0 auto','padding:8px 10px',`background:${outgoingColor}`,
+        'border-radius:16px 5px 16px 16px',`color:${textColor}`,
+        'font-family:Arial,sans-serif',`font-size:${fontSize}px`,
+        'font-weight:normal','line-height:20px','text-align:left',
+        'white-space:normal','overflow-wrap:anywhere','word-break:break-word',
+        'text-decoration:none','cursor:default'
+      ].join(';')+';')
+    }
+    const meta=[message.read!=='hidden'?rollText(message.read):'',time].filter(Boolean).join('　');
+    if(meta){
+      output+=link(meta,[
+        'display:table','width:auto',`max-width:${media?size+'px':width+'%'}`,
+        'margin:2px 8px 0 auto','padding:0','background:transparent',`color:${metaColor}`,
+        'font-family:Arial,sans-serif','font-size:10px','font-weight:normal',
+        'line-height:14px','text-align:right','white-space:nowrap',
+        'overflow:hidden','text-overflow:ellipsis','text-decoration:none','cursor:default'
+      ].join(';')+';')
+    }
+  }
+  return output+spacerMacro(rowGap)
+}
+function generateMacro(){
+  els.macroOutput.value=messages.map(generateMessageMacro).join('').replace(/\n/g,'')
+}
+
+function profileData(){
+  return{
+    displayName:els.displayName.value,profileUrl:els.profileUrl.value,
+    useCharacterAttr:els.useCharacterAttr.checked,useProfileAttr:els.useProfileAttr.checked,
+    timeMode:els.timeMode.value,timeText:els.timeText.value,timePrompt:els.timePrompt.value
+  }
+}
+function styleData(){
+  return{
+    incomingColor:els.incomingColor.value,outgoingColor:els.outgoingColor.value,
+    metaColor:els.metaColor.value,fontSize:els.fontSize.value,
+    rowGap:els.rowGap.value,avatarSize:els.avatarSize.value
+  }
+}
+function draftData(){return{version:4,...profileData(),...styleData(),messages:messages.map(m=>({...m}))}}
+function applyProfile(data){
+  els.displayName.value=data.displayName||'캐릭터명';els.profileUrl.value=data.profileUrl||'';
+  els.useCharacterAttr.checked=!!data.useCharacterAttr;els.useProfileAttr.checked=!!data.useProfileAttr;
+  els.timeMode.value=['periodQuery','fixed','textQuery','hidden'].includes(data.timeMode)?data.timeMode:'periodQuery';
+  els.timeText.value=data.timeText??'XX:XX';els.timePrompt.value=data.timePrompt??'시각 표시'
+}
+function applyStyle(data){
+  els.incomingColor.value=safeColor(data.incomingColor,'#ffffff');
+  els.outgoingColor.value=safeColor(data.outgoingColor,'#a8e98b');
+  els.metaColor.value=safeColor(data.metaColor,'#5f6d78');
+  els.fontSize.value=String(data.fontSize||'14');els.rowGap.value=String(data.rowGap||'7');
+  els.avatarSize.value=String(data.avatarSize||'36')
+}
+function saveDraft(){if(canStore)localStorage.setItem(KEYS.draft,JSON.stringify(draftData()))}
+function loadDraft(){
+  if(!canStore)return;
+  try{
+    const data=JSON.parse(localStorage.getItem(KEYS.draft)||'null');if(!data)return;
+    applyProfile(data);applyStyle(data);messages=normalizeMessages(data.messages)
+  }catch(e){}
+}
+function update(){
+  renderPreview();generateMacro();saveDraft()
+}
+function saveProfile(){
+  const label=$('profileLabel').value.trim()||els.displayName.value.trim()||'프로필';
+  const list=readArray(KEYS.profiles);list.unshift({id:uid(),label,...profileData()});
+  writeArray(KEYS.profiles,list.slice(0,100));$('profileLabel').value='';renderStorage();setStatus('프로필 저장됨')
+}
+function loadProfile(id){
+  const item=readArray(KEYS.profiles).find(x=>x.id===id);if(!item)return;
+  applyProfile(item);update();setStatus('프로필 불러옴')
+}
+function saveLayout(){
+  const label=$('layoutLabel').value.trim()||'LINE 대화';
+  const list=readArray(KEYS.layouts);list.unshift({id:uid(),label,...draftData()});
+  writeArray(KEYS.layouts,list.slice(0,120));$('layoutLabel').value='';renderStorage();setStatus('구성 저장됨')
+}
+function loadLayout(id){
+  const item=readArray(KEYS.layouts).find(x=>x.id===id);if(!item)return;
+  applyProfile(item);applyStyle(item);messages=normalizeMessages(item.messages);
+  renderBuilder();update();setStatus('구성 불러옴')
+}
+function deleteSaved(key,id){writeArray(key,readArray(key).filter(x=>x.id!==id));renderStorage()}
+function renderSaved(container,key,loader){
+  const box=$(container),list=readArray(key);box.innerHTML='';
+  if(!list.length){box.innerHTML='<div class="empty">저장 항목 없음</div>';return}
+  list.forEach(item=>{
+    const row=document.createElement('div');row.className='saved-item';
+    row.innerHTML=`<span class="saved-name">${escapeHtml(item.label||'이름 없음')}</span>
+      <span class="saved-actions"><button class="btn small" data-load>불러오기</button>
+      <button class="btn small danger" data-del>삭제</button></span>`;
+    row.querySelector('[data-load]').onclick=()=>loader(item.id);
+    row.querySelector('[data-del]').onclick=()=>deleteSaved(key,item.id);
+    box.appendChild(row)
+  })
+}
+function renderStorage(){
+  const profiles=readArray(KEYS.profiles);
+  els.profileQuick.innerHTML='<option value="">선택</option>'+profiles.map(p=>`<option value="${p.id}">${escapeHtml(p.label)}</option>`).join('');
+  renderSaved('profileList',KEYS.profiles,loadProfile);renderSaved('layoutList',KEYS.layouts,loadLayout)
+}
+function resetAll(){
+  applyProfile({});applyStyle({});
+  messages=preset('conversation');renderBuilder();update();setStatus('초기화됨')
+}
+async function copyMacro(){
+  try{await navigator.clipboard.writeText(els.macroOutput.value)}
+  catch(e){els.macroOutput.select();document.execCommand('copy')}
+  setStatus('매크로 복사됨')
+}
+function downloadMacro(){
+  const blob=new Blob([els.macroOutput.value],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='roll20-line-message-macro.txt';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000)
+}
+function exportData(){
+  const data={version:4,profiles:readArray(KEYS.profiles),layouts:readArray(KEYS.layouts)};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='roll20-line-message-v4-data.json';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);setStatus('저장 데이터 내보냄')
+}
+function importData(file){
+  const reader=new FileReader();reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      if(Array.isArray(data.profiles))writeArray(KEYS.profiles,data.profiles);
+      if(Array.isArray(data.layouts))writeArray(KEYS.layouts,data.layouts);
+      renderStorage();setStatus('저장 데이터 가져옴')
+    }catch(e){setStatus('JSON을 읽을 수 없습니다.',true)}
+  };reader.readAsText(file)
+}
+
+['displayName','profileUrl','useCharacterAttr','useProfileAttr','timeMode','timeText','timePrompt',
+ 'incomingColor','outgoingColor','metaColor','fontSize','rowGap','avatarSize'].forEach(id=>{
+  $(id).addEventListener('input',update);$(id).addEventListener('change',update)
+});
+document.querySelectorAll('[data-preset]').forEach(btn=>btn.onclick=()=>{
+  messages=preset(btn.dataset.preset);renderBuilder();update();setStatus('프리셋 적용됨')
+});
+$('addIncomingBtn').onclick=()=>{messages.push(newMessage('incoming'));renderBuilder();update()};
+$('addOutgoingBtn').onclick=()=>{messages.push(newMessage('outgoing'));renderBuilder();update()};
+$('addSystemBtn').onclick=()=>{messages.push(newMessage('system','system'));renderBuilder();update()};
+$('saveProfileBtn').onclick=saveProfile;
+$('profileQuick').onchange=e=>{if(e.target.value)loadProfile(e.target.value)};
+$('saveLayoutBtn').onclick=saveLayout;
+$('copyBtn').onclick=copyMacro;
+$('downloadBtn').onclick=downloadMacro;
+$('exportBtn').onclick=exportData;
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=e=>{if(e.target.files[0])importData(e.target.files[0]);e.target.value=''};
+$('resetBtn').onclick=resetAll;
+
+loadDraft();renderBuilder();renderStorage();update();
+</script>
+</body>
+</html>
