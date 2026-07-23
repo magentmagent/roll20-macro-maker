@@ -6,6 +6,12 @@
 <title>Roll20 LINE 메시지 매크로 생성기 v6</title>
 <style>
 :root{
+  color-scheme:light;
+  --bg:#f3f4f6;--panel:#ffffff;--panel2:#f7f8fa;--line:#d4d7dd;
+  --text:#202124;--muted:#68707d;--green:#06a947;--danger:#b4232a;
+}
+html[data-theme="dark"]{
+  color-scheme:dark;
   --bg:#1e1f22;--panel:#2b2d31;--panel2:#313338;--line:#41434a;
   --text:#f2f3f5;--muted:#a7abb3;--green:#06c755;--danger:#da373c;
 }
@@ -94,6 +100,29 @@ input:focus,select:focus,textarea:focus{border-color:var(--green)}
 @media(max-width:640px){.top-side{display:block}.language-control{margin-bottom:7px}}
 
 
+
+.appearance-toggle{
+  width:34px;height:34px;display:inline-grid;place-items:center;flex:0 0 auto;
+  border:1px solid var(--line);border-radius:7px;background:var(--panel);
+  color:var(--text);font-size:17px;line-height:1;cursor:pointer
+}
+.appearance-toggle:hover{filter:brightness(.96)}
+html[data-theme="dark"] .appearance-toggle:hover{filter:brightness(1.12)}
+
+
+html:not([data-theme="dark"]) .field>label,
+html:not([data-theme="dark"]) .check{color:#374151}
+html:not([data-theme="dark"]) input[type=text],
+html:not([data-theme="dark"]) input[type=url],
+html:not([data-theme="dark"]) select,
+html:not([data-theme="dark"]) textarea,
+html:not([data-theme="dark"]) input[type=color]{background:#ffffff;color:#202124;border-color:#cbd0d8}
+html:not([data-theme="dark"]) .btn{background:#ffffff;color:#202124;border-color:#cbd0d8}
+html:not([data-theme="dark"]) .btn.primary{background:#087d36;color:#ffffff;border-color:#087d36}
+html:not([data-theme="dark"]) .btn.danger{background:#fff3f3;color:#a52a31;border-color:#e0a5aa}
+html:not([data-theme="dark"]) .message-card{background:#ffffff;border-color:#d4d7dd}
+html:not([data-theme="dark"]) .codebox{background:#ffffff;color:#202124;border-color:#cbd0d8}
+
 .back-link{
   display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
   border:1px solid #50535b;border-radius:6px;background:#303238;
@@ -115,7 +144,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green)}
     <h1>Roll20 LINE 메시지 매크로 생성기 v6</h1>
     <div class="subtitle">상대 메시지, 내 메시지, 시각, 읽음 표시, 이모지와 이미지 메시지를 LINE풍 말풍선으로 조립합니다.</div>
   </div>
-  <div class="top-side"><a class="back-link" href="./index.html" title="돌아가기"><span aria-hidden="true">←</span><span>돌아가기</span></a>
+  <div class="top-side"><button id="appearanceToggle" class="appearance-toggle" type="button" aria-label="Theme">☾</button><a class="back-link" href="./index.html" title="돌아가기"><span aria-hidden="true">←</span><span>돌아가기</span></a>
 <div class="language-control">
   <label for="languageSelect">언어</label>
   <select id="languageSelect">
@@ -1003,6 +1032,36 @@ els.languageSelect.addEventListener('change',e=>setLanguageMode(e.target.value))
 els.displayName.value=tr('캐릭터명');
 els.timePrompt.value=tr('시각 표시');
 loadDraft();relocalizeDefaults();renderBuilder();renderStorage();update();applyI18n(document.documentElement);
+
+const APPEARANCE_KEY='r20MacroAppearanceV1';
+function readAppearance(){
+  try{
+    const value=localStorage.getItem(APPEARANCE_KEY);
+    return value==='dark'?'dark':'light';
+  }catch(e){return'light'}
+}
+let appearanceMode=readAppearance();
+function applyAppearance(){
+  document.documentElement.dataset.theme=appearanceMode;
+  const button=document.getElementById('appearanceToggle');
+  if(button){
+    const dark=appearanceMode==='dark';
+    button.textContent=dark?'☀':'☾';
+    const label=typeof tr==='function'
+      ?tr(dark?'switchLight':'switchDark')
+      :(dark?'Switch to light mode':'Switch to dark mode');
+    button.title=label;
+    button.setAttribute('aria-label',label);
+  }
+}
+function toggleAppearance(){
+  appearanceMode=appearanceMode==='dark'?'light':'dark';
+  try{localStorage.setItem(APPEARANCE_KEY,appearanceMode)}catch(e){}
+  applyAppearance();
+}
+document.getElementById('appearanceToggle')?.addEventListener('click',toggleAppearance);
+applyAppearance();
+
 </script>
 </body>
 </html>
