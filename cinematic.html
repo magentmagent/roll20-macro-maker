@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Roll20 Cinematic Card Assembler v5</title>
+<title>Roll20 Cinematic Card Assembler v11</title>
 <style>
 :root{
   color-scheme:light;
@@ -61,7 +61,7 @@ html:not([data-theme="dark"]) .codebox{background:#ffffff;color:#202124;border-c
 .preset-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.savebar input{flex:1;min-width:150px}
 .builder-row{border:1px solid #4b4e55;border-radius:8px;background:#282a2f;padding:10px;margin-top:9px}.builder-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.builder-title{font-weight:bold;margin-right:auto}
 .cells{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}.cell{border:1px solid #4a4d54;border-radius:7px;background:#303238;padding:9px}.cell-head{display:grid;grid-template-columns:1fr 90px auto;gap:6px;align-items:center}.cell-fields{margin-top:8px}.range-line{display:grid;grid-template-columns:1fr 46px;gap:7px;align-items:center}.range-value{font-size:11px;color:var(--muted);text-align:right}
-.preview-stage{background:#111318;border-radius:8px;padding:22px 12px;min-height:320px}.preview-card{width:min(100%,460px);margin:0 auto;border-radius:9px;overflow:hidden;box-shadow:0 16px 38px rgba(0,0,0,.35)}
+.preview-stage{background:#111318;border-radius:8px;padding:22px 12px;min-height:320px}.preview-card{width:100%;margin:0;padding:0;border:0;background:transparent;border-radius:0;overflow:visible;box-shadow:none;font-size:0;line-height:0}.preview-card>a{pointer-events:none}
 .preview-accent{height:5px}.preview-line{display:flex;align-items:stretch;gap:4px}.preview-cell{min-width:0;background:transparent;overflow:hidden}.preview-text{padding:8px 13px;white-space:pre-wrap;overflow-wrap:anywhere}
 .preview-label{font-size:10px;font-weight:bold;letter-spacing:.16em}.preview-title{font-size:24px;font-weight:800;line-height:1.18}.preview-subtitle{font-size:13px;line-height:1.45}.preview-body{font-size:13px;line-height:1.6}
 .preview-list{margin:0;padding:8px 13px 8px 30px}.preview-list li{margin:4px 0}.preview-meta{padding:8px 13px;font-size:10px;letter-spacing:.08em}.preview-image{background-repeat:no-repeat}.preview-divider{display:flex;align-items:center;padding:0 13px}.preview-divider span{display:block;width:100%}
@@ -82,6 +82,67 @@ html:not([data-theme="dark"]) .codebox{background:#ffffff;color:#202124;border-c
 .empty{padding:13px;text-align:center;border:1px dashed #5a5d65;border-radius:7px;color:var(--muted)}.codebox{width:100%;min-height:250px;background:#101114;color:#dfe1e5;border:1px solid #4b4e56;border-radius:8px;padding:11px;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical;word-break:break-all}
 .notice{margin-top:10px;padding:9px 10px;border-left:3px solid var(--ui);border-radius:5px;background:rgba(214,180,106,.08);color:#d9dbe0;font-size:11px;line-height:1.6}
 @media(max-width:1050px){body{padding:11px}.main{grid-template-columns:1fr}.cells{grid-template-columns:1fr}.top{display:block}.top-side{margin-top:10px}.row2,.row3{grid-template-columns:1fr}.preset-grid{grid-template-columns:1fr 1fr}}
+
+/* Unified light/dark UI surfaces */
+:root{
+ --ui-surface:#ffffff;
+ --ui-surface-soft:#f7f8fa;
+ --ui-input:#ffffff;
+ --ui-button:#ffffff;
+ --ui-button-hover:#eef1f4;
+ --ui-label:#303640;
+ --ui-preview:#ffffff;
+ --ui-code:#ffffff;
+ --ui-code-text:#202124;
+ --ui-notice:#eef4ff;
+ --ui-danger-bg:#fff3f3;
+ --ui-danger-text:#a52a31;
+ --ui-shadow:0 10px 28px rgba(30,41,59,.10)
+}
+html[data-theme="dark"]{
+ --ui-surface:#24262b;
+ --ui-surface-soft:#2e3035;
+ --ui-input:#1d1e21;
+ --ui-button:#35383f;
+ --ui-button-hover:#454951;
+ --ui-label:#e0e3e8;
+ --ui-preview:#111318;
+ --ui-code:#101114;
+ --ui-code-text:#dfe1e5;
+ --ui-notice:#242b36;
+ --ui-danger-bg:#552a2d;
+ --ui-danger-text:#ffd9dc;
+ --ui-shadow:0 12px 30px rgba(0,0,0,.28)
+}
+.panel{background:var(--ui-surface)!important;border-color:var(--line)!important;box-shadow:var(--ui-shadow)!important}
+.section,.build-row,.cell,.effect-item,.message-head,.saved-list{
+ background:var(--ui-surface-soft)!important;border-color:var(--line)!important
+}
+input[type=text],input[type=url],input[type=number],select,textarea{
+ background:var(--ui-input)!important;color:var(--text)!important;border-color:var(--line)!important
+}
+input[type=color]{background:var(--ui-input)!important;border-color:var(--line)!important}
+.field>label,.check,.language-control label{color:var(--ui-label)!important}
+.btn:not(.primary):not(.danger),.back-link,.appearance-toggle{
+ background:var(--ui-button)!important;color:var(--text)!important;border-color:var(--line)!important
+}
+.btn:not(.primary):not(.danger):hover,.back-link:hover,.appearance-toggle:hover{
+ background:var(--ui-button-hover)!important
+}
+.btn.danger{background:var(--ui-danger-bg)!important;color:var(--ui-danger-text)!important;border-color:var(--line)!important}
+.preview-stage{background:var(--ui-preview)!important;border:1px solid var(--line)!important}
+.codebox{background:var(--ui-code)!important;color:var(--ui-code-text)!important;border-color:var(--line)!important}
+.notice{background:var(--ui-notice)!important;color:var(--text)!important}
+.empty{border-color:var(--line)!important;color:var(--muted)!important}
+.macro-preview-host{
+ display:block!important;width:100%!important;max-width:none!important;min-height:0!important;
+ margin:0!important;padding:0!important;border:0!important;background:transparent!important;
+ border-radius:0!important;box-shadow:none!important;overflow:visible!important;
+ font-size:0!important;line-height:0!important
+}
+.macro-preview-host>a{pointer-events:none!important}
+
+.btn.primary{background:var(--ui)!important;color:#fff!important;border-color:var(--ui)!important}
 </style>
 </head>
 <body>
@@ -173,13 +234,13 @@ html:not([data-theme="dark"]) .codebox{background:#ffffff;color:#202124;border-c
     <div class="section"><h2 data-i="preview"></h2><div class="preview-stage"><div id="previewCard" class="preview-card"></div></div></div>
     <div class="section">
       <div class="toolbar"><h2 data-i="macro" style="margin:0 auto 0 0"></h2><button id="copyBtn" class="btn primary" data-i="copy"></button><button id="downloadBtn" class="btn" data-i="download"></button></div>
-      <textarea id="macroOutput" class="codebox" readonly></textarea><div class="notice" data-i="roll20Notice"></div>
+      <textarea id="macroOutput" class="codebox" readonly></textarea><div class="notice" data-i="roll20Notice"></div><div class="notice" data-i="rowSafeNotice"></div><div class="notice" data-i="percentWidthNotice"></div><div class="notice" data-i="strictLayoutNotice"></div><div class="notice" data-i="macroPreviewNotice"></div><div class="notice" data-i="frameCompatibilityNotice"></div><div class="notice" data-i="zeroPaddingNotice"></div><div class="notice" data-i="spacingAuditNotice"></div><div class="notice" data-i="unifiedPreviewNotice"></div>
     </div>
   </div>
 </div>
 
 <script>
-const COPY={"ja":{"title":"Roll20 シネマティックカード・アセンブラー v5","subtitle":"行と列を追加し、タイトル、本文、画像、リスト、メタ情報などを自由に組み立てます。","language":"言語","browser":"ブラウザーの言語","settings":"カード設定","theme":"テーマ","cardWidth":"カード幅","accent":"アクセント色","background":"背景色","textColor":"本文色","mutedColor":"補助色","rowGap":"行間","presets":"クイック構成","scene":"場面転換","system":"システム通知","npc":"NPC登場","evidence":"証拠品","item":"アイテム獲得","recap":"前回までのあらすじ","ending":"エンディング","blank":"空の構成","builder":"行・列アセンブラー","addRow":"行を追加","addColumn":"列を追加","noRows":"行がありません。","row":"行","column":"列","moveUp":"上へ","moveDown":"下へ","delete":"削除","type":"種別","width":"列幅","label":"ラベル","titleCell":"タイトル","subtitleCell":"サブタイトル","bodyCell":"本文","listCell":"リスト","imageCell":"画像","metaCell":"メタ","dividerCell":"区切り線","spacerCell":"余白","text":"テキスト","prompt":"実行時に入力","reservedLines":"予約行数","align":"文字揃え","left":"左","center":"中央","right":"右","imageUrl":"画像の直接URL","promptImage":"実行時に画像URLを入力","imageHeight":"画像の高さ","imageFit":"画像の配置","cover":"枠を埋める（トリミング）","contain":"全体を表示","stretch":"枠に合わせて伸縮","focusX":"横方向の焦点","focusY":"縦方向の焦点","corner":"角丸","listNumber":"番号付きリスト","dividerThickness":"線の太さ","spacerHeight":"余白の高さ","directUrl":"Webページではなく画像ファイルが直接開くURLを使用してください。","cropHint":"「枠を埋める」は画像をカード枠に合わせて自動トリミングします。焦点位置で残したい部分を調整できます。","preview":"プレビュー","macro":"Roll20マクロ","copy":"コピー","download":"TXTを保存","save":"保存","saveName":"構成の保存名","saveLayout":"構成を保存","saved":"保存済み構成","load":"読み込む","none":"保存項目はありません","export":"JSONを書き出す","import":"JSONを読み込む","reset":"初期化","autoSaved":"自動保存しました","copied":"マクロをコピーしました","savedStatus":"構成を保存しました","loadedStatus":"構成を読み込みました","deletedStatus":"削除しました","resetStatus":"初期化しました","imported":"保存データを読み込みました","exported":"保存データを書き出しました","badJson":"JSONを読み込めません。","roll20Notice":"各行は列幅を自動的に100%へ再配分します。背景、枠線、影、発光、画像オーバーレイはインラインCSSで生成されます。Roll20のテーマやサニタイズ設定により、影・グラデーションの見え方が多少異なる場合があります。実行時入力の文章には十分な予約行数を設定してください。","enterText":"テキストを入力してください","character":"キャラクター名","imagePrompt":"画像URL","sceneLabel":"CHAPTER 04","sceneTitle":"雨の港","sceneSubtitle":"2026年7月23日・午前2:17","sceneMeta":"東京湾 第7埠頭","systemLabel":"OBJECTIVE UPDATED","systemTitle":"閉鎖された研究所へ侵入せよ","systemBody":"新しい目標が追加されました。","systemList":"セキュリティカードを確保する\n警報システムを停止する","npcLabel":"NEW CHARACTER","npcTitle":"THE ARCHIVIST","npcSubtitle":"記憶を集める者","npcQuote":"「忘れたことこそ、最も価値がある。」","evidenceLabel":"EVIDENCE 03","evidenceTitle":"壊れた懐中時計","evidenceBody":"針は11時47分で止まっている。裏蓋には黒い百合の紋章が刻まれている。","itemLabel":"ITEM ACQUIRED","itemTitle":"古い銀の鍵","itemBody":"取っ手に黒い百合の紋章が刻まれている。","recapLabel":"PREVIOUSLY...","recapTitle":"第7話までのあらすじ","recapList":"廃病院の地下で秘密研究所を発見した\nカイの記憶が改変されていた\n夜明けまで残り47分","endingLabel":"SESSION END","endingTitle":"夜明けが来る前に","endingSubtitle":"第8話","endingBody":"To be continued...","back":"戻る","effects":"カード効果","backgroundEffect":"背景効果","solid":"単色","gradient":"グラデーション","vignette":"ビネット","scanlines":"走査線","secondaryBackground":"第2背景色","accentEdge":"アクセント位置","topEdge":"上","leftEdge":"左","bothEdges":"上＋左","noEdge":"なし","borderStyle":"枠線","borderNone":"なし","borderSolid":"実線","borderDouble":"二重線","borderDashed":"破線","borderWidth":"枠線の太さ","borderColor":"枠線の色","cardRadius":"カードの角丸","shadowEffect":"影・発光","shadowNone":"なし","shadowSoft":"柔らかい影","shadowHard":"硬い影","shadowGlow":"アクセント発光","titleEffect":"タイトル効果","textNone":"なし","textShadow":"影","textGlow":"発光","textOutline":"縁取り","quoteCell":"引用","calloutCell":"警告ボックス","badgeCell":"バッジ","progressCell":"進行度","statCell":"数値表示","source":"出典・話者","calloutStyle":"ボックス種別","info":"情報","warning":"注意","danger":"危険","success":"成功","badgeStyle":"バッジ形式","filled":"塗りつぶし","outline":"枠線","soft":"薄い背景","progressValue":"進行度","showPercent":"数値を表示","statValue":"大きな数値","statLabel":"数値ラベル","imageOverlay":"画像オーバーレイ","overlayNone":"なし","overlayDark":"暗くする","overlayLight":"明るくする","overlayAccent":"アクセント色","overlayStrength":"オーバーレイ強度","imageFrame":"画像枠","frameNone":"なし","frameAccent":"アクセント色","frameMuted":"補助色","effectHint":"背景、枠線、影、発光、画像オーバーレイ、新しい演出ブロックはプレビューとRoll20マクロの両方に反映されます。","systemProgress":"アクセス進行","quoteSource":"— 通信記録","statExample":"47","statExampleLabel":"夜明けまで残り"},"ko":{"title":"Roll20 시네마틱 카드 조립기 v5","subtitle":"행과 열을 추가해 제목, 본문, 이미지, 목록, 메타 정보를 자유롭게 조립합니다.","language":"언어","browser":"브라우저 언어","settings":"카드 설정","theme":"테마","cardWidth":"카드 폭","accent":"강조색","background":"배경색","textColor":"본문색","mutedColor":"보조색","rowGap":"행 간격","presets":"빠른 구성","scene":"장면 전환","system":"시스템 알림","npc":"NPC 등장","evidence":"증거물","item":"아이템 획득","recap":"지난 이야기","ending":"엔딩","blank":"빈 구성","builder":"행·열 조립기","addRow":"행 추가","addColumn":"열 추가","noRows":"행이 없습니다.","row":"행","column":"열","moveUp":"위로","moveDown":"아래로","delete":"삭제","type":"유형","width":"열 폭","label":"라벨","titleCell":"제목","subtitleCell":"부제","bodyCell":"본문","listCell":"목록","imageCell":"이미지","metaCell":"메타","dividerCell":"구분선","spacerCell":"여백","text":"문구","prompt":"실행 시 입력","reservedLines":"예약 줄 수","align":"문자 정렬","left":"왼쪽","center":"가운데","right":"오른쪽","imageUrl":"이미지 직접 URL","promptImage":"실행 시 이미지 URL 입력","imageHeight":"이미지 높이","imageFit":"이미지 배치","cover":"영역 채우기(자르기)","contain":"전체 표시","stretch":"영역에 맞춰 늘리기","focusX":"가로 초점","focusY":"세로 초점","corner":"모서리 둥글기","listNumber":"번호 목록","dividerThickness":"선 두께","spacerHeight":"여백 높이","directUrl":"웹페이지가 아니라 이미지 파일이 직접 열리는 URL을 사용하세요.","cropHint":"‘영역 채우기’는 이미지를 카드 영역에 맞춰 자동으로 자릅니다. 초점 위치로 남길 부분을 조정할 수 있습니다.","preview":"미리보기","macro":"Roll20 매크로","copy":"복사","download":"TXT 저장","save":"저장","saveName":"구성 저장 이름","saveLayout":"구성 저장","saved":"저장된 구성","load":"불러오기","none":"저장 항목 없음","export":"JSON 내보내기","import":"JSON 가져오기","reset":"초기화","autoSaved":"자동 저장됨","copied":"매크로 복사됨","savedStatus":"구성 저장됨","loadedStatus":"구성 불러옴","deletedStatus":"삭제됨","resetStatus":"초기화됨","imported":"저장 데이터 가져옴","exported":"저장 데이터 내보냄","badJson":"JSON을 읽을 수 없습니다.","roll20Notice":"각 출력 줄의 열 폭은 자동으로 100%까지 재분배됩니다. 배경, 테두리, 그림자, 발광과 이미지 오버레이는 인라인 CSS로 생성합니다. Roll20 테마나 정리 규칙에 따라 그림자·그라데이션의 모양이 조금 달라질 수 있습니다. 실행 시 입력 문장에는 충분한 예약 줄 수를 지정하세요.","enterText":"문구를 입력하세요","character":"캐릭터명","imagePrompt":"이미지 URL","sceneLabel":"CHAPTER 04","sceneTitle":"비가 내리는 항구","sceneSubtitle":"2026년 7월 23일 · 오전 2:17","sceneMeta":"도쿄만 제7부두","systemLabel":"OBJECTIVE UPDATED","systemTitle":"폐쇄된 연구소에 진입하라","systemBody":"새로운 목표가 추가되었습니다.","systemList":"보안 키카드를 확보할 것\n경보 시스템을 정지할 것","npcLabel":"NEW CHARACTER","npcTitle":"THE ARCHIVIST","npcSubtitle":"기억을 수집하는 자","npcQuote":"“잊어버린 것일수록 가장 가치가 있지.”","evidenceLabel":"EVIDENCE 03","evidenceTitle":"깨진 회중시계","evidenceBody":"11시 47분에 멈춰 있다. 뒷면에는 검은 백합 문양이 새겨져 있다.","itemLabel":"ITEM ACQUIRED","itemTitle":"낡은 은색 열쇠","itemBody":"손잡이에 검은 백합 문양이 새겨져 있다.","recapLabel":"PREVIOUSLY...","recapTitle":"제7화까지의 이야기","recapList":"폐병원 지하에서 비밀 실험실을 발견했다\n카이의 기억이 조작된 것으로 드러났다\n새벽까지 남은 시간은 47분이다","endingLabel":"SESSION END","endingTitle":"새벽이 오기 전에","endingSubtitle":"제8화","endingBody":"To be continued...","back":"돌아가기","effects":"카드 효과","backgroundEffect":"배경 효과","solid":"단색","gradient":"그라데이션","vignette":"비네트","scanlines":"스캔라인","secondaryBackground":"보조 배경색","accentEdge":"강조선 위치","topEdge":"위","leftEdge":"왼쪽","bothEdges":"위+왼쪽","noEdge":"없음","borderStyle":"테두리","borderNone":"없음","borderSolid":"실선","borderDouble":"이중선","borderDashed":"점선","borderWidth":"테두리 두께","borderColor":"테두리 색상","cardRadius":"카드 모서리","shadowEffect":"그림자·발광","shadowNone":"없음","shadowSoft":"부드러운 그림자","shadowHard":"단단한 그림자","shadowGlow":"강조색 발광","titleEffect":"제목 효과","textNone":"없음","textShadow":"그림자","textGlow":"발광","textOutline":"외곽선","quoteCell":"인용문","calloutCell":"경고 상자","badgeCell":"배지","progressCell":"진행도","statCell":"수치 표시","source":"출처·화자","calloutStyle":"상자 유형","info":"정보","warning":"주의","danger":"위험","success":"성공","badgeStyle":"배지 형태","filled":"채우기","outline":"외곽선","soft":"옅은 배경","progressValue":"진행도","showPercent":"수치 표시","statValue":"큰 수치","statLabel":"수치 라벨","imageOverlay":"이미지 오버레이","overlayNone":"없음","overlayDark":"어둡게","overlayLight":"밝게","overlayAccent":"강조색","overlayStrength":"오버레이 강도","imageFrame":"이미지 테두리","frameNone":"없음","frameAccent":"강조색","frameMuted":"보조색","effectHint":"배경, 테두리, 그림자, 발광, 이미지 오버레이와 새 연출 블록은 미리보기와 Roll20 매크로에 함께 적용됩니다.","systemProgress":"접근 진행도","quoteSource":"— 통신 기록","statExample":"47","statExampleLabel":"새벽까지 남은 시간"},"en":{"title":"Roll20 Cinematic Card Assembler v5","subtitle":"Add rows and columns to assemble titles, body text, images, lists, and metadata.","language":"Language","browser":"Browser language","settings":"Card settings","theme":"Theme","cardWidth":"Card width","accent":"Accent color","background":"Background","textColor":"Body color","mutedColor":"Muted color","rowGap":"Row gap","presets":"Quick layouts","scene":"Scene transition","system":"System notice","npc":"NPC reveal","evidence":"Evidence","item":"Item acquired","recap":"Previously","ending":"Ending","blank":"Blank layout","builder":"Row and column assembler","addRow":"Add row","addColumn":"Add column","noRows":"No rows.","row":"Row","column":"Column","moveUp":"Move up","moveDown":"Move down","delete":"Delete","type":"Type","width":"Column width","label":"Label","titleCell":"Title","subtitleCell":"Subtitle","bodyCell":"Body","listCell":"List","imageCell":"Image","metaCell":"Meta","dividerCell":"Divider","spacerCell":"Spacer","text":"Text","prompt":"Prompt when run","reservedLines":"Reserved lines","align":"Text alignment","left":"Left","center":"Center","right":"Right","imageUrl":"Direct image URL","promptImage":"Prompt for image URL when run","imageHeight":"Image height","imageFit":"Image fit","cover":"Fill area (crop)","contain":"Show entire image","stretch":"Stretch to area","focusX":"Horizontal focus","focusY":"Vertical focus","corner":"Corner radius","listNumber":"Numbered list","dividerThickness":"Line thickness","spacerHeight":"Spacer height","directUrl":"Use a URL that opens the image file directly, not a webpage.","cropHint":"Fill area automatically crops the image to the card region. Adjust the focus position to preserve the important part.","preview":"Preview","macro":"Roll20 macro","copy":"Copy","download":"Save TXT","save":"Save","saveName":"Layout save name","saveLayout":"Save layout","saved":"Saved layouts","load":"Load","none":"No saved items","export":"Export JSON","import":"Import JSON","reset":"Reset","autoSaved":"Auto-saved","copied":"Macro copied","savedStatus":"Layout saved","loadedStatus":"Layout loaded","deletedStatus":"Deleted","resetStatus":"Reset","imported":"Saved data imported","exported":"Saved data exported","badJson":"Could not read the JSON file.","roll20Notice":"Column widths on each output line are normalized to fill 100%. Backgrounds, borders, shadows, glow, and image overlays are generated as inline CSS. Roll20 themes or sanitization may slightly alter shadows and gradients. Reserve enough lines for prompted text.","enterText":"Enter text","character":"Character name","imagePrompt":"Image URL","sceneLabel":"CHAPTER 04","sceneTitle":"The Rainbound Harbor","sceneSubtitle":"July 23, 2026 · 2:17 AM","sceneMeta":"Tokyo Bay · Pier 7","systemLabel":"OBJECTIVE UPDATED","systemTitle":"Enter the sealed laboratory","systemBody":"A new objective has been added.","systemList":"Acquire a security keycard\nDisable the alarm system","npcLabel":"NEW CHARACTER","npcTitle":"THE ARCHIVIST","npcSubtitle":"Collector of forgotten memories","npcQuote":"“What you forgot is what I value most.”","evidenceLabel":"EVIDENCE 03","evidenceTitle":"Broken Pocket Watch","evidenceBody":"The hands stopped at 11:47. A black lily emblem is engraved on the back.","itemLabel":"ITEM ACQUIRED","itemTitle":"Old Silver Key","itemBody":"A black lily emblem is engraved into the handle.","recapLabel":"PREVIOUSLY...","recapTitle":"Previously in Episode 7","recapList":"A secret laboratory was found beneath the abandoned hospital\nKai's memories were discovered to have been altered\nForty-seven minutes remain until dawn","endingLabel":"SESSION END","endingTitle":"Before Dawn Arrives","endingSubtitle":"Episode 8","endingBody":"To be continued...","back":"Back","effects":"Card effects","backgroundEffect":"Background effect","solid":"Solid","gradient":"Gradient","vignette":"Vignette","scanlines":"Scanlines","secondaryBackground":"Secondary background","accentEdge":"Accent edge","topEdge":"Top","leftEdge":"Left","bothEdges":"Top + left","noEdge":"None","borderStyle":"Border","borderNone":"None","borderSolid":"Solid","borderDouble":"Double","borderDashed":"Dashed","borderWidth":"Border width","borderColor":"Border color","cardRadius":"Card radius","shadowEffect":"Shadow / glow","shadowNone":"None","shadowSoft":"Soft shadow","shadowHard":"Hard shadow","shadowGlow":"Accent glow","titleEffect":"Title effect","textNone":"None","textShadow":"Shadow","textGlow":"Glow","textOutline":"Outline","quoteCell":"Quote","calloutCell":"Callout","badgeCell":"Badge","progressCell":"Progress","statCell":"Statistic","source":"Source / speaker","calloutStyle":"Callout type","info":"Info","warning":"Warning","danger":"Danger","success":"Success","badgeStyle":"Badge style","filled":"Filled","outline":"Outline","soft":"Soft background","progressValue":"Progress","showPercent":"Show value","statValue":"Large value","statLabel":"Statistic label","imageOverlay":"Image overlay","overlayNone":"None","overlayDark":"Darken","overlayLight":"Lighten","overlayAccent":"Accent color","overlayStrength":"Overlay strength","imageFrame":"Image frame","frameNone":"None","frameAccent":"Accent color","frameMuted":"Muted color","effectHint":"Backgrounds, borders, shadows, glow, image overlays, and the new cinematic blocks are applied to both preview and Roll20 macro output.","systemProgress":"Access progress","quoteSource":"— Transmission log","statExample":"47","statExampleLabel":"Minutes until dawn"}};
+const COPY={"ja":{"title":"Roll20 シネマティックカード・アセンブラー v11","subtitle":"行と列を追加し、タイトル、本文、画像、リスト、メタ情報などを自由に組み立てます。","language":"言語","browser":"ブラウザーの言語","settings":"カード設定","theme":"テーマ","cardWidth":"カード幅","accent":"アクセント色","background":"背景色","textColor":"本文色","mutedColor":"補助色","rowGap":"行間","presets":"クイック構成","scene":"場面転換","system":"システム通知","npc":"NPC登場","evidence":"証拠品","item":"アイテム獲得","recap":"前回までのあらすじ","ending":"エンディング","blank":"空の構成","builder":"行・列アセンブラー","addRow":"行を追加","addColumn":"列を追加","noRows":"行がありません。","row":"行","column":"列","moveUp":"上へ","moveDown":"下へ","delete":"削除","type":"種別","width":"列幅","label":"ラベル","titleCell":"タイトル","subtitleCell":"サブタイトル","bodyCell":"本文","listCell":"リスト","imageCell":"画像","metaCell":"メタ","dividerCell":"区切り線","spacerCell":"余白","text":"テキスト","prompt":"実行時に入力","reservedLines":"予約行数","align":"文字揃え","left":"左","center":"中央","right":"右","imageUrl":"画像の直接URL","promptImage":"実行時に画像URLを入力","imageHeight":"画像の高さ","imageFit":"画像の配置","cover":"枠を埋める（トリミング）","contain":"全体を表示","stretch":"枠に合わせて伸縮","focusX":"横方向の焦点","focusY":"縦方向の焦点","corner":"角丸","listNumber":"番号付きリスト","dividerThickness":"線の太さ","spacerHeight":"余白の高さ","directUrl":"Webページではなく画像ファイルが直接開くURLを使用してください。","cropHint":"「枠を埋める」は画像をカード枠に合わせて自動トリミングします。焦点位置で残したい部分を調整できます。","preview":"プレビュー","macro":"Roll20マクロ","copy":"コピー","download":"TXTを保存","save":"保存","saveName":"構成の保存名","saveLayout":"構成を保存","saved":"保存済み構成","load":"読み込む","none":"保存項目はありません","export":"JSONを書き出す","import":"JSONを読み込む","reset":"初期化","autoSaved":"自動保存しました","copied":"マクロをコピーしました","savedStatus":"構成を保存しました","loadedStatus":"構成を読み込みました","deletedStatus":"削除しました","resetStatus":"初期化しました","imported":"保存データを読み込みました","exported":"保存データを書き出しました","badJson":"JSONを読み込めません。","roll20Notice":"各行は列幅を自動的に100%へ再配分します。背景、枠線、影、発光、画像オーバーレイはインラインCSSで生成されます。Roll20のテーマやサニタイズ設定により、影・グラデーションの見え方が多少異なる場合があります。実行時入力の文章には十分な予約行数を設定してください。","enterText":"テキストを入力してください","character":"キャラクター名","imagePrompt":"画像URL","sceneLabel":"CHAPTER 04","sceneTitle":"雨の港","sceneSubtitle":"2026年7月23日・午前2:17","sceneMeta":"東京湾 第7埠頭","systemLabel":"OBJECTIVE UPDATED","systemTitle":"閉鎖された研究所へ侵入せよ","systemBody":"新しい目標が追加されました。","systemList":"セキュリティカードを確保する\n警報システムを停止する","npcLabel":"NEW CHARACTER","npcTitle":"THE ARCHIVIST","npcSubtitle":"記憶を集める者","npcQuote":"「忘れたことこそ、最も価値がある。」","evidenceLabel":"EVIDENCE 03","evidenceTitle":"壊れた懐中時計","evidenceBody":"針は11時47分で止まっている。裏蓋には黒い百合の紋章が刻まれている。","itemLabel":"ITEM ACQUIRED","itemTitle":"古い銀の鍵","itemBody":"取っ手に黒い百合の紋章が刻まれている。","recapLabel":"PREVIOUSLY...","recapTitle":"第7話までのあらすじ","recapList":"廃病院の地下で秘密研究所を発見した\nカイの記憶が改変されていた\n夜明けまで残り47分","endingLabel":"SESSION END","endingTitle":"夜明けが来る前に","endingSubtitle":"第8話","endingBody":"To be continued...","back":"戻る","effects":"カード効果","backgroundEffect":"背景効果","solid":"単色","gradient":"グラデーション","vignette":"ビネット","scanlines":"走査線","secondaryBackground":"第2背景色","accentEdge":"アクセント位置","topEdge":"上","leftEdge":"左","bothEdges":"上＋左","noEdge":"なし","borderStyle":"枠線","borderNone":"なし","borderSolid":"実線","borderDouble":"二重線","borderDashed":"破線","borderWidth":"枠線の太さ","borderColor":"枠線の色","cardRadius":"カードの角丸","shadowEffect":"影・発光","shadowNone":"なし","shadowSoft":"柔らかい影","shadowHard":"硬い影","shadowGlow":"アクセント発光","titleEffect":"タイトル効果","textNone":"なし","textShadow":"影","textGlow":"発光","textOutline":"縁取り","quoteCell":"引用","calloutCell":"警告ボックス","badgeCell":"バッジ","progressCell":"進行度","statCell":"数値表示","source":"出典・話者","calloutStyle":"ボックス種別","info":"情報","warning":"注意","danger":"危険","success":"成功","badgeStyle":"バッジ形式","filled":"塗りつぶし","outline":"枠線","soft":"薄い背景","progressValue":"進行度","showPercent":"数値を表示","statValue":"大きな数値","statLabel":"数値ラベル","imageOverlay":"画像オーバーレイ","overlayNone":"なし","overlayDark":"暗くする","overlayLight":"明るくする","overlayAccent":"アクセント色","overlayStrength":"オーバーレイ強度","imageFrame":"画像枠","frameNone":"なし","frameAccent":"アクセント色","frameMuted":"補助色","effectHint":"背景、枠線、影、発光、画像オーバーレイ、新しい演出ブロックはプレビューとRoll20マクロの両方に反映されます。","systemProgress":"アクセス進行","quoteSource":"— 通信記録","statExample":"47","statExampleLabel":"夜明けまで残り","rowSafeNotice":"各出力行の後に強制改行ブロックを挿入し、次の行が横へ連結されないようにしました。","percentWidthNotice":"Roll20で無視されることがある calc() を列幅から完全に除去しました。1列の行は display:block と単純な%幅、複数列は直接計算した%幅で出力します。","strictLayoutNotice":"空の改行リンクを完全に除去しました。各行は固定%幅と box-sizing:border-box!important で出力し、連続枠線は安定した上・下フレームバーに置き換えます。","macroPreviewNotice":"プレビューは独自レイアウトではなく、生成済みRoll20マクロのリンクとstyle属性をそのまま再解析して表示します。画像行と文字行は同じカード幅を使用します。","frameCompatibilityNotice":"外枠は別の上・下バーを使わず、各行の内側box-shadowで連結します。Roll20で不安定な破線は安全な実線として表示されます。","zeroPaddingNotice":"Roll20が左右paddingを幅の外側へ加算する場合があるため、実出力では全行の左右paddingを0に固定しました。文字余白はインデントと上下paddingだけで表現し、画像・文字・外枠の幅を完全に統一します。","spacingAuditNotice":"行間は各行の外側margin-bottomとして1回だけ適用します。予約行数、行高、上下paddingを再計算し、重複していた余白を除去しました。","unifiedPreviewNotice":"このページを含む全ジェネレーターのプレビューは、生成済みRoll20マクロを再解析して表示します。"},"ko":{"title":"Roll20 시네마틱 카드 조립기 v11","subtitle":"행과 열을 추가해 제목, 본문, 이미지, 목록, 메타 정보를 자유롭게 조립합니다.","language":"언어","browser":"브라우저 언어","settings":"카드 설정","theme":"테마","cardWidth":"카드 폭","accent":"강조색","background":"배경색","textColor":"본문색","mutedColor":"보조색","rowGap":"행 간격","presets":"빠른 구성","scene":"장면 전환","system":"시스템 알림","npc":"NPC 등장","evidence":"증거물","item":"아이템 획득","recap":"지난 이야기","ending":"엔딩","blank":"빈 구성","builder":"행·열 조립기","addRow":"행 추가","addColumn":"열 추가","noRows":"행이 없습니다.","row":"행","column":"열","moveUp":"위로","moveDown":"아래로","delete":"삭제","type":"유형","width":"열 폭","label":"라벨","titleCell":"제목","subtitleCell":"부제","bodyCell":"본문","listCell":"목록","imageCell":"이미지","metaCell":"메타","dividerCell":"구분선","spacerCell":"여백","text":"문구","prompt":"실행 시 입력","reservedLines":"예약 줄 수","align":"문자 정렬","left":"왼쪽","center":"가운데","right":"오른쪽","imageUrl":"이미지 직접 URL","promptImage":"실행 시 이미지 URL 입력","imageHeight":"이미지 높이","imageFit":"이미지 배치","cover":"영역 채우기(자르기)","contain":"전체 표시","stretch":"영역에 맞춰 늘리기","focusX":"가로 초점","focusY":"세로 초점","corner":"모서리 둥글기","listNumber":"번호 목록","dividerThickness":"선 두께","spacerHeight":"여백 높이","directUrl":"웹페이지가 아니라 이미지 파일이 직접 열리는 URL을 사용하세요.","cropHint":"‘영역 채우기’는 이미지를 카드 영역에 맞춰 자동으로 자릅니다. 초점 위치로 남길 부분을 조정할 수 있습니다.","preview":"미리보기","macro":"Roll20 매크로","copy":"복사","download":"TXT 저장","save":"저장","saveName":"구성 저장 이름","saveLayout":"구성 저장","saved":"저장된 구성","load":"불러오기","none":"저장 항목 없음","export":"JSON 내보내기","import":"JSON 가져오기","reset":"초기화","autoSaved":"자동 저장됨","copied":"매크로 복사됨","savedStatus":"구성 저장됨","loadedStatus":"구성 불러옴","deletedStatus":"삭제됨","resetStatus":"초기화됨","imported":"저장 데이터 가져옴","exported":"저장 데이터 내보냄","badJson":"JSON을 읽을 수 없습니다.","roll20Notice":"각 출력 줄의 열 폭은 자동으로 100%까지 재분배됩니다. 배경, 테두리, 그림자, 발광과 이미지 오버레이는 인라인 CSS로 생성합니다. Roll20 테마나 정리 규칙에 따라 그림자·그라데이션의 모양이 조금 달라질 수 있습니다. 실행 시 입력 문장에는 충분한 예약 줄 수를 지정하세요.","enterText":"문구를 입력하세요","character":"캐릭터명","imagePrompt":"이미지 URL","sceneLabel":"CHAPTER 04","sceneTitle":"비가 내리는 항구","sceneSubtitle":"2026년 7월 23일 · 오전 2:17","sceneMeta":"도쿄만 제7부두","systemLabel":"OBJECTIVE UPDATED","systemTitle":"폐쇄된 연구소에 진입하라","systemBody":"새로운 목표가 추가되었습니다.","systemList":"보안 키카드를 확보할 것\n경보 시스템을 정지할 것","npcLabel":"NEW CHARACTER","npcTitle":"THE ARCHIVIST","npcSubtitle":"기억을 수집하는 자","npcQuote":"“잊어버린 것일수록 가장 가치가 있지.”","evidenceLabel":"EVIDENCE 03","evidenceTitle":"깨진 회중시계","evidenceBody":"11시 47분에 멈춰 있다. 뒷면에는 검은 백합 문양이 새겨져 있다.","itemLabel":"ITEM ACQUIRED","itemTitle":"낡은 은색 열쇠","itemBody":"손잡이에 검은 백합 문양이 새겨져 있다.","recapLabel":"PREVIOUSLY...","recapTitle":"제7화까지의 이야기","recapList":"폐병원 지하에서 비밀 실험실을 발견했다\n카이의 기억이 조작된 것으로 드러났다\n새벽까지 남은 시간은 47분이다","endingLabel":"SESSION END","endingTitle":"새벽이 오기 전에","endingSubtitle":"제8화","endingBody":"To be continued...","back":"돌아가기","effects":"카드 효과","backgroundEffect":"배경 효과","solid":"단색","gradient":"그라데이션","vignette":"비네트","scanlines":"스캔라인","secondaryBackground":"보조 배경색","accentEdge":"강조선 위치","topEdge":"위","leftEdge":"왼쪽","bothEdges":"위+왼쪽","noEdge":"없음","borderStyle":"테두리","borderNone":"없음","borderSolid":"실선","borderDouble":"이중선","borderDashed":"점선","borderWidth":"테두리 두께","borderColor":"테두리 색상","cardRadius":"카드 모서리","shadowEffect":"그림자·발광","shadowNone":"없음","shadowSoft":"부드러운 그림자","shadowHard":"단단한 그림자","shadowGlow":"강조색 발광","titleEffect":"제목 효과","textNone":"없음","textShadow":"그림자","textGlow":"발광","textOutline":"외곽선","quoteCell":"인용문","calloutCell":"경고 상자","badgeCell":"배지","progressCell":"진행도","statCell":"수치 표시","source":"출처·화자","calloutStyle":"상자 유형","info":"정보","warning":"주의","danger":"위험","success":"성공","badgeStyle":"배지 형태","filled":"채우기","outline":"외곽선","soft":"옅은 배경","progressValue":"진행도","showPercent":"수치 표시","statValue":"큰 수치","statLabel":"수치 라벨","imageOverlay":"이미지 오버레이","overlayNone":"없음","overlayDark":"어둡게","overlayLight":"밝게","overlayAccent":"강조색","overlayStrength":"오버레이 강도","imageFrame":"이미지 테두리","frameNone":"없음","frameAccent":"강조색","frameMuted":"보조색","effectHint":"배경, 테두리, 그림자, 발광, 이미지 오버레이와 새 연출 블록은 미리보기와 Roll20 매크로에 함께 적용됩니다.","systemProgress":"접근 진행도","quoteSource":"— 통신 기록","statExample":"47","statExampleLabel":"새벽까지 남은 시간","rowSafeNotice":"각 출력 행 뒤에 강제 줄바꿈 블록을 삽입해 다음 행이 옆으로 이어지지 않도록 수정했습니다.","percentWidthNotice":"Roll20에서 무시되는 경우가 있는 calc()를 열 폭에서 완전히 제거했습니다. 한 열 행은 display:block과 단순 % 폭, 여러 열은 직접 계산한 % 폭으로 출력합니다.","strictLayoutNotice":"검은 선으로 표시되던 빈 줄바꿈 링크를 완전히 제거했습니다. 각 행은 고정 % 폭과 box-sizing:border-box!important로 출력하며, 연속 외곽선은 안정적인 위·아래 프레임 바로 대체합니다.","macroPreviewNotice":"미리보기는 별도 레이아웃을 그리지 않고 생성된 Roll20 매크로의 링크와 style 속성을 그대로 다시 파싱해 표시합니다. 이미지 행과 글자 행은 같은 카드 폭을 사용합니다.","frameCompatibilityNotice":"외곽선은 별도의 위·아래 막대를 사용하지 않고 각 행의 내부 box-shadow로 연결합니다. Roll20에서 불안정한 점선은 안전한 실선으로 표시됩니다.","zeroPaddingNotice":"Roll20이 좌우 padding을 폭 바깥에 더하는 경우가 있어 실제 출력의 모든 행에서 좌우 padding을 0으로 고정했습니다. 문자 여백은 들여쓰기와 상하 padding만 사용하며 이미지·문자·외곽선의 폭을 완전히 통일합니다.","spacingAuditNotice":"행 간격은 각 행의 바깥쪽 margin-bottom에 한 번만 적용합니다. 예약 줄 수, 행 높이와 상하 padding을 다시 계산해 중복되던 여백을 제거했습니다.","unifiedPreviewNotice":"이 페이지를 포함한 모든 생성기의 미리보기는 생성된 Roll20 매크로를 다시 파싱해 표시합니다."},"en":{"title":"Roll20 Cinematic Card Assembler v11","subtitle":"Add rows and columns to assemble titles, body text, images, lists, and metadata.","language":"Language","browser":"Browser language","settings":"Card settings","theme":"Theme","cardWidth":"Card width","accent":"Accent color","background":"Background","textColor":"Body color","mutedColor":"Muted color","rowGap":"Row gap","presets":"Quick layouts","scene":"Scene transition","system":"System notice","npc":"NPC reveal","evidence":"Evidence","item":"Item acquired","recap":"Previously","ending":"Ending","blank":"Blank layout","builder":"Row and column assembler","addRow":"Add row","addColumn":"Add column","noRows":"No rows.","row":"Row","column":"Column","moveUp":"Move up","moveDown":"Move down","delete":"Delete","type":"Type","width":"Column width","label":"Label","titleCell":"Title","subtitleCell":"Subtitle","bodyCell":"Body","listCell":"List","imageCell":"Image","metaCell":"Meta","dividerCell":"Divider","spacerCell":"Spacer","text":"Text","prompt":"Prompt when run","reservedLines":"Reserved lines","align":"Text alignment","left":"Left","center":"Center","right":"Right","imageUrl":"Direct image URL","promptImage":"Prompt for image URL when run","imageHeight":"Image height","imageFit":"Image fit","cover":"Fill area (crop)","contain":"Show entire image","stretch":"Stretch to area","focusX":"Horizontal focus","focusY":"Vertical focus","corner":"Corner radius","listNumber":"Numbered list","dividerThickness":"Line thickness","spacerHeight":"Spacer height","directUrl":"Use a URL that opens the image file directly, not a webpage.","cropHint":"Fill area automatically crops the image to the card region. Adjust the focus position to preserve the important part.","preview":"Preview","macro":"Roll20 macro","copy":"Copy","download":"Save TXT","save":"Save","saveName":"Layout save name","saveLayout":"Save layout","saved":"Saved layouts","load":"Load","none":"No saved items","export":"Export JSON","import":"Import JSON","reset":"Reset","autoSaved":"Auto-saved","copied":"Macro copied","savedStatus":"Layout saved","loadedStatus":"Layout loaded","deletedStatus":"Deleted","resetStatus":"Reset","imported":"Saved data imported","exported":"Saved data exported","badJson":"Could not read the JSON file.","roll20Notice":"Column widths on each output line are normalized to fill 100%. Backgrounds, borders, shadows, glow, and image overlays are generated as inline CSS. Roll20 themes or sanitization may slightly alter shadows and gradients. Reserve enough lines for prompted text.","enterText":"Enter text","character":"Character name","imagePrompt":"Image URL","sceneLabel":"CHAPTER 04","sceneTitle":"The Rainbound Harbor","sceneSubtitle":"July 23, 2026 · 2:17 AM","sceneMeta":"Tokyo Bay · Pier 7","systemLabel":"OBJECTIVE UPDATED","systemTitle":"Enter the sealed laboratory","systemBody":"A new objective has been added.","systemList":"Acquire a security keycard\nDisable the alarm system","npcLabel":"NEW CHARACTER","npcTitle":"THE ARCHIVIST","npcSubtitle":"Collector of forgotten memories","npcQuote":"“What you forgot is what I value most.”","evidenceLabel":"EVIDENCE 03","evidenceTitle":"Broken Pocket Watch","evidenceBody":"The hands stopped at 11:47. A black lily emblem is engraved on the back.","itemLabel":"ITEM ACQUIRED","itemTitle":"Old Silver Key","itemBody":"A black lily emblem is engraved into the handle.","recapLabel":"PREVIOUSLY...","recapTitle":"Previously in Episode 7","recapList":"A secret laboratory was found beneath the abandoned hospital\nKai's memories were discovered to have been altered\nForty-seven minutes remain until dawn","endingLabel":"SESSION END","endingTitle":"Before Dawn Arrives","endingSubtitle":"Episode 8","endingBody":"To be continued...","back":"Back","effects":"Card effects","backgroundEffect":"Background effect","solid":"Solid","gradient":"Gradient","vignette":"Vignette","scanlines":"Scanlines","secondaryBackground":"Secondary background","accentEdge":"Accent edge","topEdge":"Top","leftEdge":"Left","bothEdges":"Top + left","noEdge":"None","borderStyle":"Border","borderNone":"None","borderSolid":"Solid","borderDouble":"Double","borderDashed":"Dashed","borderWidth":"Border width","borderColor":"Border color","cardRadius":"Card radius","shadowEffect":"Shadow / glow","shadowNone":"None","shadowSoft":"Soft shadow","shadowHard":"Hard shadow","shadowGlow":"Accent glow","titleEffect":"Title effect","textNone":"None","textShadow":"Shadow","textGlow":"Glow","textOutline":"Outline","quoteCell":"Quote","calloutCell":"Callout","badgeCell":"Badge","progressCell":"Progress","statCell":"Statistic","source":"Source / speaker","calloutStyle":"Callout type","info":"Info","warning":"Warning","danger":"Danger","success":"Success","badgeStyle":"Badge style","filled":"Filled","outline":"Outline","soft":"Soft background","progressValue":"Progress","showPercent":"Show value","statValue":"Large value","statLabel":"Statistic label","imageOverlay":"Image overlay","overlayNone":"None","overlayDark":"Darken","overlayLight":"Lighten","overlayAccent":"Accent color","overlayStrength":"Overlay strength","imageFrame":"Image frame","frameNone":"None","frameAccent":"Accent color","frameMuted":"Muted color","effectHint":"Backgrounds, borders, shadows, glow, image overlays, and the new cinematic blocks are applied to both preview and Roll20 macro output.","systemProgress":"Access progress","quoteSource":"— Transmission log","statExample":"47","statExampleLabel":"Minutes until dawn","rowSafeNotice":"A forced row-break block is inserted after every output row so subsequent rows cannot continue horizontally.","percentWidthNotice":"calc() has been removed completely from column widths because Roll20 may ignore it. Single-cell rows use display:block with a plain percentage width, while multi-cell rows use directly calculated percentage widths.","strictLayoutNotice":"Empty row-break links, which could appear as black lines, have been removed. Rows use fixed percentage widths with box-sizing:border-box!important. Continuous borders are replaced by stable top and bottom frame bars.","macroPreviewNotice":"The preview no longer uses a separate layout renderer. It reparses the generated Roll20 macro links and style attributes directly. Image and text rows use the same card width.","frameCompatibilityNotice":"The outer frame is joined with inset box shadows on each row instead of separate top and bottom bars. Dashed borders fall back to a stable solid line in Roll20 output.","zeroPaddingNotice":"Roll20 may add horizontal padding outside the declared width, so all output rows now use zero left and right padding. Text spacing uses indentation and vertical padding only, keeping image, text, and frame widths identical.","spacingAuditNotice":"Row gap is applied once as margin-bottom on each logical row. Reserved lines, row height, and vertical padding were recalculated to remove duplicated spacing.","unifiedPreviewNotice":"Every generator preview, including this page, now reparses and displays the generated Roll20 macro."}};
 const LANG_KEY='r20MacroLanguageV1',DRAFT_KEY='r20CinematicAssemblerDraftV2',LAYOUT_KEY='r20CinematicAssemblerLayoutsV2';
 const $=id=>document.getElementById(id);
 function browserLang(){for(const v of(navigator.languages||[navigator.language||''])){const c=String(v).toLowerCase().split('-')[0];if(['ja','ko','en'].includes(c))return c}return'ja'}
@@ -190,7 +251,18 @@ function uid(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function roll(v){return String(v??'').replace(/&/g,'&amp;').replace(/\[/g,'&#91;').replace(/\]/g,'&#93;').replace(/\(/g,'&#40;').replace(/\)/g,'&#41;').replace(/"/g,'&quot;').replace(/\|/g,'&#124;').replace(/\{/g,'&#123;').replace(/\}/g,'&#125;').replace(/\r?\n/g,' ')}
 function cssUrl(v){return String(v??'').trim().replace(/"/g,'%22').replace(/\(/g,'%28').replace(/\)/g,'%29')}
-function link(label,style){return`[${label}](#" style="${style}")`}
+function roll20Color(value){
+ const v=String(value||'').trim(),m=v.match(/^#([0-9a-f]{6})([0-9a-f]{2})$/i);
+ if(!m)return v||'transparent';
+ const alpha=parseInt(m[2],16)/255;
+ if(alpha<=0)return'transparent';
+ const rgb=m[1],r=parseInt(rgb.slice(0,2),16),g=parseInt(rgb.slice(2,4),16),b=parseInt(rgb.slice(4,6),16);
+ return`rgba(${r},${g},${b},${alpha.toFixed(3)})`
+}
+function roll20Style(style){
+ return String(style||'').replace(/\r?\n/g,' ').replace(/\(/g,'&#40;').replace(/\)/g,'&#41;')
+}
+function link(label,style){return`[${label}](#" style="${roll20Style(style)}")`}
 function safeColor(v,f){return/^#[0-9a-f]{6}$/i.test(String(v||''))?v:f}
 function setStatus(k,bad=false){$('status').textContent=tr(k);$('status').style.color=bad?'#ffb6b8':'var(--muted)';clearTimeout(setStatus.t);setStatus.t=setTimeout(()=>$('status').textContent=tr('autoSaved'),1700)}
 const THEMES={
@@ -304,16 +376,25 @@ function renderBuilder(){
  wrap.querySelector('[data-del]').onclick=()=>{rows.splice(ri,1);renderBuilder();update()};box.appendChild(wrap)})
 }
 function estimateHeight(c){
- if(c.type==='image')return+c.height||130;if(c.type==='spacer')return+c.spacer||20;if(c.type==='divider')return 18;
- if(c.type==='label')return Math.max(28,(+c.lines||1)*17+12);if(c.type==='title')return Math.max(40,(+c.lines||2)*29+14);
- if(c.type==='subtitle')return Math.max(32,(+c.lines||1)*20+12);if(c.type==='meta')return Math.max(28,(+c.lines||1)*16+12);
- if(c.type==='list')return Math.max(38,(+c.lines||3)*21+12);if(c.type==='quote')return Math.max(46,(+c.lines||2)*21+20);
- if(c.type==='callout')return Math.max(46,(+c.lines||2)*21+20);if(c.type==='badge')return 42;
- if(c.type==='progress')return 52;if(c.type==='stat')return 72;return Math.max(38,(+c.lines||2)*21+14)
+ const lines=Math.max(1,Number(c.lines)||1);
+ if(c.type==='image')return Math.max(20,Number(c.height)||130);
+ if(c.type==='spacer')return Math.max(0,Number(c.spacer)||20);
+ if(c.type==='divider')return 14;
+ if(c.type==='label')return Math.max(22,lines*16+6);
+ if(c.type==='title')return Math.max(34,lines*28+8);
+ if(c.type==='subtitle')return Math.max(24,lines*18+6);
+ if(c.type==='meta')return Math.max(22,lines*15+6);
+ if(c.type==='list')return Math.max(30,lines*20+8);
+ if(c.type==='quote'||c.type==='callout')return Math.max(34,lines*20+10);
+ if(c.type==='badge')return 32;
+ if(c.type==='progress')return 38;
+ if(c.type==='stat')return 54;
+ return Math.max(28,lines*20+8)
+}function fitSize(c){return c.fit==='stretch'?'100% 100%':c.fit}
+function withAlpha(hex,percent){
+ const v=safeColor(hex,'#000000').slice(1),r=parseInt(v.slice(0,2),16),g=parseInt(v.slice(2,4),16),b=parseInt(v.slice(4,6),16);
+ return`rgba(${r},${g},${b},${Math.max(0,Math.min(1,(Number(percent)||0)/100)).toFixed(3)})`
 }
-function fitSize(c){return c.fit==='stretch'?'100% 100%':c.fit}
-function alphaHex(percent){return Math.max(0,Math.min(255,Math.round((Number(percent)||0)*2.55))).toString(16).padStart(2,'0')}
-function withAlpha(hex,percent){return safeColor(hex,'#000000')+alphaHex(percent)}
 function overlayColor(c){if(c.overlay==='dark')return withAlpha('#000000',c.overlayStrength);if(c.overlay==='light')return withAlpha('#ffffff',c.overlayStrength);if(c.overlay==='accent')return withAlpha($('accent').value,c.overlayStrength);return''}
 function imageFrame(c){if(c.frame==='accent')return`2px solid ${$('accent').value}`;if(c.frame==='muted')return`2px solid ${$('mutedColor').value}`;return'none'}
 function calloutColor(type){return{info:'#41c7e8',warning:'#f2b84b',danger:'#ef4b54',success:'#4ecb71'}[type]||$('accent').value}
@@ -328,10 +409,10 @@ function previewBackground(){
 }
 function macroBackground(){
  const bg=$('background').value,bg2=$('background2').value,e=$('backgroundEffect').value;
- let v='';if(e==='gradient')v=`linear-gradient(135deg,${bg},${bg2})`;
- if(e==='vignette')v=`radial-gradient(circle at center,${bg2} 0%,${bg} 72%)`;
- if(e==='scanlines')v=`repeating-linear-gradient(to bottom,#ffffff0b 0,#ffffff0b 1px,transparent 1px,transparent 4px),linear-gradient(135deg,${bg},${bg2})`;
- return v.replace(/\(/g,'&#40;').replace(/\)/g,'&#41;')
+ if(e==='gradient')return`linear-gradient(135deg,${bg},${bg2})`;
+ if(e==='vignette')return`radial-gradient(circle at center,${bg2} 0%,${bg} 72%)`;
+ if(e==='scanlines')return`repeating-linear-gradient(to bottom,rgba(255,255,255,0.045) 0,rgba(255,255,255,0.045) 1px,transparent 1px,transparent 4px),linear-gradient(135deg,${bg},${bg2})`;
+ return''
 }
 function previewCell(c,normalizedWidth){
  const el=document.createElement('div');el.className='preview-cell';const width=Math.max(1,Number(normalizedWidth)||100);el.style.flexBasis=width+'%';el.style.maxWidth=width+'%';el.style.color=$('textColor').value;
@@ -371,17 +452,51 @@ function previewCell(c,normalizedWidth){
  el.classList.add('preview-text','preview-'+c.type);el.style.textAlign=c.align;el.style.minHeight=estimateHeight(c)+'px';el.textContent=c.text||'';
  if(c.type==='label')el.style.color=$('accent').value;if(['subtitle','meta'].includes(c.type))el.style.color=$('mutedColor').value;if(c.type==='title')el.style.textShadow=textEffectCss();return el
 }
-function renderPreview(){
- const card=$('previewCard');card.innerHTML='';const bg=$('background').value,a=$('accent').value,edge=$('accentEdge').value,border=$('borderStyle').value;
- card.style.backgroundColor=bg;card.style.backgroundImage=previewBackground();card.style.boxShadow=cardShadowCss();card.style.borderRadius=$('cardRadius').value+'px';
- card.style.border=border==='none'?'none':`${$('borderWidth').value}px ${border} ${$('borderColor').value}`;
- if(edge==='left'||edge==='both')card.style.borderLeft=`5px solid ${a}`;
- card.style.overflow='hidden';
- if(edge==='top'||edge==='both'){const bar=document.createElement('div');bar.className='preview-accent';bar.style.background=a;card.appendChild(bar)}
- rows.forEach(r=>packRow(r).forEach(line=>{const x=document.createElement('div');x.className='preview-line';x.style.gap=$('rowGap').value+'px';normalizeLine(line).forEach(item=>x.appendChild(previewCell(item.cell,item.width)));card.appendChild(x)}))
+function decodeMacroHtml(value){
+ const area=document.createElement('textarea');
+ area.innerHTML=String(value||'');
+ return area.value
 }
-function data(){return{
- version:5,theme:$('theme').value,cardWidth:$('cardWidth').value,rowGap:$('rowGap').value,
+function decodeMacroPreviewHtml(value){
+ const area=document.createElement('textarea');
+ area.innerHTML=String(value||'');
+ return area.value
+}
+function resolveMacroPreviewQueries(value){
+ return String(value||'').replace(/\?\{([^{}]*)\}/g,(_,body)=>{
+  const parts=String(body).split('|');
+  if(parts.length<2)return parts[0]||'';
+  const first=parts[1]||'';
+  const comma=first.indexOf(',');
+  return comma>=0?first.slice(comma+1):first
+ })
+}
+function renderMacroStringPreview(host,macro,emptyText=''){
+ host.className='macro-preview-host';
+ host.innerHTML='';
+ const resolved=resolveMacroPreviewQueries(macro);
+ const pattern=/\[([\s\S]*?)\]\(#" style="([^"]*)"\)/g;
+ let match,count=0;
+ while((match=pattern.exec(resolved))){
+  const anchor=document.createElement('a');
+  anchor.href='#';
+  anchor.tabIndex=-1;
+  anchor.setAttribute('aria-hidden','true');
+  anchor.textContent=resolveMacroPreviewQueries(decodeMacroPreviewHtml(match[1]));
+  anchor.style.cssText=resolveMacroPreviewQueries(decodeMacroPreviewHtml(match[2]));
+  anchor.style.pointerEvents='none';
+  host.appendChild(anchor);
+  count++
+ }
+ if(!count&&emptyText){
+  const empty=document.createElement('div');
+  empty.className='empty';
+  empty.textContent=emptyText;
+  host.appendChild(empty)
+ }
+}
+function renderPreview(){renderMacroStringPreview($('previewCard'),$('macroOutput').value,tr('noRows'))}function data(){return{
+ version:11,theme:$('theme').value,cardWidth:$('cardWidth').value,rowGap:$('rowGap').value,
  accent:$('accent').value,bg:$('background').value,bg2:$('background2').value,text:$('textColor').value,muted:$('mutedColor').value,
  backgroundEffect:$('backgroundEffect').value,accentEdge:$('accentEdge').value,borderStyle:$('borderStyle').value,
  borderWidth:$('borderWidth').value,borderColor:$('borderColor').value,cardRadius:$('cardRadius').value,
@@ -399,41 +514,259 @@ function applyData(d){
 }
 function promptLabel(c,ri,ci){const base=tr(c.type==='image'?'imagePrompt':'enterText');if(lang==='ja')return`${ri+1}行 ${ci+1}列 ${base}`;if(lang==='en')return`Row ${ri+1}, Column ${ci+1}: ${base}`;return`${ri+1}행 ${ci+1}열 ${base}`}
 function contentText(c,ri,ci){return c.query?`?{${promptLabel(c,ri,ci)}|${roll(c.text||tr('enterText'))}}`:roll(c.text)}
-function outputCell(c,ri,ci,rowHeight,effWidth,first,gapShare,leftMargin){
- const base=['display:inline-block','position:relative','z-index:2','box-sizing:border-box','vertical-align:top',`width:calc&#40;${effWidth}% - ${gapShare}px&#41;`,`height:${rowHeight}px`,first?`margin:0 0 0 ${leftMargin}%`:`margin:0 0 0 ${$('rowGap').value}px`,'padding:0','background:transparent','text-decoration:none','cursor:default','overflow:hidden'];
- if(c.type==='image'){
-  const url=c.imageQuery?`?{${promptLabel(c,ri,ci)}|https://example.com/image.png}`:cssUrl(c.url),overlay=overlayColor(c);
-  let image='';if(url){image=overlay?`linear-gradient&#40;${overlay},${overlay}&#41;,url&#40;${url}&#41;`:`url&#40;${url}&#41;`}
-  return link('　',[...base,image?`background-image:${image}`:'',`background-color:${$('mutedColor').value}`,`background-size:${fitSize(c)}`,`background-position:${c.focusX}% ${c.focusY}%`,'background-repeat:no-repeat',`border:${imageFrame(c)}`,`border-radius:${c.radius}px`,'color:transparent','font-size:0','line-height:0'].filter(Boolean).join(';')+';')
+function outerRadiusStyles(first,last,firstRow,lastRow){
+ const styles=[],r=Number($('cardRadius').value)||0;
+ if(r<=0)return styles;
+ if(firstRow&&first)styles.push(`border-top-left-radius:${r}px`);
+ if(firstRow&&last)styles.push(`border-top-right-radius:${r}px`);
+ if(lastRow&&first)styles.push(`border-bottom-left-radius:${r}px`);
+ if(lastRow&&last)styles.push(`border-bottom-right-radius:${r}px`);
+ return styles
+}
+function stableCellWidth(cardWidth,normalizedWidth,count){
+ if(count<=1)return cardWidth;
+ const raw=cardWidth*normalizedWidth/100;
+ return Math.max(1,Math.floor(raw*1000)/1000)
+}
+function frameShadowParts(first,last,firstRow,lastRow){
+ const parts=[],border=$('borderStyle').value,bw=Math.max(1,Number($('borderWidth').value)||1);
+ const borderColor=$('borderColor').value,accent=$('accent').value,edge=$('accentEdge').value;
+ const hasBorder=border!=='none';
+ const leftColor=(edge==='left'||edge==='both')?accent:borderColor;
+ const leftWidth=(edge==='left'||edge==='both')?5:bw;
+ const topColor=(edge==='top'||edge==='both')?accent:borderColor;
+ const topWidth=(edge==='top'||edge==='both')?5:bw;
+
+ if(first&&(hasBorder||edge==='left'||edge==='both')){
+  parts.push(`inset ${leftWidth}px 0 0 ${leftColor}`)
  }
- if(c.type==='divider')return link('　',[...base,`background:linear-gradient&#40;to bottom,transparent 0,transparent calc&#40;50% - ${c.thickness/2}px&#41;,${$('accent').value} calc&#40;50% - ${c.thickness/2}px&#41;,${$('accent').value} calc&#40;50% + ${c.thickness/2}px&#41;,transparent calc&#40;50% + ${c.thickness/2}px&#41;,transparent 100%&#41;`,'color:transparent','font-size:0','line-height:0'].join(';')+';')
- if(c.type==='spacer')return link('　',[...base,'color:transparent','font-size:0','line-height:0'].join(';')+';')
- if(c.type==='quote'){const q=contentText(c,ri,ci),source=c.source?`　${roll(c.source)}`:'';return link(`“${q}”${source}`,[...base,'padding:10px 14px',`color:${$('textColor').value}`,'font-family:Arial,sans-serif','font-size:13px','font-style:italic','line-height:20px',`text-align:${c.align}`,`border-left:3px solid ${$('accent').value}`,'white-space:normal','overflow-wrap:anywhere'].join(';')+';')}
- if(c.type==='callout'){return link(contentText(c,ri,ci)||'　',[...base,'padding:10px 12px',`background:#00000033`,`border-left:4px solid ${calloutColor(c.callout)}`,`color:${$('textColor').value}`,'font-family:Arial,sans-serif','font-size:13px','line-height:20px','text-align:left','white-space:normal','overflow-wrap:anywhere'].join(';')+';')}
- if(c.type==='badge'){const a=$('accent').value;let styles=[];if(c.badge==='filled')styles=[`background:${a}`,`color:${$('background').value}`];if(c.badge==='outline')styles=['background:transparent',`border:1px solid ${a}`,`color:${a}`];if(c.badge==='soft')styles=[`background:${withAlpha(a,20)}`,`color:${a}`];return link(roll(c.text)||'　',[...base,'height:38px','padding:8px 11px',...styles,'border-radius:999px','font-family:Arial,sans-serif','font-size:11px','font-weight:bold','line-height:20px',`text-align:${c.align}`,'letter-spacing:.5px'].join(';')+';')}
- if(c.type==='progress'){const v=Math.max(0,Math.min(100,+c.value||0)),label=`${roll(c.text)}${c.showValue?`　${v}%`:''}`;return link(label,[...base,'height:46px','padding:13px 12px',`background:linear-gradient&#40;to right,${$('accent').value} 0%,${$('accent').value} ${v}%,#00000033 ${v}%,#00000033 100%&#41;`,`color:${$('textColor').value}`,'border-radius:6px','font-family:Arial,sans-serif','font-size:11px','font-weight:bold','line-height:20px','text-align:center','letter-spacing:.4px'].join(';')+';')}
- if(c.type==='stat'){const label=[roll(c.statValue),roll(c.statLabel)].filter(Boolean).join('　');return link(label||'　',[...base,'padding:13px 12px',`color:${$('textColor').value}`,'font-family:Arial,sans-serif','font-size:24px','font-weight:bold','line-height:30px',`text-align:${c.align}`,`text-shadow:${textEffectCss()}`,'white-space:normal','overflow-wrap:anywhere'].join(';')+';')}
- const value=c.type==='list'?c.text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).map((x,i)=>`${c.number?(i+1)+'.':'•'} ${x}`).join('　'):contentText(c,ri,ci);
+ if(last&&hasBorder){
+  parts.push(`inset -${bw}px 0 0 ${borderColor}`)
+ }
+ if(firstRow&&(hasBorder||edge==='top'||edge==='both')){
+  parts.push(`inset 0 ${topWidth}px 0 ${topColor}`)
+ }
+ if(lastRow&&hasBorder){
+  parts.push(`inset 0 -${bw}px 0 ${borderColor}`)
+ }
+ return parts
+}
+function imageFrameShadowPart(c){
+ if(c.frame==='accent')return`inset 0 0 0 2px ${$('accent').value}`;
+ if(c.frame==='muted')return`inset 0 0 0 2px ${$('mutedColor').value}`;
+ return''
+}
+function shadowStyle(parts){
+ const list=parts.filter(Boolean);
+ return list.length?`box-shadow:${list.join(',')}`:''
+}
+function textIndentStyle(align,amount=12){
+ if(align==='left')return`text-indent:${amount}px`;
+ if(align==='right')return`text-indent:-${amount}px`;
+ return'text-indent:0'
+}
+function verticalPaddingStyle(top=8,bottom=8){
+ return`padding:${top}px 0 ${bottom}px 0!important`
+}
+function outputCell(c,ri,ci,rowHeight,absoluteWidth,first,last,leftMargin,firstRow,lastRow,singleCell,rowGap){
+ const bgImage=macroBackground(),frame=frameShadowParts(first,last,firstRow,lastRow);
+ const totalHeight=rowHeight;
+ const bottomGap=lastRow?0:rowGap;
+ const layout=singleCell
+  ?[
+    'display:block!important',
+    `width:${absoluteWidth}%!important`,
+    `min-width:${absoluteWidth}%!important`,
+    `max-width:${absoluteWidth}%!important`,
+    `margin:0 0 ${bottomGap}px ${leftMargin}%!important`
+   ]
+  :[
+    'display:inline-block!important',
+    `width:${absoluteWidth}%!important`,
+    `min-width:${absoluteWidth}%!important`,
+    `max-width:${absoluteWidth}%!important`,
+    first?`margin:0 0 ${bottomGap}px ${leftMargin}%!important`:`margin:0 0 ${bottomGap}px 0!important`
+   ];
+
+ const base=[
+  ...layout,
+  'box-sizing:border-box!important',
+  'float:none!important',
+  'vertical-align:top!important',
+  'border:0!important',
+  'outline:0!important',
+  `height:${totalHeight}px!important`,
+  'padding:0',
+  `background-color:${$('background').value}`,
+  bgImage?`background-image:${bgImage}`:'',
+  'background-repeat:no-repeat',
+  'background-size:cover',
+  'text-decoration:none!important',
+  'cursor:default',
+  'overflow:hidden!important',
+  ...outerRadiusStyles(first,last,firstRow,lastRow)
+ ].filter(Boolean);
+
+ if(c.type==='image'){
+  const url=c.imageQuery
+   ?`?{${promptLabel(c,ri,ci)}|https://example.com/image.png}`
+   :cssUrl(c.url);
+  const overlay=overlayColor(c);
+  const image=url
+   ?(overlay
+      ?`linear-gradient(${roll20Color(overlay)},${roll20Color(overlay)}),url(${url})`
+      :`url(${url})`)
+   :'';
+  return link('　',[
+   ...base,
+   image?`background-image:${image}`:'',
+   `background-color:${$('mutedColor').value}`,
+   `background-size:${fitSize(c)}`,
+   `background-position:${c.focusX}% ${c.focusY}%`,
+   'background-repeat:no-repeat',
+   shadowStyle([...frame,imageFrameShadowPart(c)]),
+   'color:transparent!important',
+   'font-size:0!important',
+   'line-height:0!important'
+  ].filter(Boolean).join(';')+';')
+ }
+
+ if(c.type==='divider'){
+  return link('　',[
+   ...base,
+   `background-image:linear-gradient(to bottom,transparent 0,transparent 49%,${$('accent').value} 49%,${$('accent').value} 51%,transparent 51%,transparent 100%)`,
+   shadowStyle(frame),
+   'color:transparent!important',
+   'font-size:0!important',
+   'line-height:0!important'
+  ].filter(Boolean).join(';')+';')
+ }
+
+ if(c.type==='spacer'){
+  return link('　',[
+   ...base,shadowStyle(frame),
+   'color:transparent!important',
+   'font-size:0!important',
+   'line-height:0!important'
+  ].filter(Boolean).join(';')+';')
+ }
+
+ if(c.type==='quote'){
+  const q=contentText(c,ri,ci),source=c.source?`　${roll(c.source)}`:'';
+  return link(`“${q}”${source}`,[
+   ...base,verticalPaddingStyle(5,5),
+   `color:${$('textColor').value}`,
+   'font-family:Arial,sans-serif','font-size:13px',
+   'font-style:italic','line-height:20px',
+   `text-align:${c.align}`,textIndentStyle(c.align,14),
+   shadowStyle([...frame,`inset 3px 0 0 ${$('accent').value}`]),
+   'white-space:normal','overflow-wrap:anywhere'
+  ].filter(Boolean).join(';')+';')
+ }
+
+ if(c.type==='callout'){
+  return link(contentText(c,ri,ci)||'　',[
+   ...base,verticalPaddingStyle(5,5),
+   'background-color:rgba(0,0,0,0.20)',
+   shadowStyle([...frame,`inset 4px 0 0 ${calloutColor(c.callout)}`]),
+   `color:${$('textColor').value}`,
+   'font-family:Arial,sans-serif','font-size:13px',
+   'line-height:20px','text-align:left',textIndentStyle('left',12),
+   'white-space:normal','overflow-wrap:anywhere'
+  ].filter(Boolean).join(';')+';')
+ }
+
+ if(c.type==='badge'){
+  const a=$('accent').value;let styles=[],extraShadow='';
+  if(c.badge==='filled')styles=[`background-color:${a}`,`color:${$('background').value}`];
+  if(c.badge==='outline'){
+   styles=['background-color:transparent',`color:${a}`];
+   extraShadow=`inset 0 0 0 1px ${a}`
+  }
+  if(c.badge==='soft')styles=[`background-color:${withAlpha(a,20)}`,`color:${a}`];
+  return link(roll(c.text)||'　',[
+   ...base,verticalPaddingStyle(4,4),
+   ...styles,shadowStyle([...frame,extraShadow]),
+   'border-radius:999px',
+   'font-family:Arial,sans-serif','font-size:11px',
+   'font-weight:bold','line-height:20px',
+   `text-align:${c.align}`,textIndentStyle(c.align,8),'letter-spacing:.5px'
+  ].filter(Boolean).join(';')+';')
+ }
+
+ if(c.type==='progress'){
+  const v=Math.max(0,Math.min(100,+c.value||0));
+  const label=`${roll(c.text)}${c.showValue?`　${v}%`:''}`;
+  return link(label,[
+   ...base,verticalPaddingStyle(6,6),
+   `background-image:linear-gradient(to right,${$('accent').value} 0%,${$('accent').value} ${v}%,rgba(0,0,0,0.20) ${v}%,rgba(0,0,0,0.20) 100%)`,
+   shadowStyle(frame),
+   `color:${$('textColor').value}`,'border-radius:6px',
+   'font-family:Arial,sans-serif','font-size:11px',
+   'font-weight:bold','line-height:20px',
+   'text-align:center',textIndentStyle('center',0),'letter-spacing:.4px'
+  ].filter(Boolean).join(';')+';')
+ }
+
+ if(c.type==='stat'){
+  const label=[roll(c.statValue),roll(c.statLabel)].filter(Boolean).join('　');
+  return link(label||'　',[
+   ...base,verticalPaddingStyle(6,6),
+   shadowStyle(frame),
+   `color:${$('textColor').value}`,
+   'font-family:Arial,sans-serif','font-size:24px',
+   'font-weight:bold','line-height:30px',
+   `text-align:${c.align}`,textIndentStyle(c.align,12),`text-shadow:${textEffectCss()}`,
+   'white-space:normal','overflow-wrap:anywhere'
+  ].filter(Boolean).join(';')+';')
+ }
+
+ const value=c.type==='list'
+  ?c.text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean)
+    .map((x,i)=>`${c.number?(i+1)+'.':'•'} ${x}`).join('　')
+  :contentText(c,ri,ci);
+
  let size=13,weight='normal',color=$('textColor').value,line=20,pad='8px 12px',extra=[];
- if(c.type==='label'){size=10;weight='bold';color=$('accent').value;line=16;pad='8px 12px'}
- if(c.type==='title'){size=22;weight='bold';line=28;pad='8px 12px';extra.push(`text-shadow:${textEffectCss()}`)}
+ if(c.type==='label'){size=10;weight='bold';color=$('accent').value;line=16}
+ if(c.type==='title'){size=22;weight='bold';line=28;extra.push(`text-shadow:${textEffectCss()}`)}
  if(c.type==='subtitle'){size=12;color=$('mutedColor').value;line=18}
  if(c.type==='meta'){size=10;color=$('mutedColor').value;line=16}
- return link(value||'　',[...base,`padding:${pad}`,`color:${color}`,'font-family:Arial,sans-serif',`font-size:${size}px`,`font-weight:${weight}`,`line-height:${line}px`,`text-align:${c.align}`,...extra,'white-space:normal','overflow-wrap:anywhere','word-break:break-word'].join(';')+';')
+
+ return link(value||'　',[
+  ...base,
+  verticalPaddingStyle(4,4),
+  shadowStyle(frame),
+  `color:${color}`,
+  'font-family:Arial,sans-serif',
+  `font-size:${size}px`,`font-weight:${weight}`,
+  `line-height:${line}px`,`text-align:${c.align}`,textIndentStyle(c.align,12),
+  ...extra,'white-space:normal',
+  'overflow-wrap:anywhere','word-break:break-word'
+ ].filter(Boolean).join(';')+';')
 }
 function generateMacro(){
- const cardWidth=+$('cardWidth').value||90,left=(100-cardWidth)/2,bg=$('background').value,gap=+$('rowGap').value||0,edge=$('accentEdge').value;
- const packed=[];rows.forEach((r,ri)=>packRow(r).forEach(line=>packed.push({line,ri,height:Math.max(...line.map(estimateHeight),12)})));
- const topHeight=(edge==='top'||edge==='both')?5:0,totalHeight=topHeight+packed.reduce((s,x)=>s+x.height,0)+10,border=$('borderStyle').value;
- let outer=['display:block','position:relative','z-index:0','box-sizing:border-box',`width:${cardWidth}%`,`height:${totalHeight}px`,`margin:0 0 -${totalHeight}px ${left}%`,'padding:0',`background-color:${bg}`,`border-radius:${$('cardRadius').value}px`,`box-shadow:${cardShadowCss()}`,'color:transparent','font-size:0','line-height:0','text-decoration:none','cursor:default','overflow:hidden'];
- const bgImage=macroBackground();if(bgImage)outer.push(`background-image:${bgImage}`);if(border!=='none')outer.push(`border:${$('borderWidth').value}px ${border} ${$('borderColor').value}`);if(edge==='left'||edge==='both')outer.push(`border-left:5px solid ${$('accent').value}`);
- let out=link('　',outer.join(';')+';');
- if(topHeight)out+=link('　',['display:block','position:relative','z-index:2','box-sizing:border-box',`width:${cardWidth}%`,`height:${topHeight}px`,`margin:0 0 0 ${left}%`,'padding:0',`background:${$('accent').value}`,'color:transparent','font-size:0','line-height:0','text-decoration:none','cursor:default'].join(';')+';');
- packed.forEach(item=>{const normalized=normalizeLine(item.line),totalGap=gap*Math.max(0,item.line.length-1),gapShare=item.line.length?totalGap/item.line.length:0;normalized.forEach((entry,ci)=>{const eff=cardWidth*entry.width/100;out+=outputCell(entry.cell,item.ri,ci,item.height,eff,ci===0,gapShare,left)})});
- out+=link('　',['display:block','position:relative','z-index:2','box-sizing:border-box',`width:${cardWidth}%`,'height:10px',`margin:0 0 0 ${left}%`,'padding:0','background:transparent','color:transparent','font-size:0','line-height:0','text-decoration:none','cursor:default'].join(';')+';');
+ const cardWidth=+$('cardWidth').value||90,left=(100-cardWidth)/2,rowGap=+$('rowGap').value||0;
+ const packed=[];
+ rows.forEach((r,ri)=>packRow(r).forEach(line=>{
+  packed.push({line,ri,height:Math.max(...line.map(estimateHeight),12)})
+ }));
+
+ let out='';
+ packed.forEach((item,rowIndex)=>{
+  const normalized=normalizeLine(item.line),count=normalized.length,singleCell=count===1;
+  normalized.forEach((entry,ci)=>{
+   const width=stableCellWidth(cardWidth,entry.width,count);
+   out+=outputCell(
+    entry.cell,item.ri,ci,item.height,width,
+    ci===0,ci===count-1,left,
+    rowIndex===0,rowIndex===packed.length-1,
+    singleCell,rowGap
+   )
+  })
+ });
  $('macroOutput').value=out.replace(/\n/g,'')
 }
-function update(){renderPreview();generateMacro();saveDraft()}
+function update(){generateMacro();renderPreview();saveDraft()}
 function applyTheme(name){const t=THEMES[name]||THEMES.cinema;$('accent').value=t.a;$('background').value=t.b;$('background2').value=t.b2;$('borderColor').value=t.a;$('textColor').value=t.t;$('mutedColor').value=t.m}
 function populateLanguage(){document.documentElement.lang=lang;document.title=tr('title');$('pageTitle').textContent=tr('title');$('pageSubtitle').textContent=tr('subtitle');$('languageLabel').textContent=tr('language');$('languageSelect').options[0].textContent=tr('browser');document.querySelectorAll('[data-i]').forEach(x=>x.textContent=tr(x.dataset.i));$('saveName').placeholder=tr('saveName');$('presetGrid').innerHTML=['scene','system','npc','evidence','item','recap','ending','blank'].map(x=>`<button class="btn" data-preset="${x}">${esc(tr(x))}</button>`).join('');document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{rows=preset(b.dataset.preset);renderBuilder();update()});renderBuilder();renderSaved()}
 function saveDraft(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify(data()))}catch(e){}}
@@ -442,7 +775,7 @@ function readLayouts(){try{const v=JSON.parse(localStorage.getItem(LAYOUT_KEY)||
 function writeLayouts(v){try{localStorage.setItem(LAYOUT_KEY,JSON.stringify(v))}catch(e){}}
 function renderSaved(){const box=$('savedList'),list=readLayouts();box.innerHTML='';if(!list.length){box.innerHTML=`<div class="empty">${esc(tr('none'))}</div>`;return}list.forEach(item=>{const r=document.createElement('div');r.className='saved-item';r.innerHTML=`<span class="saved-name">${esc(item.name||tr('save'))}</span><span class="saved-actions"><button class="btn small" data-load>${esc(tr('load'))}</button><button class="btn small danger" data-del>${esc(tr('delete'))}</button></span>`;r.querySelector('[data-load]').onclick=()=>{applyData(item.data);setStatus('loadedStatus')};r.querySelector('[data-del]').onclick=()=>{writeLayouts(readLayouts().filter(x=>x.id!==item.id));renderSaved();setStatus('deletedStatus')};box.appendChild(r)})}
 function saveLayout(){const name=$('saveName').value.trim()||tr('save');const list=readLayouts();list.unshift({id:uid(),name,data:data()});writeLayouts(list.slice(0,100));$('saveName').value='';renderSaved();setStatus('savedStatus')}
-function exportData(){const b=new Blob([JSON.stringify({version:5,layouts:readLayouts()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='roll20-cinematic-assembler-v5-data.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);setStatus('exported')}
+function exportData(){const b=new Blob([JSON.stringify({version:11,layouts:readLayouts()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='roll20-cinematic-assembler-v11-data.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);setStatus('exported')}
 function importData(file){const r=new FileReader();r.onload=()=>{try{const v=JSON.parse(r.result);if(Array.isArray(v.layouts))writeLayouts(v.layouts);renderSaved();setStatus('imported')}catch(e){setStatus('badJson',true)}};r.readAsText(file)}
 async function copyMacro(){try{await navigator.clipboard.writeText($('macroOutput').value)}catch(e){$('macroOutput').select();document.execCommand('copy')}setStatus('copied')}
 function downloadMacro(){const b=new Blob([$('macroOutput').value],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='roll20-cinematic-assembler-macro.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}

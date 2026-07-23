@@ -46,6 +46,21 @@ h2{font-size:21px;margin:0 0 9px}.card p{flex:1}
 .discord .button{background:var(--discord)}.line .button{background:#087d36}.cinematic .button{background:#705d2e}.effects .button{background:#315b9f}
 footer{margin-top:18px;color:var(--muted);font-size:12px;line-height:1.6}
 @media(max-width:680px){.grid{grid-template-columns:1fr}.top{display:block}.language-control{margin-top:12px}h1{font-size:23px}}
+
+:root{
+ --ui-input:#ffffff;--ui-button:#ffffff;--ui-button-hover:#eef1f4;
+ --ui-shadow:0 10px 28px rgba(30,41,59,.10)
+}
+html[data-theme="dark"]{
+ --ui-input:#24262b;--ui-button:#303238;--ui-button-hover:#41444b;
+ --ui-shadow:0 12px 30px rgba(0,0,0,.28)
+}
+.card{border-color:var(--line)!important;box-shadow:var(--ui-shadow)!important}
+select,.language-control,.appearance-toggle{
+ background:var(--ui-input)!important;color:var(--text)!important;border-color:var(--line)!important
+}
+.appearance-toggle:hover{background:var(--ui-button-hover)!important}
+
 </style>
 </head>
 <body>
