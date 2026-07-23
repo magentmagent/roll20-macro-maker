@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Roll20 Simple Chat Effects Generator v6</title>
+<title>Roll20 Simple Chat Effects Generator v9</title>
 <style>
 :root{
   color-scheme:light;
@@ -144,6 +144,10 @@ input[type=color]{background:var(--ui-input)!important;border-color:var(--line)!
 .macro-preview-host>a{pointer-events:none!important}
 
 .btn.primary{background:var(--ui)!important;color:#fff!important;border-color:var(--ui)!important}
+
+.preview-stage{overflow-x:auto!important}
+.macro-preview-host{min-width:max-content!important}
+
 </style>
 </head>
 <body>
@@ -157,7 +161,20 @@ input[type=color]{background:var(--ui-input)!important;border-color:var(--line)!
 </div>
 <div class="main">
  <div class="panel">
-  <div class="section"><h2 data-i="quick"></h2><div id="quickGrid" class="quick-grid"></div></div>
+  <div class="section">
+   <h2 data-i="quick"></h2>
+   <div class="field" style="max-width:280px;margin-bottom:10px">
+    <label data-i="imageCanvasWidth"></label>
+    <select id="imageCanvasWidth">
+     <option value="320" data-i="canvas320"></option>
+     <option value="400" data-i="canvas400"></option>
+     <option value="480" data-i="canvas480"></option>
+     <option value="520" data-i="canvas520" selected></option>
+     <option value="600" data-i="canvas600"></option>
+    </select>
+   </div>
+   <div id="quickGrid" class="quick-grid"></div>
+  </div>
   <div class="section">
    <div class="toolbar"><h2 data-i="builder" style="margin:0 auto 0 0"></h2><button id="addBtn" class="btn small" data-i="add"></button><button id="clearBtn" class="btn small danger" data-i="clear"></button></div>
    <div id="builder"></div>
@@ -179,12 +196,12 @@ input[type=color]{background:var(--ui-input)!important;border-color:var(--line)!
     <div id="compatStatus" style="margin-top:4px"></div>
     <div data-i="runtimeUrlHint" style="margin-top:5px"></div>
    </div>
-   <div class="notice" data-i="notice"></div><div class="notice" data-i="lightSafeNote"></div>
+   <div class="notice" data-i="notice"></div><div class="notice" data-i="lightSafeNote"></div><div class="notice" data-i="imageWidthFix"></div><div class="notice" data-i="imageCaptionFix"></div><div class="notice" data-i="fixedCanvasNotice"></div><div class="notice" data-i="safeImageLayoutNotice"></div><div class="notice" data-i="overlayRemovedNotice"></div><div class="notice" data-i="overlayMigrationNotice"></div>
   </div>
  </div>
 </div>
 <script>
-const COPY={"ja":{"title":"Roll20 シンプルチャット演出ジェネレーター v6","subtitle":"文字演出に加え、バナー、立ち絵、アイコン、左右サムネイル、ポラロイド、監視映像などの画像表現を独立したチャット行として組み立てます。","back":"戻る","language":"言語","browser":"ブラウザーの言語","quick":"クイック追加","builder":"演出シーケンス","add":"演出を追加","noItems":"演出がありません。","effect":"効果","text":"テキスト","prompt":"実行時に入力","width":"表示幅","align":"文字揃え","left":"左","center":"中央","right":"右","fontSize":"文字サイズ","small":"小","normal":"標準","large":"大","xlarge":"特大","textColor":"文字色","background":"背景色","accent":"アクセント色","opacity":"不透明度","padding":"余白","compact":"狭い","regular":"標準","roomy":"広い","prefix":"接頭辞","suffix":"接尾辞","bold":"太字","italic":"斜体","uppercase":"大文字化","letterSpacing":"文字間隔","repeat":"反復回数","moveUp":"上へ","moveDown":"下へ","duplicate":"複製","delete":"削除","clear":"すべて消去","preview":"プレビュー","macro":"Roll20マクロ","copy":"コピー","download":"TXTを保存","save":"保存","saveName":"構成の保存名","saveLayout":"構成を保存","saved":"保存済み構成","load":"読み込む","none":"保存項目はありません","export":"JSONを書き出す","import":"JSONを読み込む","reset":"初期化","autoSaved":"自動保存しました","copied":"マクロをコピーしました","savedStatus":"構成を保存しました","loadedStatus":"構成を読み込みました","deletedStatus":"削除しました","resetStatus":"初期化しました","imported":"保存データを読み込みました","exported":"保存データを書き出しました","badJson":"JSONを読み込めません。","notice":"Roll20のMarkdownリンク解析に合わせ、style属性内の ( ) は最終出力時に &#40; &#41; へ一括変換します。8桁HEX色は transparent または rgba() に変換し、背景色と背景画像を分離して出力します。実行時入力の画像URLに丸括弧がある場合は %28 / %29 を使用してください。","promptText":"表示するテキスト","narration":"ナレーション","whisper":"囁き","shout":"叫び","thought":"心の声","action":"行動描写","sfx":"効果音","system":"システム","noticeEffect":"通知","warning":"警告","success":"成功","failure":"失敗","objective":"目標更新","radio":"無線","broadcast":"放送","terminal":"端末","encrypted":"暗号通信","glitch":"グリッチ","echo":"残響","dream":"夢","memory":"回想","quote":"引用","chant":"詠唱","countdown":"カウントダウン","heartbeat":"鼓動","location":"場所","time":"時刻","separator":"区切り","redacted":"検閲","neon":"ネオン","spotlight":"スポットライト","paper":"メモ","announcement":"アナウンス","custom":"カスタム","defaultNarration":"雨音だけが、空の通りに残っていた。","defaultWhisper":"……誰にも言わないで。","defaultShout":"今すぐそこから離れろ！","defaultThought":"これは偶然ではない。","defaultAction":"彼女は扉の前で足を止めた。","defaultSfx":"BANG","defaultSystem":"SYSTEM ONLINE","defaultNotice":"新しい情報が記録されました。","defaultWarning":"警告：接近する反応を検知。","defaultSuccess":"認証に成功しました。","defaultFailure":"接続に失敗しました。","defaultObjective":"OBJECTIVE UPDATED","defaultRadio":"こちら管制。応答せよ。","defaultBroadcast":"緊急放送を開始します。","defaultTerminal":"> ACCESS GRANTED","defaultEncrypted":"[ENCRYPTED CHANNEL 07]","defaultGlitch":"SIGNAL LOST","defaultEcho":"戻ってきて……","defaultDream":"遠くで誰かが名前を呼んでいる。","defaultMemory":"あの日のことを、まだ覚えている。","defaultQuote":"忘れたことこそ、最も価値がある。","defaultChant":"門よ、古き契約に従い開け。","defaultCountdown":"00:47","defaultHeartbeat":"THUMP","defaultLocation":"TOKYO BAY · PIER 7","defaultTime":"02:17 AM","defaultSeparator":"SCENE CHANGE","defaultRedacted":"機密情報","defaultNeon":"NIGHT CITY","defaultSpotlight":"THE ARCHIVIST","defaultPaper":"机の上に短いメモが残されている。","defaultAnnouncement":"まもなく最終列車が到着します。","defaultCustom":"テキストを入力してください","textEffects":"文字演出","imageEffects":"画像演出","imageFull":"全体画像","imageBanner":"横長バナー","imagePortrait":"縦長ポートレート","imageAvatar":"丸型アイコン","imageSticker":"ステッカー","imageLeft":"左画像＋テキスト","imageRight":"右画像＋テキスト","imageOverlay":"画像上テキスト","imagePolaroid":"ポラロイド","imageCctv":"監視カメラ","imageSilhouette":"シルエット公開","imagePair":"2枚並列","imageUrl":"画像URL","imageUrl2":"第2画像URL","promptImage":"実行時に画像URLを入力","promptImage2":"実行時に第2画像URLを入力","imageHeight":"画像の高さ","imageFit":"画像の配置","cover":"枠を埋める（トリミング）","contain":"全体を表示","stretch":"枠に合わせて伸縮","focusX":"横方向の焦点","focusY":"縦方向の焦点","corner":"角丸","overlay":"画像オーバーレイ","overlayNone":"なし","overlayDark":"暗くする","overlayLight":"明るくする","overlayAccent":"アクセント色","overlayStrength":"オーバーレイ強度","frame":"画像枠","frameNone":"なし","frameAccent":"アクセント色","frameMuted":"補助色","frameWhite":"白","captionPosition":"キャプション位置","captionNone":"表示しない","captionBelow":"画像の下","captionBottom":"画像下部に重ねる","captionCenter":"画像中央に重ねる","imageRatio":"画像の比率","imageGap":"画像間隔","directUrl":"Webページではなく画像ファイルが直接開くURLを使用してください。","defaultImageFull":"発見された写真","defaultImageBanner":"SCENE IMAGE","defaultImagePortrait":"UNKNOWN SUBJECT","defaultImageAvatar":"UNKNOWN","defaultImageSticker":"","defaultImageLeft":"現場で発見された画像","defaultImageRight":"記録ファイル 07","defaultImageOverlay":"DO NOT LOOK AWAY","defaultImagePolaroid":"夏祭りの夜、駅前で。","defaultImageCctv":"CAM 04 · 02:17:33","defaultImageSilhouette":"IDENTITY UNKNOWN","defaultImagePair":"比較記録","imagePromptLabel":"画像URL","imagePromptLabel2":"第2画像URL","compatibility":"Roll20互換性","compatPassed":"互換性チェック：問題なし","compatFailed":"互換性チェック：修正が必要","compatRawParen":"style属性内に未変換の丸括弧があります。","compatHex8":"Roll20で不安定な8桁HEX色があります。","compatQuote":"style属性内に余分な引用符があります。","runtimeUrlHint":"実行時入力の画像URLに丸括弧が含まれる場合は、( を %28、) を %29 に置き換えてください。","switchDark":"ダークモードに切り替える","switchLight":"ライトモードに切り替える","defaultNoticeEffect":"新しい情報が記録されました。","lightSafeNote":"透明背景に依存していたプリセットを、Roll20の明るい標準チャットでも読める配色へ修正しました。"},"ko":{"title":"Roll20 단순 채팅 연출 생성기 v6","subtitle":"문자 연출과 함께 배너, 인물 사진, 아이콘, 좌우 썸네일, 폴라로이드와 감시 화면 등의 이미지를 독립된 채팅 줄로 조립합니다.","back":"돌아가기","language":"언어","browser":"브라우저 언어","quick":"빠른 추가","builder":"연출 시퀀스","add":"연출 추가","noItems":"연출이 없습니다.","effect":"효과","text":"문구","prompt":"실행 시 입력","width":"표시 폭","align":"문자 정렬","left":"왼쪽","center":"가운데","right":"오른쪽","fontSize":"글자 크기","small":"작게","normal":"보통","large":"크게","xlarge":"매우 크게","textColor":"글자색","background":"배경색","accent":"강조색","opacity":"불투명도","padding":"여백","compact":"좁게","regular":"보통","roomy":"넓게","prefix":"접두 문구","suffix":"접미 문구","bold":"굵게","italic":"기울임","uppercase":"대문자화","letterSpacing":"자간","repeat":"반복 횟수","moveUp":"위로","moveDown":"아래로","duplicate":"복제","delete":"삭제","clear":"모두 지우기","preview":"미리보기","macro":"Roll20 매크로","copy":"복사","download":"TXT 저장","save":"저장","saveName":"구성 저장 이름","saveLayout":"구성 저장","saved":"저장된 구성","load":"불러오기","none":"저장 항목 없음","export":"JSON 내보내기","import":"JSON 가져오기","reset":"초기화","autoSaved":"자동 저장됨","copied":"매크로 복사됨","savedStatus":"구성 저장됨","loadedStatus":"구성 불러옴","deletedStatus":"삭제됨","resetStatus":"초기화됨","imported":"저장 데이터 가져옴","exported":"저장 데이터 내보냄","badJson":"JSON을 읽을 수 없습니다.","notice":"Roll20의 Markdown 링크 파서를 기준으로 style 속성 안의 ( )를 최종 출력 단계에서 &#40; &#41;로 일괄 변환합니다. 8자리 HEX 색상은 transparent 또는 rgba()로 변환하고 배경색과 배경 이미지를 분리해 출력합니다. 실행 시 입력 이미지 URL에 소괄호가 있다면 %28 / %29를 사용하세요.","promptText":"표시할 문구","narration":"내레이션","whisper":"속삭임","shout":"외침","thought":"속마음","action":"행동 묘사","sfx":"효과음","system":"시스템","noticeEffect":"알림","warning":"경고","success":"성공","failure":"실패","objective":"목표 갱신","radio":"무전","broadcast":"방송","terminal":"단말기","encrypted":"암호 통신","glitch":"글리치","echo":"메아리","dream":"꿈","memory":"회상","quote":"인용문","chant":"주문·영창","countdown":"카운트다운","heartbeat":"심장 박동","location":"장소","time":"시각","separator":"구분선","redacted":"검열","neon":"네온","spotlight":"스포트라이트","paper":"메모","announcement":"안내 방송","custom":"사용자 정의","defaultNarration":"빗소리만이 텅 빈 거리에 남아 있었다.","defaultWhisper":"……아무에게도 말하지 마.","defaultShout":"당장 거기서 떨어져!","defaultThought":"이건 우연이 아니다.","defaultAction":"그녀는 문 앞에서 걸음을 멈췄다.","defaultSfx":"BANG","defaultSystem":"SYSTEM ONLINE","defaultNotice":"새로운 정보가 기록되었습니다.","defaultWarning":"경고: 접근하는 반응을 감지했습니다.","defaultSuccess":"인증에 성공했습니다.","defaultFailure":"연결에 실패했습니다.","defaultObjective":"OBJECTIVE UPDATED","defaultRadio":"여기는 관제실. 응답하라.","defaultBroadcast":"긴급 방송을 시작합니다.","defaultTerminal":"> ACCESS GRANTED","defaultEncrypted":"[ENCRYPTED CHANNEL 07]","defaultGlitch":"SIGNAL LOST","defaultEcho":"돌아와……","defaultDream":"멀리서 누군가 이름을 부르고 있다.","defaultMemory":"그날의 일을 아직 기억하고 있다.","defaultQuote":"잊어버린 것일수록 가장 가치가 있지.","defaultChant":"문이여, 오래된 계약에 따라 열려라.","defaultCountdown":"00:47","defaultHeartbeat":"THUMP","defaultLocation":"TOKYO BAY · PIER 7","defaultTime":"02:17 AM","defaultSeparator":"SCENE CHANGE","defaultRedacted":"기밀 정보","defaultNeon":"NIGHT CITY","defaultSpotlight":"THE ARCHIVIST","defaultPaper":"책상 위에 짧은 메모가 남아 있다.","defaultAnnouncement":"잠시 후 마지막 열차가 도착합니다.","defaultCustom":"문구를 입력하세요","textEffects":"문자 연출","imageEffects":"이미지 연출","imageFull":"전체 이미지","imageBanner":"가로 배너","imagePortrait":"세로 인물 사진","imageAvatar":"원형 아이콘","imageSticker":"스티커","imageLeft":"왼쪽 이미지+문구","imageRight":"오른쪽 이미지+문구","imageOverlay":"이미지 위 문구","imagePolaroid":"폴라로이드","imageCctv":"감시 카메라","imageSilhouette":"실루엣 공개","imagePair":"이미지 2장","imageUrl":"이미지 URL","imageUrl2":"두 번째 이미지 URL","promptImage":"실행 시 이미지 URL 입력","promptImage2":"실행 시 두 번째 이미지 URL 입력","imageHeight":"이미지 높이","imageFit":"이미지 배치","cover":"영역 채우기(자르기)","contain":"전체 표시","stretch":"영역에 맞춰 늘리기","focusX":"가로 초점","focusY":"세로 초점","corner":"모서리 둥글기","overlay":"이미지 오버레이","overlayNone":"없음","overlayDark":"어둡게","overlayLight":"밝게","overlayAccent":"강조색","overlayStrength":"오버레이 강도","frame":"이미지 테두리","frameNone":"없음","frameAccent":"강조색","frameMuted":"보조색","frameWhite":"흰색","captionPosition":"문구 위치","captionNone":"표시하지 않음","captionBelow":"이미지 아래","captionBottom":"이미지 하단에 겹치기","captionCenter":"이미지 중앙에 겹치기","imageRatio":"이미지 비율","imageGap":"이미지 간격","directUrl":"웹페이지가 아니라 이미지 파일이 직접 열리는 URL을 사용하세요.","defaultImageFull":"발견된 사진","defaultImageBanner":"SCENE IMAGE","defaultImagePortrait":"UNKNOWN SUBJECT","defaultImageAvatar":"UNKNOWN","defaultImageSticker":"","defaultImageLeft":"현장에서 발견된 이미지","defaultImageRight":"기록 파일 07","defaultImageOverlay":"DO NOT LOOK AWAY","defaultImagePolaroid":"여름 축제의 밤, 역 앞에서.","defaultImageCctv":"CAM 04 · 02:17:33","defaultImageSilhouette":"IDENTITY UNKNOWN","defaultImagePair":"비교 기록","imagePromptLabel":"이미지 URL","imagePromptLabel2":"두 번째 이미지 URL","compatibility":"Roll20 호환성","compatPassed":"호환성 검사: 이상 없음","compatFailed":"호환성 검사: 수정 필요","compatRawParen":"style 속성 안에 변환되지 않은 소괄호가 있습니다.","compatHex8":"Roll20에서 불안정한 8자리 HEX 색상이 있습니다.","compatQuote":"style 속성 안에 불필요한 따옴표가 있습니다.","runtimeUrlHint":"실행 시 입력하는 이미지 URL에 소괄호가 있다면 ( 는 %28, ) 는 %29로 바꾸세요.","switchDark":"다크 모드로 전환","switchLight":"라이트 모드로 전환","defaultNoticeEffect":"새로운 정보가 기록되었습니다.","lightSafeNote":"투명 배경에 의존하던 프리셋을 Roll20의 밝은 기본 채팅에서도 읽히는 색상으로 수정했습니다."},"en":{"title":"Roll20 Simple Chat Effects Generator v6","subtitle":"Combine text effects with banners, portraits, icons, side thumbnails, polaroids, surveillance images, and other image layouts as independent chat lines.","back":"Back","language":"Language","browser":"Browser language","quick":"Quick add","builder":"Effect sequence","add":"Add effect","noItems":"No effects.","effect":"Effect","text":"Text","prompt":"Prompt when run","width":"Display width","align":"Text alignment","left":"Left","center":"Center","right":"Right","fontSize":"Font size","small":"Small","normal":"Normal","large":"Large","xlarge":"Extra large","textColor":"Text color","background":"Background","accent":"Accent color","opacity":"Opacity","padding":"Padding","compact":"Compact","regular":"Regular","roomy":"Roomy","prefix":"Prefix","suffix":"Suffix","bold":"Bold","italic":"Italic","uppercase":"Uppercase","letterSpacing":"Letter spacing","repeat":"Repeat count","moveUp":"Move up","moveDown":"Move down","duplicate":"Duplicate","delete":"Delete","clear":"Clear all","preview":"Preview","macro":"Roll20 macro","copy":"Copy","download":"Save TXT","save":"Save","saveName":"Layout save name","saveLayout":"Save layout","saved":"Saved layouts","load":"Load","none":"No saved items","export":"Export JSON","import":"Import JSON","reset":"Reset","autoSaved":"Auto-saved","copied":"Macro copied","savedStatus":"Layout saved","loadedStatus":"Layout loaded","deletedStatus":"Deleted","resetStatus":"Reset","imported":"Saved data imported","exported":"Saved data exported","badJson":"Could not read the JSON file.","notice":"For Roll20's Markdown link parser, all parentheses inside style attributes are converted to &#40; and &#41; at final serialization. Eight-digit HEX colors are converted to transparent or rgba(), and background colors and images are emitted separately. For prompted image URLs containing parentheses, use %28 / %29.","promptText":"Text to display","narration":"Narration","whisper":"Whisper","shout":"Shout","thought":"Inner voice","action":"Action","sfx":"Sound effect","system":"System","noticeEffect":"Notice","warning":"Warning","success":"Success","failure":"Failure","objective":"Objective update","radio":"Radio","broadcast":"Broadcast","terminal":"Terminal","encrypted":"Encrypted channel","glitch":"Glitch","echo":"Echo","dream":"Dream","memory":"Memory","quote":"Quote","chant":"Chant","countdown":"Countdown","heartbeat":"Heartbeat","location":"Location","time":"Time","separator":"Separator","redacted":"Redacted","neon":"Neon","spotlight":"Spotlight","paper":"Note","announcement":"Announcement","custom":"Custom","defaultNarration":"Only the sound of rain remained in the empty street.","defaultWhisper":"...Don't tell anyone.","defaultShout":"Get away from there now!","defaultThought":"This is not a coincidence.","defaultAction":"She stopped in front of the door.","defaultSfx":"BANG","defaultSystem":"SYSTEM ONLINE","defaultNotice":"New information has been recorded.","defaultWarning":"Warning: approaching signal detected.","defaultSuccess":"Authentication successful.","defaultFailure":"Connection failed.","defaultObjective":"OBJECTIVE UPDATED","defaultRadio":"Control here. Respond.","defaultBroadcast":"Emergency broadcast commencing.","defaultTerminal":"> ACCESS GRANTED","defaultEncrypted":"[ENCRYPTED CHANNEL 07]","defaultGlitch":"SIGNAL LOST","defaultEcho":"Come back...","defaultDream":"Someone is calling a name in the distance.","defaultMemory":"I still remember what happened that day.","defaultQuote":"What you forgot is what I value most.","defaultChant":"Gate, open according to the ancient covenant.","defaultCountdown":"00:47","defaultHeartbeat":"THUMP","defaultLocation":"TOKYO BAY · PIER 7","defaultTime":"02:17 AM","defaultSeparator":"SCENE CHANGE","defaultRedacted":"CLASSIFIED INFORMATION","defaultNeon":"NIGHT CITY","defaultSpotlight":"THE ARCHIVIST","defaultPaper":"A short note was left on the desk.","defaultAnnouncement":"The final train will arrive shortly.","defaultCustom":"Enter text","textEffects":"Text effects","imageEffects":"Image effects","imageFull":"Full image","imageBanner":"Wide banner","imagePortrait":"Portrait","imageAvatar":"Round icon","imageSticker":"Sticker","imageLeft":"Image left + text","imageRight":"Image right + text","imageOverlay":"Text over image","imagePolaroid":"Polaroid","imageCctv":"Surveillance camera","imageSilhouette":"Silhouette reveal","imagePair":"Two images","imageUrl":"Image URL","imageUrl2":"Second image URL","promptImage":"Prompt for image URL when run","promptImage2":"Prompt for second image URL when run","imageHeight":"Image height","imageFit":"Image fit","cover":"Fill area (crop)","contain":"Show entire image","stretch":"Stretch to area","focusX":"Horizontal focus","focusY":"Vertical focus","corner":"Corner radius","overlay":"Image overlay","overlayNone":"None","overlayDark":"Darken","overlayLight":"Lighten","overlayAccent":"Accent color","overlayStrength":"Overlay strength","frame":"Image frame","frameNone":"None","frameAccent":"Accent color","frameMuted":"Muted color","frameWhite":"White","captionPosition":"Caption position","captionNone":"Do not show","captionBelow":"Below image","captionBottom":"Overlay at bottom","captionCenter":"Overlay at center","imageRatio":"Image ratio","imageGap":"Image gap","directUrl":"Use a URL that opens the image file directly, not a webpage.","defaultImageFull":"Recovered photograph","defaultImageBanner":"SCENE IMAGE","defaultImagePortrait":"UNKNOWN SUBJECT","defaultImageAvatar":"UNKNOWN","defaultImageSticker":"","defaultImageLeft":"Image recovered at the scene","defaultImageRight":"Record file 07","defaultImageOverlay":"DO NOT LOOK AWAY","defaultImagePolaroid":"Summer festival night, outside the station.","defaultImageCctv":"CAM 04 · 02:17:33","defaultImageSilhouette":"IDENTITY UNKNOWN","defaultImagePair":"Comparison record","imagePromptLabel":"Image URL","imagePromptLabel2":"Second image URL","compatibility":"Roll20 compatibility","compatPassed":"Compatibility check: passed","compatFailed":"Compatibility check: correction required","compatRawParen":"An unescaped parenthesis remains inside a style attribute.","compatHex8":"An eight-digit HEX color remains, which is unreliable in Roll20.","compatQuote":"An extra quotation mark remains inside a style attribute.","runtimeUrlHint":"For prompted image URLs containing parentheses, replace ( with %28 and ) with %29.","switchDark":"Switch to dark mode","switchLight":"Switch to light mode","defaultNoticeEffect":"New information has been recorded.","lightSafeNote":"Presets that depended on transparent backgrounds now use colors readable in Roll20's light default chat."}};
+const COPY={"ja":{"title":"Roll20 シンプルチャット演出ジェネレーター v9","subtitle":"文字演出に加え、バナー、立ち絵、アイコン、左右サムネイル、ポラロイド、監視映像などの画像表現を独立したチャット行として組み立てます。","back":"戻る","language":"言語","browser":"ブラウザーの言語","quick":"クイック追加","builder":"演出シーケンス","add":"演出を追加","noItems":"演出がありません。","effect":"効果","text":"テキスト","prompt":"実行時に入力","width":"表示幅","align":"文字揃え","left":"左","center":"中央","right":"右","fontSize":"文字サイズ","small":"小","normal":"標準","large":"大","xlarge":"特大","textColor":"文字色","background":"背景色","accent":"アクセント色","opacity":"不透明度","padding":"余白","compact":"狭い","regular":"標準","roomy":"広い","prefix":"接頭辞","suffix":"接尾辞","bold":"太字","italic":"斜体","uppercase":"大文字化","letterSpacing":"文字間隔","repeat":"反復回数","moveUp":"上へ","moveDown":"下へ","duplicate":"複製","delete":"削除","clear":"すべて消去","preview":"プレビュー","macro":"Roll20マクロ","copy":"コピー","download":"TXTを保存","save":"保存","saveName":"構成の保存名","saveLayout":"構成を保存","saved":"保存済み構成","load":"読み込む","none":"保存項目はありません","export":"JSONを書き出す","import":"JSONを読み込む","reset":"初期化","autoSaved":"自動保存しました","copied":"マクロをコピーしました","savedStatus":"構成を保存しました","loadedStatus":"構成を読み込みました","deletedStatus":"削除しました","resetStatus":"初期化しました","imported":"保存データを読み込みました","exported":"保存データを書き出しました","badJson":"JSONを読み込めません。","notice":"Roll20のMarkdownリンク解析に合わせ、style属性内の ( ) は最終出力時に &#40; &#41; へ一括変換します。8桁HEX色は transparent または rgba() に変換し、背景色と背景画像を分離して出力します。実行時入力の画像URLに丸括弧がある場合は %28 / %29 を使用してください。","promptText":"表示するテキスト","narration":"ナレーション","whisper":"囁き","shout":"叫び","thought":"心の声","action":"行動描写","sfx":"効果音","system":"システム","noticeEffect":"通知","warning":"警告","success":"成功","failure":"失敗","objective":"目標更新","radio":"無線","broadcast":"放送","terminal":"端末","encrypted":"暗号通信","glitch":"グリッチ","echo":"残響","dream":"夢","memory":"回想","quote":"引用","chant":"詠唱","countdown":"カウントダウン","heartbeat":"鼓動","location":"場所","time":"時刻","separator":"区切り","redacted":"検閲","neon":"ネオン","spotlight":"スポットライト","paper":"メモ","announcement":"アナウンス","custom":"カスタム","defaultNarration":"雨音だけが、空の通りに残っていた。","defaultWhisper":"……誰にも言わないで。","defaultShout":"今すぐそこから離れろ！","defaultThought":"これは偶然ではない。","defaultAction":"彼女は扉の前で足を止めた。","defaultSfx":"BANG","defaultSystem":"SYSTEM ONLINE","defaultNotice":"新しい情報が記録されました。","defaultWarning":"警告：接近する反応を検知。","defaultSuccess":"認証に成功しました。","defaultFailure":"接続に失敗しました。","defaultObjective":"OBJECTIVE UPDATED","defaultRadio":"こちら管制。応答せよ。","defaultBroadcast":"緊急放送を開始します。","defaultTerminal":"> ACCESS GRANTED","defaultEncrypted":"[ENCRYPTED CHANNEL 07]","defaultGlitch":"SIGNAL LOST","defaultEcho":"戻ってきて……","defaultDream":"遠くで誰かが名前を呼んでいる。","defaultMemory":"あの日のことを、まだ覚えている。","defaultQuote":"忘れたことこそ、最も価値がある。","defaultChant":"門よ、古き契約に従い開け。","defaultCountdown":"00:47","defaultHeartbeat":"THUMP","defaultLocation":"TOKYO BAY · PIER 7","defaultTime":"02:17 AM","defaultSeparator":"SCENE CHANGE","defaultRedacted":"機密情報","defaultNeon":"NIGHT CITY","defaultSpotlight":"THE ARCHIVIST","defaultPaper":"机の上に短いメモが残されている。","defaultAnnouncement":"まもなく最終列車が到着します。","defaultCustom":"テキストを入力してください","textEffects":"文字演出","imageEffects":"画像演出","imageFull":"全体画像","imageBanner":"横長バナー","imagePortrait":"縦長ポートレート","imageAvatar":"丸型アイコン","imageSticker":"ステッカー","imageLeft":"左画像＋テキスト","imageRight":"右画像＋テキスト","imageOverlay":"画像上テキスト","imagePolaroid":"ポラロイド","imageCctv":"監視カメラ","imageSilhouette":"シルエット公開","imagePair":"2枚並列","imageUrl":"画像URL","imageUrl2":"第2画像URL","promptImage":"実行時に画像URLを入力","promptImage2":"実行時に第2画像URLを入力","imageHeight":"画像の高さ","imageFit":"画像の配置","cover":"枠を埋める（トリミング）","contain":"全体を表示","stretch":"枠に合わせて伸縮","focusX":"横方向の焦点","focusY":"縦方向の焦点","corner":"角丸","overlay":"画像オーバーレイ","overlayNone":"なし","overlayDark":"暗くする","overlayLight":"明るくする","overlayAccent":"アクセント色","overlayStrength":"オーバーレイ強度","frame":"画像枠","frameNone":"なし","frameAccent":"アクセント色","frameMuted":"補助色","frameWhite":"白","captionPosition":"キャプション位置","captionNone":"表示しない","captionBelow":"画像の下","captionBottom":"画像下部に重ねる","captionCenter":"画像中央に重ねる","imageRatio":"画像の比率","imageGap":"画像間隔","directUrl":"Webページではなく画像ファイルが直接開くURLを使用してください。","defaultImageFull":"発見された写真","defaultImageBanner":"SCENE IMAGE","defaultImagePortrait":"UNKNOWN SUBJECT","defaultImageAvatar":"UNKNOWN","defaultImageSticker":"","defaultImageLeft":"現場で発見された画像","defaultImageRight":"記録ファイル 07","defaultImageOverlay":"DO NOT LOOK AWAY","defaultImagePolaroid":"夏祭りの夜、駅前で。","defaultImageCctv":"CAM 04 · 02:17:33","defaultImageSilhouette":"IDENTITY UNKNOWN","defaultImagePair":"比較記録","imagePromptLabel":"画像URL","imagePromptLabel2":"第2画像URL","compatibility":"Roll20互換性","compatPassed":"互換性チェック：問題なし","compatFailed":"互換性チェック：修正が必要","compatRawParen":"style属性内に未変換の丸括弧があります。","compatHex8":"Roll20で不安定な8桁HEX色があります。","compatQuote":"style属性内に余分な引用符があります。","runtimeUrlHint":"実行時入力の画像URLに丸括弧が含まれる場合は、( を %28、) を %29 に置き換えてください。","switchDark":"ダークモードに切り替える","switchLight":"ライトモードに切り替える","defaultNoticeEffect":"新しい情報が記録されました。","lightSafeNote":"透明背景に依存していたプリセットを、Roll20の明るい標準チャットでも読める配色へ修正しました。","imageWidthFix":"画像効果の幅からcalc()、auto margin、外側borderを除去しました。画像・キャプションは直接計算済みの%幅と固定margin-leftだけで出力します。","imageCaptionFix":"画像上の文字はキャプション行数と画像高から上余白を計算し、中央または下部へ配置します。左右画像の説明も垂直中央へ配置します。","imageCanvasWidth":"画像キャンバス幅","canvas320":"320px・狭いチャット","canvas400":"400px","canvas480":"480px","canvas520":"520px・標準","canvas600":"600px・広いチャット","fixedCanvasNotice":"画像効果は固定pxキャンバスで出力します。チャット欄の幅が変わっても画像の横幅とトリミング範囲は変化しません。狭いチャットでは横スクロールまたははみ出しが発生する場合があります。","safeImageLayoutNotice":"Roll20で不安定な画像上文字、左右2分割、横並び2枚は安全な縦積み形式へ変換しました。画像リンクには文字を入れず、キャプションを同じ固定幅の独立した行として出力します。","imageOverlayRemoved":"画像上テキスト（非対応）","safeCaption":"画像＋強調キャプション","overlayRemovedNotice":"Roll20では画像と文字を同じリンク内に配置すると、幅と文字位置が不安定になるため、「画像上テキスト」と中央・下部オーバーレイ設定を削除しました。","overlayMigrationNotice":"以前の画像上テキスト構成は、画像と同じ固定幅を使う「画像＋強調キャプション」へ自動変換されます。","imageCaption":"画像＋強調キャプション","defaultImageCaption":"重要な場面"},"ko":{"title":"Roll20 단순 채팅 연출 생성기 v9","subtitle":"문자 연출과 함께 배너, 인물 사진, 아이콘, 좌우 썸네일, 폴라로이드와 감시 화면 등의 이미지를 독립된 채팅 줄로 조립합니다.","back":"돌아가기","language":"언어","browser":"브라우저 언어","quick":"빠른 추가","builder":"연출 시퀀스","add":"연출 추가","noItems":"연출이 없습니다.","effect":"효과","text":"문구","prompt":"실행 시 입력","width":"표시 폭","align":"문자 정렬","left":"왼쪽","center":"가운데","right":"오른쪽","fontSize":"글자 크기","small":"작게","normal":"보통","large":"크게","xlarge":"매우 크게","textColor":"글자색","background":"배경색","accent":"강조색","opacity":"불투명도","padding":"여백","compact":"좁게","regular":"보통","roomy":"넓게","prefix":"접두 문구","suffix":"접미 문구","bold":"굵게","italic":"기울임","uppercase":"대문자화","letterSpacing":"자간","repeat":"반복 횟수","moveUp":"위로","moveDown":"아래로","duplicate":"복제","delete":"삭제","clear":"모두 지우기","preview":"미리보기","macro":"Roll20 매크로","copy":"복사","download":"TXT 저장","save":"저장","saveName":"구성 저장 이름","saveLayout":"구성 저장","saved":"저장된 구성","load":"불러오기","none":"저장 항목 없음","export":"JSON 내보내기","import":"JSON 가져오기","reset":"초기화","autoSaved":"자동 저장됨","copied":"매크로 복사됨","savedStatus":"구성 저장됨","loadedStatus":"구성 불러옴","deletedStatus":"삭제됨","resetStatus":"초기화됨","imported":"저장 데이터 가져옴","exported":"저장 데이터 내보냄","badJson":"JSON을 읽을 수 없습니다.","notice":"Roll20의 Markdown 링크 파서를 기준으로 style 속성 안의 ( )를 최종 출력 단계에서 &#40; &#41;로 일괄 변환합니다. 8자리 HEX 색상은 transparent 또는 rgba()로 변환하고 배경색과 배경 이미지를 분리해 출력합니다. 실행 시 입력 이미지 URL에 소괄호가 있다면 %28 / %29를 사용하세요.","promptText":"표시할 문구","narration":"내레이션","whisper":"속삭임","shout":"외침","thought":"속마음","action":"행동 묘사","sfx":"효과음","system":"시스템","noticeEffect":"알림","warning":"경고","success":"성공","failure":"실패","objective":"목표 갱신","radio":"무전","broadcast":"방송","terminal":"단말기","encrypted":"암호 통신","glitch":"글리치","echo":"메아리","dream":"꿈","memory":"회상","quote":"인용문","chant":"주문·영창","countdown":"카운트다운","heartbeat":"심장 박동","location":"장소","time":"시각","separator":"구분선","redacted":"검열","neon":"네온","spotlight":"스포트라이트","paper":"메모","announcement":"안내 방송","custom":"사용자 정의","defaultNarration":"빗소리만이 텅 빈 거리에 남아 있었다.","defaultWhisper":"……아무에게도 말하지 마.","defaultShout":"당장 거기서 떨어져!","defaultThought":"이건 우연이 아니다.","defaultAction":"그녀는 문 앞에서 걸음을 멈췄다.","defaultSfx":"BANG","defaultSystem":"SYSTEM ONLINE","defaultNotice":"새로운 정보가 기록되었습니다.","defaultWarning":"경고: 접근하는 반응을 감지했습니다.","defaultSuccess":"인증에 성공했습니다.","defaultFailure":"연결에 실패했습니다.","defaultObjective":"OBJECTIVE UPDATED","defaultRadio":"여기는 관제실. 응답하라.","defaultBroadcast":"긴급 방송을 시작합니다.","defaultTerminal":"> ACCESS GRANTED","defaultEncrypted":"[ENCRYPTED CHANNEL 07]","defaultGlitch":"SIGNAL LOST","defaultEcho":"돌아와……","defaultDream":"멀리서 누군가 이름을 부르고 있다.","defaultMemory":"그날의 일을 아직 기억하고 있다.","defaultQuote":"잊어버린 것일수록 가장 가치가 있지.","defaultChant":"문이여, 오래된 계약에 따라 열려라.","defaultCountdown":"00:47","defaultHeartbeat":"THUMP","defaultLocation":"TOKYO BAY · PIER 7","defaultTime":"02:17 AM","defaultSeparator":"SCENE CHANGE","defaultRedacted":"기밀 정보","defaultNeon":"NIGHT CITY","defaultSpotlight":"THE ARCHIVIST","defaultPaper":"책상 위에 짧은 메모가 남아 있다.","defaultAnnouncement":"잠시 후 마지막 열차가 도착합니다.","defaultCustom":"문구를 입력하세요","textEffects":"문자 연출","imageEffects":"이미지 연출","imageFull":"전체 이미지","imageBanner":"가로 배너","imagePortrait":"세로 인물 사진","imageAvatar":"원형 아이콘","imageSticker":"스티커","imageLeft":"왼쪽 이미지+문구","imageRight":"오른쪽 이미지+문구","imageOverlay":"이미지 위 문구","imagePolaroid":"폴라로이드","imageCctv":"감시 카메라","imageSilhouette":"실루엣 공개","imagePair":"이미지 2장","imageUrl":"이미지 URL","imageUrl2":"두 번째 이미지 URL","promptImage":"실행 시 이미지 URL 입력","promptImage2":"실행 시 두 번째 이미지 URL 입력","imageHeight":"이미지 높이","imageFit":"이미지 배치","cover":"영역 채우기(자르기)","contain":"전체 표시","stretch":"영역에 맞춰 늘리기","focusX":"가로 초점","focusY":"세로 초점","corner":"모서리 둥글기","overlay":"이미지 오버레이","overlayNone":"없음","overlayDark":"어둡게","overlayLight":"밝게","overlayAccent":"강조색","overlayStrength":"오버레이 강도","frame":"이미지 테두리","frameNone":"없음","frameAccent":"강조색","frameMuted":"보조색","frameWhite":"흰색","captionPosition":"문구 위치","captionNone":"표시하지 않음","captionBelow":"이미지 아래","captionBottom":"이미지 하단에 겹치기","captionCenter":"이미지 중앙에 겹치기","imageRatio":"이미지 비율","imageGap":"이미지 간격","directUrl":"웹페이지가 아니라 이미지 파일이 직접 열리는 URL을 사용하세요.","defaultImageFull":"발견된 사진","defaultImageBanner":"SCENE IMAGE","defaultImagePortrait":"UNKNOWN SUBJECT","defaultImageAvatar":"UNKNOWN","defaultImageSticker":"","defaultImageLeft":"현장에서 발견된 이미지","defaultImageRight":"기록 파일 07","defaultImageOverlay":"DO NOT LOOK AWAY","defaultImagePolaroid":"여름 축제의 밤, 역 앞에서.","defaultImageCctv":"CAM 04 · 02:17:33","defaultImageSilhouette":"IDENTITY UNKNOWN","defaultImagePair":"비교 기록","imagePromptLabel":"이미지 URL","imagePromptLabel2":"두 번째 이미지 URL","compatibility":"Roll20 호환성","compatPassed":"호환성 검사: 이상 없음","compatFailed":"호환성 검사: 수정 필요","compatRawParen":"style 속성 안에 변환되지 않은 소괄호가 있습니다.","compatHex8":"Roll20에서 불안정한 8자리 HEX 색상이 있습니다.","compatQuote":"style 속성 안에 불필요한 따옴표가 있습니다.","runtimeUrlHint":"실행 시 입력하는 이미지 URL에 소괄호가 있다면 ( 는 %28, ) 는 %29로 바꾸세요.","switchDark":"다크 모드로 전환","switchLight":"라이트 모드로 전환","defaultNoticeEffect":"새로운 정보가 기록되었습니다.","lightSafeNote":"투명 배경에 의존하던 프리셋을 Roll20의 밝은 기본 채팅에서도 읽히는 색상으로 수정했습니다.","imageWidthFix":"이미지 효과의 폭에서 calc(), 자동 여백과 실제 border를 제거했습니다. 이미지와 문구는 계산이 끝난 % 폭과 고정 margin-left만 사용합니다.","imageCaptionFix":"이미지 위 문구는 예상 줄 수와 이미지 높이로 위쪽 여백을 계산해 중앙 또는 하단에 배치합니다. 좌우 이미지 설명도 세로 중앙에 배치합니다.","imageCanvasWidth":"이미지 기준 폭","canvas320":"320px · 좁은 채팅","canvas400":"400px","canvas480":"480px","canvas520":"520px · 기본","canvas600":"600px · 넓은 채팅","fixedCanvasNotice":"이미지 효과는 고정 px 캔버스로 출력합니다. 채팅 영역의 폭이 바뀌어도 이미지 가로 폭과 자르기 범위가 달라지지 않습니다. 좁은 채팅에서는 가로 스크롤이나 넘침이 발생할 수 있습니다.","safeImageLayoutNotice":"Roll20에서 불안정한 이미지 위 문구, 좌우 2분할과 이미지 2장 가로 배치를 안정적인 세로형으로 변환했습니다. 이미지 링크에는 글자를 넣지 않고, 문구를 같은 고정 폭의 독립된 행으로 출력합니다.","imageOverlayRemoved":"이미지 위 문구(지원 중단)","safeCaption":"이미지+강조 캡션","overlayRemovedNotice":"Roll20에서는 이미지와 문자를 같은 링크 안에 넣을 때 폭과 문자 위치가 불안정해지므로 `이미지 위 문구` 유형과 중앙·하단 겹치기 옵션을 제거했습니다.","overlayMigrationNotice":"기존 이미지 위 문구 구성은 이미지와 동일한 고정 폭을 사용하는 `이미지+강조 캡션`으로 자동 변환됩니다.","imageCaption":"이미지+강조 캡션","defaultImageCaption":"중요한 장면"},"en":{"title":"Roll20 Simple Chat Effects Generator v9","subtitle":"Combine text effects with banners, portraits, icons, side thumbnails, polaroids, surveillance images, and other image layouts as independent chat lines.","back":"Back","language":"Language","browser":"Browser language","quick":"Quick add","builder":"Effect sequence","add":"Add effect","noItems":"No effects.","effect":"Effect","text":"Text","prompt":"Prompt when run","width":"Display width","align":"Text alignment","left":"Left","center":"Center","right":"Right","fontSize":"Font size","small":"Small","normal":"Normal","large":"Large","xlarge":"Extra large","textColor":"Text color","background":"Background","accent":"Accent color","opacity":"Opacity","padding":"Padding","compact":"Compact","regular":"Regular","roomy":"Roomy","prefix":"Prefix","suffix":"Suffix","bold":"Bold","italic":"Italic","uppercase":"Uppercase","letterSpacing":"Letter spacing","repeat":"Repeat count","moveUp":"Move up","moveDown":"Move down","duplicate":"Duplicate","delete":"Delete","clear":"Clear all","preview":"Preview","macro":"Roll20 macro","copy":"Copy","download":"Save TXT","save":"Save","saveName":"Layout save name","saveLayout":"Save layout","saved":"Saved layouts","load":"Load","none":"No saved items","export":"Export JSON","import":"Import JSON","reset":"Reset","autoSaved":"Auto-saved","copied":"Macro copied","savedStatus":"Layout saved","loadedStatus":"Layout loaded","deletedStatus":"Deleted","resetStatus":"Reset","imported":"Saved data imported","exported":"Saved data exported","badJson":"Could not read the JSON file.","notice":"For Roll20's Markdown link parser, all parentheses inside style attributes are converted to &#40; and &#41; at final serialization. Eight-digit HEX colors are converted to transparent or rgba(), and background colors and images are emitted separately. For prompted image URLs containing parentheses, use %28 / %29.","promptText":"Text to display","narration":"Narration","whisper":"Whisper","shout":"Shout","thought":"Inner voice","action":"Action","sfx":"Sound effect","system":"System","noticeEffect":"Notice","warning":"Warning","success":"Success","failure":"Failure","objective":"Objective update","radio":"Radio","broadcast":"Broadcast","terminal":"Terminal","encrypted":"Encrypted channel","glitch":"Glitch","echo":"Echo","dream":"Dream","memory":"Memory","quote":"Quote","chant":"Chant","countdown":"Countdown","heartbeat":"Heartbeat","location":"Location","time":"Time","separator":"Separator","redacted":"Redacted","neon":"Neon","spotlight":"Spotlight","paper":"Note","announcement":"Announcement","custom":"Custom","defaultNarration":"Only the sound of rain remained in the empty street.","defaultWhisper":"...Don't tell anyone.","defaultShout":"Get away from there now!","defaultThought":"This is not a coincidence.","defaultAction":"She stopped in front of the door.","defaultSfx":"BANG","defaultSystem":"SYSTEM ONLINE","defaultNotice":"New information has been recorded.","defaultWarning":"Warning: approaching signal detected.","defaultSuccess":"Authentication successful.","defaultFailure":"Connection failed.","defaultObjective":"OBJECTIVE UPDATED","defaultRadio":"Control here. Respond.","defaultBroadcast":"Emergency broadcast commencing.","defaultTerminal":"> ACCESS GRANTED","defaultEncrypted":"[ENCRYPTED CHANNEL 07]","defaultGlitch":"SIGNAL LOST","defaultEcho":"Come back...","defaultDream":"Someone is calling a name in the distance.","defaultMemory":"I still remember what happened that day.","defaultQuote":"What you forgot is what I value most.","defaultChant":"Gate, open according to the ancient covenant.","defaultCountdown":"00:47","defaultHeartbeat":"THUMP","defaultLocation":"TOKYO BAY · PIER 7","defaultTime":"02:17 AM","defaultSeparator":"SCENE CHANGE","defaultRedacted":"CLASSIFIED INFORMATION","defaultNeon":"NIGHT CITY","defaultSpotlight":"THE ARCHIVIST","defaultPaper":"A short note was left on the desk.","defaultAnnouncement":"The final train will arrive shortly.","defaultCustom":"Enter text","textEffects":"Text effects","imageEffects":"Image effects","imageFull":"Full image","imageBanner":"Wide banner","imagePortrait":"Portrait","imageAvatar":"Round icon","imageSticker":"Sticker","imageLeft":"Image left + text","imageRight":"Image right + text","imageOverlay":"Text over image","imagePolaroid":"Polaroid","imageCctv":"Surveillance camera","imageSilhouette":"Silhouette reveal","imagePair":"Two images","imageUrl":"Image URL","imageUrl2":"Second image URL","promptImage":"Prompt for image URL when run","promptImage2":"Prompt for second image URL when run","imageHeight":"Image height","imageFit":"Image fit","cover":"Fill area (crop)","contain":"Show entire image","stretch":"Stretch to area","focusX":"Horizontal focus","focusY":"Vertical focus","corner":"Corner radius","overlay":"Image overlay","overlayNone":"None","overlayDark":"Darken","overlayLight":"Lighten","overlayAccent":"Accent color","overlayStrength":"Overlay strength","frame":"Image frame","frameNone":"None","frameAccent":"Accent color","frameMuted":"Muted color","frameWhite":"White","captionPosition":"Caption position","captionNone":"Do not show","captionBelow":"Below image","captionBottom":"Overlay at bottom","captionCenter":"Overlay at center","imageRatio":"Image ratio","imageGap":"Image gap","directUrl":"Use a URL that opens the image file directly, not a webpage.","defaultImageFull":"Recovered photograph","defaultImageBanner":"SCENE IMAGE","defaultImagePortrait":"UNKNOWN SUBJECT","defaultImageAvatar":"UNKNOWN","defaultImageSticker":"","defaultImageLeft":"Image recovered at the scene","defaultImageRight":"Record file 07","defaultImageOverlay":"DO NOT LOOK AWAY","defaultImagePolaroid":"Summer festival night, outside the station.","defaultImageCctv":"CAM 04 · 02:17:33","defaultImageSilhouette":"IDENTITY UNKNOWN","defaultImagePair":"Comparison record","imagePromptLabel":"Image URL","imagePromptLabel2":"Second image URL","compatibility":"Roll20 compatibility","compatPassed":"Compatibility check: passed","compatFailed":"Compatibility check: correction required","compatRawParen":"An unescaped parenthesis remains inside a style attribute.","compatHex8":"An eight-digit HEX color remains, which is unreliable in Roll20.","compatQuote":"An extra quotation mark remains inside a style attribute.","runtimeUrlHint":"For prompted image URLs containing parentheses, replace ( with %28 and ) with %29.","switchDark":"Switch to dark mode","switchLight":"Switch to light mode","defaultNoticeEffect":"New information has been recorded.","lightSafeNote":"Presets that depended on transparent backgrounds now use colors readable in Roll20's light default chat.","imageWidthFix":"calc(), automatic margins, and physical borders were removed from image-effect widths. Images and captions now use precomputed percentage widths and fixed margin-left values.","imageCaptionFix":"Text over images is positioned at the center or bottom from the estimated line count and image height. Captions beside images are vertically centered as well.","imageCanvasWidth":"Image canvas width","canvas320":"320px · narrow chat","canvas400":"400px","canvas480":"480px","canvas520":"520px · default","canvas600":"600px · wide chat","fixedCanvasNotice":"Image effects use a fixed-pixel canvas. Their width and crop remain unchanged when the chat panel changes width. A narrow chat panel may scroll horizontally or clip the output.","safeImageLayoutNotice":"Text-over-image, left/right split layouts, and horizontal image pairs are converted to stable vertical layouts. Image links contain no text; captions are separate rows with exactly the same fixed width.","imageOverlayRemoved":"Text over image (unsupported)","safeCaption":"Image + emphasis caption","overlayRemovedNotice":"Text and images inside the same Roll20 link produce unstable widths and text positions. The text-over-image type and center/bottom overlay positions have therefore been removed.","overlayMigrationNotice":"Existing text-over-image items are automatically converted to Image + emphasis caption, using a separate caption row with exactly the same fixed width.","imageCaption":"Image + emphasis caption","defaultImageCaption":"Important scene"}};
 const LANG_KEY='r20MacroLanguageV1',DRAFT_KEY='r20SimpleChatEffectsDraftV1',LAYOUT_KEY='r20SimpleChatEffectsLayoutsV1';
 const $=id=>document.getElementById(id);
 function browserLang(){for(const v of(navigator.languages||[navigator.language||''])){const c=String(v).toLowerCase().split('-')[0];if(['ja','ko','en'].includes(c))return c}return'ja'}
@@ -217,7 +234,7 @@ function roll20BackgroundStyles(value){
 }
 function setStatus(k,bad=false){$('status').textContent=tr(k);$('status').style.color=bad?'#ffb6b8':'var(--muted)';clearTimeout(setStatus.t);setStatus.t=setTimeout(()=>$('status').textContent=tr('autoSaved'),1600)}
 const TEXT_EFFECTS=['narration','whisper','shout','thought','action','sfx','system','noticeEffect','warning','success','failure','objective','radio','broadcast','terminal','encrypted','glitch','echo','dream','memory','quote','chant','countdown','heartbeat','location','time','separator','redacted','neon','spotlight','paper','announcement','custom'];
-const IMAGE_EFFECTS=["imageFull","imageBanner","imagePortrait","imageAvatar","imageSticker","imageLeft","imageRight","imageOverlay","imagePolaroid","imageCctv","imageSilhouette","imagePair"];
+const IMAGE_EFFECTS=["imageFull","imageBanner","imageCaption","imagePortrait","imageAvatar","imageSticker","imageLeft","imageRight","imagePolaroid","imageCctv","imageSilhouette","imagePair"];
 const EFFECTS=[...TEXT_EFFECTS,...IMAGE_EFFECTS];
 const BASE={
  narration:{fg:'#30343a',bg:'#ffffff',accent:'#6b7280',width:'90',align:'left',size:'normal',padding:'regular',bold:false,italic:true,upper:false,spacing:'0',prefix:'',suffix:''},
@@ -255,12 +272,13 @@ const BASE={
  custom:{fg:'#202124',bg:'#ffffff',accent:'#315b9f',width:'90',align:'left',size:'normal',padding:'regular',bold:false,italic:false,upper:false,spacing:'0',prefix:'',suffix:''},
  imageFull:{fg:'#f2f3f5',bg:'#111318',accent:'#7aa7ff',width:'90',align:'center',size:'small',padding:'compact',bold:false,italic:false,upper:false,spacing:'0',prefix:'',suffix:'',height:'220',fit:'contain',radius:'0',captionPos:'below'},
  imageBanner:{fg:'#ffffff',bg:'#111318',accent:'#7aa7ff',width:'100',align:'center',size:'large',padding:'regular',bold:true,italic:false,upper:true,spacing:'2',prefix:'',suffix:'',height:'110',fit:'cover',radius:'0',captionPos:'bottom',overlay:'dark',overlayStrength:'35'},
+ imageCaption:{fg:'#ffffff',bg:'#25131a',accent:'#ff617e',width:'90',align:'center',size:'large',padding:'regular',bold:true,italic:false,upper:true,spacing:'2',prefix:'',suffix:'',height:'180',fit:'cover',radius:'8',captionPos:'below',overlay:'dark',overlayStrength:'35',frame:'accent'},
  imagePortrait:{fg:'#ffffff',bg:'#111318',accent:'#b8a4ff',width:'60',align:'center',size:'normal',padding:'regular',bold:true,italic:false,upper:true,spacing:'1',prefix:'',suffix:'',height:'260',fit:'cover',radius:'8',captionPos:'bottom',overlay:'dark',overlayStrength:'30',frame:'accent'},
  imageAvatar:{fg:'#202124',bg:'#ffffff',accent:'#315b9f',width:'70',align:'left',size:'normal',padding:'compact',bold:true,italic:false,upper:false,spacing:'0',prefix:'',suffix:'',height:'72',fit:'cover',radius:'50',captionPos:'side',imageRatio:'25',frame:'accent'},
  imageSticker:{fg:'#f2f3f5',bg:'#00000000',accent:'#7aa7ff',width:'55',align:'center',size:'small',padding:'compact',bold:false,italic:false,upper:false,spacing:'0',prefix:'',suffix:'',height:'150',fit:'contain',radius:'0',captionPos:'none'},
  imageLeft:{fg:'#f2f3f5',bg:'#20242b',accent:'#7aa7ff',width:'90',align:'left',size:'normal',padding:'regular',bold:false,italic:false,upper:false,spacing:'0',prefix:'',suffix:'',height:'130',fit:'cover',radius:'6',captionPos:'side',imageRatio:'38',frame:'muted'},
  imageRight:{fg:'#f2f3f5',bg:'#20242b',accent:'#7aa7ff',width:'90',align:'left',size:'normal',padding:'regular',bold:false,italic:false,upper:false,spacing:'0',prefix:'',suffix:'',height:'130',fit:'cover',radius:'6',captionPos:'side',imageRatio:'38',frame:'muted'},
- imageOverlay:{fg:'#ffffff',bg:'#111318',accent:'#ff617e',width:'90',align:'center',size:'large',padding:'roomy',bold:true,italic:false,upper:true,spacing:'2',prefix:'',suffix:'',height:'180',fit:'cover',radius:'8',captionPos:'center',overlay:'dark',overlayStrength:'45'},
+
  imagePolaroid:{fg:'#24211d',bg:'#f2eee5',accent:'#8c7658',width:'65',align:'center',size:'small',padding:'regular',bold:false,italic:true,upper:false,spacing:'0',prefix:'',suffix:'',height:'190',fit:'cover',radius:'0',captionPos:'below',frame:'white'},
  imageCctv:{fg:'#d9f4e3',bg:'#07100a',accent:'#55d079',width:'90',align:'left',size:'small',padding:'compact',bold:true,italic:false,upper:true,spacing:'1',prefix:'● REC　',suffix:'',height:'145',fit:'cover',radius:'0',captionPos:'bottom',overlay:'dark',overlayStrength:'20',frame:'accent'},
  imageSilhouette:{fg:'#ffffff',bg:'#08090c',accent:'#ff505f',width:'75',align:'center',size:'large',padding:'roomy',bold:true,italic:false,upper:true,spacing:'2',prefix:'',suffix:'',height:'220',fit:'cover',radius:'0',captionPos:'center',overlay:'dark',overlayStrength:'70',frame:'accent'},
@@ -269,11 +287,13 @@ const BASE={
 function isImageEffect(type){return IMAGE_EFFECTS.includes(type)}
 function effect(type='narration'){
  const b=BASE[type]||BASE.custom,key='default'+type[0].toUpperCase()+type.slice(1);
+ if(type==='imageOverlay')type='imageCaption';
+ const safeCaption=isImageEffect(type)?'below':'below';
  return{
   id:uid(),type,text:tr(key),query:false,repeat:type==='echo'?3:type==='heartbeat'?3:1,opacity:'100',
   url:'',url2:'',imageQuery:false,imageQuery2:false,height:'150',fit:'cover',
   focusX:'50',focusY:'50',radius:'0',overlay:'none',overlayStrength:'35',
-  frame:'none',captionPos:'below',imageRatio:'38',imageGap:'6',...b
+  frame:'none',captionPos:safeCaption,imageRatio:'38',imageGap:'6',...b
  }
 }
 let items=[effect('narration'),effect('location')];
@@ -293,9 +313,12 @@ const LEGACY_LIGHT_DEFAULTS={
  imageAvatar:{fg:'#f2f3f5',bg:'#00000000',accent:'#7aa7ff'}
 };
 function normalize(v){
- const b=effect(v?.type||'custom'),legacy=LEGACY_LIGHT_DEFAULTS[v?.type];
- const result={...b,...v,id:v?.id||uid()};
- if(legacy&&v&&v.fg===legacy.fg&&v.bg===legacy.bg&&v.accent===legacy.accent){
+ const source=v&&typeof v==='object'?{...v}:{};
+ if(source.type==='imageOverlay')source.type='imageCaption';
+ if(isImageEffect(source.type)&&source.captionPos!=='none')source.captionPos='below';
+ const b=effect(source.type||'custom'),legacy=LEGACY_LIGHT_DEFAULTS[source.type];
+ const result={...b,...source,id:source.id||uid()};
+ if(legacy&&source&&source.fg===legacy.fg&&source.bg===legacy.bg&&source.accent===legacy.accent){
   result.fg=b.fg;result.bg=b.bg;result.accent=b.accent
  }
  return result
@@ -308,7 +331,8 @@ function imageFields(item){
  const fitOptions=[['cover','cover'],['contain','contain'],['stretch','stretch']].map(([v,k])=>`<option value="${v}"${item.fit===v?' selected':''}>${esc(tr(k))}</option>`).join('');
  const overlayOptions=[['none','overlayNone'],['dark','overlayDark'],['light','overlayLight'],['accent','overlayAccent']].map(([v,k])=>`<option value="${v}"${item.overlay===v?' selected':''}>${esc(tr(k))}</option>`).join('');
  const frameOptions=[['none','frameNone'],['accent','frameAccent'],['muted','frameMuted'],['white','frameWhite']].map(([v,k])=>`<option value="${v}"${item.frame===v?' selected':''}>${esc(tr(k))}</option>`).join('');
- const captionOptions=[['none','captionNone'],['below','captionBelow'],['bottom','captionBottom'],['center','captionCenter']].map(([v,k])=>`<option value="${v}"${item.captionPos===v?' selected':''}>${esc(tr(k))}</option>`).join('');
+ const safeCaptionPos=item.captionPos==='none'?'none':'below';
+ const captionOptions=[['none','captionNone'],['below','captionBelow']].map(([v,k])=>`<option value="${v}"${safeCaptionPos===v?' selected':''}>${esc(tr(k))}</option>`).join('');
  const second=item.type==='imagePair'?`<div class="field effect-wide"><label>${esc(tr('imageUrl2'))}</label><input data-url2 type="text" value="${esc(item.url2)}" placeholder="https://.../image2.png"></div><label class="check"><input data-image-query2 type="checkbox"${item.imageQuery2?' checked':''}>${esc(tr('promptImage2'))}</label>`:'';
  const ratio=['imageLeft','imageRight','imageAvatar'].includes(item.type)?`<div class="field"><label>${esc(tr('imageRatio'))}</label><select data-image-ratio>${['25','33','38','45','50'].map(x=>`<option value="${x}"${String(item.imageRatio)===x?' selected':''}>${x}%</option>`).join('')}</select></div>`:'';
  const gap=item.type==='imagePair'?`<div class="field"><label>${esc(tr('imageGap'))}</label><select data-image-gap>${['0','4','6','8','12'].map(x=>`<option value="${x}"${String(item.imageGap)===x?' selected':''}>${x}px</option>`).join('')}</select></div>`:'';
@@ -508,46 +532,162 @@ function macroImageBackground(item,url,cctv=false){
  const scan=cctv?'repeating-linear-gradient(to bottom,rgba(255,255,255,0.045) 0,rgba(255,255,255,0.045) 1px,transparent 1px,transparent 4px),':'';
  return`${scan}${macroOverlay(item)}url(${url})`
 }
-function macroFrame(item){if(item.frame==='accent')return`2px solid ${item.accent}`;if(item.frame==='muted')return'2px solid #747b88';if(item.frame==='white')return'7px solid #f2eee5';return'none'}
-function imageBlock(item,url,width,height,margin,label='',extra=[]){
- const hasLabel=Boolean(label);
- const styles=[
-  'display:inline-block','box-sizing:border-box',`width:${width}`,`height:${height}px`,
-  `margin:${margin}`,'padding:0',`background-color:${roll20Color(item.bg)}`,
-  url?`background-image:${macroImageBackground(item,url,item.type==='imageCctv')}`:'',
-  `background-size:${item.fit==='stretch'?'100% 100%':item.fit}`,
-  `background-position:${item.focusX}% ${item.focusY}%`,'background-repeat:no-repeat',
-  `border:${macroFrame(item)}`,`border-radius:${radiusValue(item)}`,
-  `opacity:${(Number(item.opacity)/100).toFixed(2)}`,'vertical-align:top','overflow:hidden',
-  hasLabel?`color:${roll20Color(item.fg)}`:'color:transparent',
-  hasLabel?`font-size:${sizePx(item.size)}px`:'font-size:0',
-  hasLabel?'line-height:1.5':'line-height:0',
-  'text-decoration:none','cursor:default',...extra
- ].filter(Boolean);
- return link(label||'　',styles.join(';')+';')
+function fixedCanvasWidth(){
+ return Math.max(240,Math.min(720,Number($('imageCanvasWidth').value)||520))
 }
-function captionBlock(item,text,width,margin,height='auto',extra=[]){
+function fixedImageWidth(item){
+ const ratio=Math.max(20,Math.min(100,Number(item.width)||90))/100;
+ return Math.max(120,Math.round(fixedCanvasWidth()*ratio))
+}
+function macroFrameShadow(item){
+ if(item.frame==='accent')return`inset 0 0 0 2px ${item.accent}`;
+ if(item.frame==='muted')return'inset 0 0 0 2px #747b88';
+ if(item.frame==='white')return'inset 0 0 0 7px #f2eee5';
+ return''
+}
+function imageSafeMargin(top=6,bottom=0){
+ return`${top}px auto ${bottom}px auto`
+}
+function imageCaptionIndent(item,amount=10){
+ if(item.align==='left')return`text-indent:${amount}px`;
+ if(item.align==='right')return`text-indent:-${amount}px`;
+ return'text-indent:0'
+}
+function fixedImageBlock(item,url,width,height,options={}){
+ const shadowParts=[macroFrameShadow(item),...(options.shadows||[])].filter(Boolean);
  const styles=[
-  'display:inline-block','box-sizing:border-box',`width:${width}`,
-  height==='auto'?'min-height:34px':`height:${height}px`,`margin:${margin}`,
-  `padding:${padPx(item.padding)}`,`color:${roll20Color(item.fg)}`,
-  `background-color:${roll20Color(item.bg)}`,'font-family:Arial,sans-serif',
-  `font-size:${sizePx(item.size)}px`,`font-weight:${item.bold?'bold':'normal'}`,
-  `font-style:${item.italic?'italic':'normal'}`,`letter-spacing:${item.spacing}px`,
-  `text-align:${item.align}`,'line-height:1.5','white-space:normal',
-  'overflow-wrap:anywhere','word-break:break-word','vertical-align:top',
-  'text-decoration:none','cursor:default',...extra
- ];
+  'display:block!important',
+  'box-sizing:border-box!important',
+  `width:${width}px!important`,
+  `min-width:${width}px!important`,
+  `max-width:${width}px!important`,
+  `height:${height}px!important`,
+  `margin:${options.margin||imageSafeMargin(6,0)}!important`,
+  'padding:0!important',
+  'border:0!important','outline:0!important',
+  'float:none!important',
+  `background-color:${roll20Color(options.background||item.bg)}`,
+  url?`background-image:${macroImageBackground(item,url,item.type==='imageCctv')}`:'',
+  `background-size:${options.fit||(item.fit==='stretch'?'100% 100%':item.fit)}`,
+  `background-position:${item.focusX}% ${item.focusY}%`,
+  'background-repeat:no-repeat',
+  `border-radius:${options.radius||radiusValue(item)}`,
+  shadowParts.length?`box-shadow:${shadowParts.join(',')}`:'',
+  `opacity:${(Number(item.opacity)/100).toFixed(2)}`,
+  'overflow:hidden!important',
+  'color:transparent!important',
+  'font-size:0!important','line-height:0!important',
+  'text-decoration:none!important','cursor:default'
+ ].filter(Boolean);
+ return link('　',styles.join(';')+';')
+}
+function fixedCaptionBlock(item,text,width,options={}){
+ const font=sizePx(item.size),line=Math.max(16,Math.round(font*1.5));
+ const background=options.background===undefined?item.bg:options.background;
+ const color=options.color||item.fg;
+ const styles=[
+  'display:block!important',
+  'box-sizing:border-box!important',
+  `width:${width}px!important`,
+  `min-width:${width}px!important`,
+  `max-width:${width}px!important`,
+  `margin:${options.margin||'0 auto 6px auto'}!important`,
+  'padding:7px 0!important',
+  'border:0!important','outline:0!important',
+  'float:none!important',
+  `background-color:${roll20Color(background)}`,
+  `color:${roll20Color(color)}`,
+  'font-family:Arial,sans-serif',
+  `font-size:${font}px`,
+  `font-weight:${item.bold?'bold':'normal'}`,
+  `font-style:${item.italic?'italic':'normal'}`,
+  `letter-spacing:${item.spacing}px`,
+  `line-height:${line}px`,
+  `text-align:${options.align||item.align}`,
+  imageCaptionIndent({...item,align:options.align||item.align},10),
+  'white-space:normal','overflow-wrap:anywhere','word-break:break-word',
+  'overflow:hidden!important',
+  options.shadow||'',
+  'text-decoration:none!important','cursor:default'
+ ].filter(Boolean);
  return link(text||'　',styles.join(';')+';')
 }
 function imageMacro(item){
- const total=Number(item.width)||90,left=(100-total)/2,url=macroImageUrl(item),url2=macroImageUrl(item,true),captionRaw=effectText(item,item.query),caption=item.query?captionRaw:roll(captionRaw),h=Number(item.height)||150,gap=Number(item.imageGap)||0;
- if(item.type==='imagePair'){const each=total/2,first=`calc&#40;${each}% - ${gap/2}px&#41;`,second=first;let o=imageBlock(item,url,first,`6px 0 0 ${left}%`,'');o+=imageBlock(item,url2,second,`6px 0 0 ${gap}px`,'');if(item.captionPos!=='none'&&caption)o+=captionBlock(item,caption,`calc&#40;${total}% - 12px&#41;`,`3px auto 6px`);return o}
- if(['imageLeft','imageRight'].includes(item.type)){const ratio=Number(item.imageRatio)||38,imgW=total*ratio/100,textW=total-imgW,g=5;const iw=`calc&#40;${imgW}% - ${g/2}px&#41;`,tw=`calc&#40;${textW}% - ${g/2}px&#41;`;if(item.type==='imageLeft')return imageBlock(item,url,iw,`6px 0 0 ${left}%`,'')+captionBlock(item,caption,tw,`6px 0 0 ${g}px`,h);return captionBlock(item,caption,tw,`6px 0 0 ${left}%`,h)+imageBlock(item,url,iw,`6px 0 0 ${g}px`,'')}
- if(item.type==='imageAvatar'){const px=h,remaining=`calc&#40;${total}% - ${px+7}px&#41;`;return imageBlock(item,url,`${px}px`,h,`6px 0 0 ${left}%`,'')+captionBlock(item,caption,remaining,'6px 0 0 7px',h,['background-color:transparent'])}
- if(item.type==='imagePolaroid'){let o=imageBlock(item,url,`calc&#40;${total}% - 16px&#41;`,h,`7px auto 0`,'',['border:8px solid #f2eee5','border-bottom-width:10px','border-radius:0']);if(item.captionPos!=='none'&&caption)o+=captionBlock(item,caption,`calc&#40;${total}% - 16px&#41;`,'0 auto 7px','auto',['background-color:#f2eee5','color:#24211d']);return o}
- let label='',extra=[];if((item.captionPos==='bottom'||item.captionPos==='center')&&caption){label=caption;extra.push(`color:${item.fg}`,'font-family:Arial,sans-serif',`font-size:${sizePx(item.size)}px`,`font-weight:${item.bold?'bold':'normal'}`,`font-style:${item.italic?'italic':'normal'}`,`letter-spacing:${item.spacing}px`,`text-align:${item.align}`,'line-height:1.5',`padding:${item.captionPos==='bottom'?'calc&#40;'+(h-45)+'px&#41; 12px 8px':'12px'}`,'white-space:normal','overflow-wrap:anywhere')}
- let o=imageBlock(item,url,`calc&#40;${total}% - 12px&#41;`,h,'6px auto',label,extra);if(item.captionPos==='below'&&caption)o+=captionBlock(item,caption,`calc&#40;${total}% - 12px&#41;`,'-3px auto 6px');return o
+ const width=fixedImageWidth(item);
+ const url=macroImageUrl(item),url2=macroImageUrl(item,true);
+ const captionRaw=effectText(item,item.query);
+ const caption=item.query?captionRaw:roll(captionRaw);
+ const height=Math.max(20,Number(item.height)||150);
+ let output='';
+
+ if(item.type==='imagePair'){
+  output+=fixedImageBlock(item,url,width,height,{margin:imageSafeMargin(6,3)});
+  output+=fixedImageBlock(item,url2,width,height,{margin:imageSafeMargin(3,0)});
+  if(item.captionPos!=='none'&&caption){
+   output+=fixedCaptionBlock(item,caption,width,{align:'center'})
+  }
+  return output
+ }
+
+ if(item.type==='imageLeft'){
+  output+=fixedImageBlock(item,url,width,height);
+  if(caption)output+=fixedCaptionBlock(item,caption,width,{align:'left'});
+  return output
+ }
+
+ if(item.type==='imageRight'){
+  output+=fixedImageBlock(item,url,width,height);
+  if(caption)output+=fixedCaptionBlock(item,caption,width,{align:'right'});
+  return output
+ }
+
+ if(item.type==='imageAvatar'){
+  const side=Math.min(height,width);
+  output+=fixedImageBlock(item,url,side,side,{
+   margin:imageSafeMargin(6,0),
+   radius:'999px'
+  });
+  if(caption)output+=fixedCaptionBlock(item,caption,width,{align:'center'});
+  return output
+ }
+
+ if(item.type==='imagePolaroid'){
+  output+=fixedImageBlock(item,url,width,height,{
+   margin:imageSafeMargin(7,0),
+   radius:'0',
+   shadows:['inset 0 0 0 8px #f2eee5']
+  });
+  if(item.captionPos!=='none'&&caption){
+   output+=fixedCaptionBlock(item,caption,width,{
+    background:'#f2eee5',color:'#24211d',align:'center'
+   })
+  }
+  return output
+ }
+
+ output+=fixedImageBlock(item,url,width,height);
+
+ if(item.captionPos!=='none'&&caption){
+  let align=item.align;
+  let background=item.bg;
+  let color=item.fg;
+  let shadow='';
+
+  if(item.type==='imageBanner'||item.type==='imageCaption'||item.type==='imageSilhouette'){
+   align='center'
+  }
+  if(item.type==='imageCaption'){
+   background=item.bg;
+   color=item.fg;
+   shadow=`box-shadow:inset 0 3px 0 ${item.accent}`
+  }
+  if(item.type==='imageCctv'){
+   align='left'
+  }
+
+  output+=fixedCaptionBlock(item,caption,width,{align,background,color,shadow})
+ }
+ return output
 }
 function auditMacroOutput(value){
  const issues=[],styles=[...String(value||'').matchAll(/style="([^"]*)"/g)].map(m=>m[1]);
@@ -578,8 +718,12 @@ function generateMacro(){
  $('macroOutput').value=out.replace(/\n/g,'');
  auditMacroOutput($('macroOutput').value)
 }
-function data(){return{version:6,items:items.map(x=>({...x}))}}
-function applyData(d){items=Array.isArray(d?.items)?d.items.map(normalize):[];renderBuilder();update()}
+function data(){return{version:9,imageCanvasWidth:$('imageCanvasWidth').value,items:items.map(x=>({...x}))}}
+function applyData(d){
+ $('imageCanvasWidth').value=String(d?.imageCanvasWidth||'520');
+ items=Array.isArray(d?.items)?d.items.map(normalize):[];
+ renderBuilder();update()
+}
 function update(){generateMacro();renderPreview();saveDraft()}
 function populateLanguage(){document.documentElement.lang=lang;document.title=tr('title');$('pageTitle').textContent=tr('title');$('pageSubtitle').textContent=tr('subtitle');$('languageLabel').textContent=tr('language');$('languageSelect').options[0].textContent=tr('browser');document.querySelectorAll('[data-i]').forEach(x=>x.textContent=tr(x.dataset.i));$('saveName').placeholder=tr('saveName');$('quickGrid').innerHTML=`<div class="quick-group"><div class="quick-group-title">${esc(tr('textEffects'))}</div><div class="quick-group-grid">${TEXT_EFFECTS.map(x=>`<button class="btn small" data-effect="${x}">${esc(tr(x))}</button>`).join('')}</div></div><div class="quick-group"><div class="quick-group-title">${esc(tr('imageEffects'))}</div><div class="quick-group-grid">${IMAGE_EFFECTS.map(x=>`<button class="btn small" data-effect="${x}">${esc(tr(x))}</button>`).join('')}</div></div>`;document.querySelectorAll('[data-effect]').forEach(b=>b.onclick=()=>{items.push(effect(b.dataset.effect));renderBuilder();update()});renderBuilder();renderSaved()}
 function saveDraft(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify(data()))}catch(e){}}
@@ -588,11 +732,12 @@ function readLayouts(){try{const v=JSON.parse(localStorage.getItem(LAYOUT_KEY)||
 function writeLayouts(v){try{localStorage.setItem(LAYOUT_KEY,JSON.stringify(v))}catch(e){}}
 function renderSaved(){const box=$('savedList'),list=readLayouts();box.innerHTML='';if(!list.length){box.innerHTML=`<div class="empty">${esc(tr('none'))}</div>`;return}list.forEach(item=>{const row=document.createElement('div');row.className='saved-item';row.innerHTML=`<span class="saved-name">${esc(item.name||tr('save'))}</span><span class="saved-actions"><button class="btn small" data-load>${esc(tr('load'))}</button><button class="btn small danger" data-del>${esc(tr('delete'))}</button></span>`;row.querySelector('[data-load]').onclick=()=>{applyData(item.data);setStatus('loadedStatus')};row.querySelector('[data-del]').onclick=()=>{writeLayouts(readLayouts().filter(x=>x.id!==item.id));renderSaved();setStatus('deletedStatus')};box.appendChild(row)})}
 function saveLayout(){const name=$('saveName').value.trim()||tr('save');const list=readLayouts();list.unshift({id:uid(),name,data:data()});writeLayouts(list.slice(0,100));$('saveName').value='';renderSaved();setStatus('savedStatus')}
-function exportData(){const b=new Blob([JSON.stringify({version:6,layouts:readLayouts()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='roll20-simple-chat-effects-v6-data.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);setStatus('exported')}
+function exportData(){const b=new Blob([JSON.stringify({version:9,layouts:readLayouts()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='roll20-simple-chat-effects-v9-data.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);setStatus('exported')}
 function importData(file){const r=new FileReader();r.onload=()=>{try{const v=JSON.parse(r.result);if(Array.isArray(v.layouts))writeLayouts(v.layouts);renderSaved();setStatus('imported')}catch(e){setStatus('badJson',true)}};r.readAsText(file)}
 async function copyMacro(){try{await navigator.clipboard.writeText($('macroOutput').value)}catch(e){$('macroOutput').select();document.execCommand('copy')}setStatus('copied')}
 function downloadMacro(){const b=new Blob([$('macroOutput').value],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='roll20-simple-chat-effects-macro.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 $('languageSelect').value=languageMode;$('languageSelect').onchange=e=>{languageMode=e.target.value;lang=languageMode==='auto'?browserLang():languageMode;try{localStorage.setItem(LANG_KEY,languageMode)}catch(err){}populateLanguage();update()};
+$('imageCanvasWidth').addEventListener('change',update);
 $('addBtn').onclick=()=>{items.push(effect('custom'));renderBuilder();update()};$('clearBtn').onclick=()=>{items=[];renderBuilder();update()};
 $('saveBtn').onclick=saveLayout;$('copyBtn').onclick=copyMacro;$('downloadBtn').onclick=downloadMacro;$('exportBtn').onclick=exportData;$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=e=>{if(e.target.files[0])importData(e.target.files[0]);e.target.value=''};$('resetBtn').onclick=()=>{items=[effect('narration'),effect('location')];renderBuilder();update();setStatus('resetStatus')};
 populateLanguage();if(!loadDraft()){items=[effect('narration'),effect('location')];renderBuilder();update()}else update();renderSaved();$('status').textContent=tr('autoSaved');
