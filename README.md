@@ -4,6 +4,7 @@ Multilingual GitHub Pages package containing:
 
 - `discord.html` — Discord DM Macro Assembler v20
 - `line.html` — LINE Message Macro Generator v5
+- `cinematic.html` — Cinematic Card Generator v1
 - `index.html` — multilingual launcher
 
 ## Languages

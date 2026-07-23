@@ -16,13 +16,13 @@ p{margin:0;color:var(--muted);line-height:1.65}
 .language-control{display:flex;align-items:center;gap:7px;white-space:nowrap}
 .language-control label{font-size:11px;color:var(--muted)}
 select{border:1px solid var(--line);border-radius:7px;background:#202228;color:var(--text);padding:7px 9px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .card{display:flex;flex-direction:column;min-height:250px;padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--panel);box-shadow:0 14px 36px rgba(0,0,0,.22)}
 .badge{width:max-content;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:bold;margin-bottom:16px}
-.discord .badge{background:rgba(88,101,242,.2);color:#c9cdfb}.line .badge{background:rgba(6,199,85,.17);color:#83e6aa}
+.discord .badge{background:rgba(88,101,242,.2);color:#c9cdfb}.line .badge{background:rgba(6,199,85,.17);color:#83e6aa}.cinematic .badge{background:rgba(214,180,106,.17);color:#e7c984}
 h2{font-size:21px;margin:0 0 9px}.card p{flex:1}
 .button{display:block;margin-top:22px;padding:11px 14px;border-radius:8px;color:white;text-align:center;text-decoration:none;font-weight:bold}
-.discord .button{background:var(--discord)}.line .button{background:#087d36}
+.discord .button{background:var(--discord)}.line .button{background:#087d36}.cinematic .button{background:#705d2e}
 footer{margin-top:18px;color:var(--muted);font-size:12px;line-height:1.6}
 @media(max-width:680px){.grid{grid-template-columns:1fr}.top{display:block}.language-control{margin-top:12px}h1{font-size:23px}}
 </style>
@@ -57,15 +57,21 @@ footer{margin-top:18px;color:var(--muted);font-size:12px;line-height:1.6}
       <p data-k="lineDesc"></p>
       <a class="button" href="./line.html" data-k="lineOpen"></a>
     </article>
+    <article class="card cinematic">
+      <div class="badge">CINEMATIC</div>
+      <h2 data-k="cinematicTitle"></h2>
+      <p data-k="cinematicDesc"></p>
+      <a class="button" href="./cinematic.html" data-k="cinematicOpen"></a>
+    </article>
   </section>
   <footer data-k="footer"></footer>
 </main>
 <script>
 const LANG_KEY='r20MacroLanguageV1';
 const COPY={
- ja:{title:'Roll20 チャットマクロ生成ツール',intro:'ブラウザーで設定し、生成されたマクロをRoll20に貼り付けてください。設定と保存構成はブラウザーのlocalStorageに保存されます。',language:'言語',browser:'ブラウザーの言語',discordTitle:'Discordメッセージ生成ツール',discordDesc:'プロフィール、名前、時刻、メッセージ、メンション、絵文字、複数行・列をDiscord DM風カードとして生成します。',discordOpen:'Discord生成ツールを開く',lineTitle:'LINEメッセージ生成ツール',lineDesc:'相手・自分のメッセージ、プロフィール、時刻、既読、絵文字、画像をLINE風の吹き出しとして生成します。',lineOpen:'LINE生成ツールを開く',footer:'このサイトは静的HTMLのみで動作し、設定値をサーバーへ送信しません。画像表示には外部画像の直接URLが必要です。'},
- ko:{title:'Roll20 채팅 매크로 생성기',intro:'브라우저에서 설정한 뒤 생성된 매크로를 Roll20에 붙여 넣으세요. 설정과 저장 구성은 브라우저 localStorage에 저장됩니다.',language:'언어',browser:'브라우저 언어',discordTitle:'Discord 메시지 생성기',discordDesc:'프로필, 이름, 시각, 메시지, 멘션, 이모지와 다중 행·열 구성을 Discord DM 스타일 카드로 생성합니다.',discordOpen:'Discord 생성기 열기',lineTitle:'LINE 메시지 생성기',lineDesc:'상대·내 메시지, 프로필, 시각, 읽음 표시, 이모지와 이미지를 LINE 스타일 말풍선으로 생성합니다.',lineOpen:'LINE 생성기 열기',footer:'이 사이트는 정적 HTML로만 작동하며 설정값을 서버로 전송하지 않습니다. 이미지 출력에는 외부 이미지의 직접 URL이 필요합니다.'},
- en:{title:'Roll20 Chat Macro Generators',intro:'Configure a generator in your browser, then paste the generated macro into Roll20. Settings and saved layouts are stored in browser localStorage.',language:'Language',browser:'Browser language',discordTitle:'Discord Message Generator',discordDesc:'Generate Discord DM-style cards with profiles, names, time, messages, mentions, emoji, and multi-row/column layouts.',discordOpen:'Open Discord generator',lineTitle:'LINE Message Generator',lineDesc:'Generate LINE-style bubbles with other/self messages, profiles, time, read indicators, emoji, and images.',lineOpen:'Open LINE generator',footer:'This static site does not send settings to a server. Image output requires a direct external image URL.'}
+ ja:{title:'Roll20 チャットマクロ生成ツール',intro:'ブラウザーで設定し、生成されたマクロをRoll20に貼り付けてください。設定と保存構成はブラウザーのlocalStorageに保存されます。',language:'言語',browser:'ブラウザーの言語',discordTitle:'Discordメッセージ生成ツール',discordDesc:'プロフィール、名前、時刻、メッセージ、メンション、絵文字、複数行・列をDiscord DM風カードとして生成します。',discordOpen:'Discord生成ツールを開く',lineTitle:'LINEメッセージ生成ツール',lineDesc:'相手・自分のメッセージ、プロフィール、時刻、既読、絵文字、画像をLINE風の吹き出しとして生成します。',lineOpen:'LINE生成ツールを開く',cinematicTitle:'シネマティック演出カード',cinematicDesc:'場面転換、システム通知、NPC登場、証拠品、アイテム獲得、要約、エンディングを演出カードとして生成します。',cinematicOpen:'シネマティック生成ツールを開く',footer:'このサイトは静的HTMLのみで動作し、設定値をサーバーへ送信しません。画像表示には外部画像の直接URLが必要です。'},
+ ko:{title:'Roll20 채팅 매크로 생성기',intro:'브라우저에서 설정한 뒤 생성된 매크로를 Roll20에 붙여 넣으세요. 설정과 저장 구성은 브라우저 localStorage에 저장됩니다.',language:'언어',browser:'브라우저 언어',discordTitle:'Discord 메시지 생성기',discordDesc:'프로필, 이름, 시각, 메시지, 멘션, 이모지와 다중 행·열 구성을 Discord DM 스타일 카드로 생성합니다.',discordOpen:'Discord 생성기 열기',lineTitle:'LINE 메시지 생성기',lineDesc:'상대·내 메시지, 프로필, 시각, 읽음 표시, 이모지와 이미지를 LINE 스타일 말풍선으로 생성합니다.',lineOpen:'LINE 생성기 열기',cinematicTitle:'시네마틱 연출 카드',cinematicDesc:'장면 전환, 시스템 알림, NPC 등장, 증거물, 아이템 획득, 요약과 엔딩을 연출 카드로 생성합니다.',cinematicOpen:'시네마틱 생성기 열기',footer:'이 사이트는 정적 HTML로만 작동하며 설정값을 서버로 전송하지 않습니다. 이미지 출력에는 외부 이미지의 직접 URL이 필요합니다.'},
+ en:{title:'Roll20 Chat Macro Generators',intro:'Configure a generator in your browser, then paste the generated macro into Roll20. Settings and saved layouts are stored in browser localStorage.',language:'Language',browser:'Browser language',discordTitle:'Discord Message Generator',discordDesc:'Generate Discord DM-style cards with profiles, names, time, messages, mentions, emoji, and multi-row/column layouts.',discordOpen:'Open Discord generator',lineTitle:'LINE Message Generator',lineDesc:'Generate LINE-style bubbles with other/self messages, profiles, time, read indicators, emoji, and images.',lineOpen:'Open LINE generator',cinematicTitle:'Cinematic Cards',cinematicDesc:'Create scene transitions, system notices, NPC reveals, evidence, item pickups, recaps, and endings as cinematic cards.',cinematicOpen:'Open cinematic generator',footer:'This static site does not send settings to a server. Image output requires a direct external image URL.'}
 };
 function browserLang(){for(const v of(navigator.languages||[navigator.language||''])){const c=String(v).toLowerCase().split('-')[0];if(['ja','ko','en'].includes(c))return c}return'ja'}
 function savedMode(){try{const v=localStorage.getItem(LANG_KEY);return['auto','ja','ko','en'].includes(v)?v:'auto'}catch(e){return'auto'}}
