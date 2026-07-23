@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Roll20 디스코드 DM 조립식 매크로 생성기 v22</title>
+<title>Roll20 디스코드 DM 조립식 매크로 생성기 v23</title>
 <style>
 :root{
   color-scheme:light;
@@ -218,7 +218,7 @@ input[type=color]{background:var(--ui-input)!important;border-color:var(--line)!
 <div class="app">
   <div class="top">
     <div>
-      <h1>Roll20 디스코드 DM 조립식 매크로 생성기 v22</h1>
+      <h1>Roll20 디스코드 DM 조립식 매크로 생성기 v23</h1>
       <p class="subtitle">행과 열을 만들고 각 칸에 메시지, 멘션, 커스텀 이모지 또는 여백을 끼워 넣는 방식입니다.</p>
     </div>
     <div class="top-side"><button id="appearanceToggle" class="appearance-toggle" type="button" aria-label="Theme">☾</button><a class="back-link" href="./index.html" title="돌아가기"><span aria-hidden="true">←</span><span>돌아가기</span></a>
@@ -320,14 +320,26 @@ input[type=color]{background:var(--ui-input)!important;border-color:var(--line)!
           </div>
 
           <div style="margin-top:13px;padding-top:12px;border-top:1px solid #41434a">
-            <div class="row2">
+            <div class="row3">
               <div class="field">
                 <label for="cardHeaderHeight">카드 헤더 높이</label>
                 <select id="cardHeaderHeight">
-                  <option value="44">44px · 조밀</option>
-                  <option value="46" selected>46px · 권장</option>
-                  <option value="48">48px · 여유</option>
-                  <option value="50">50px · 넓게</option>
+                  <option value="46">46px · 조밀</option>
+                  <option value="50">50px · 보통</option>
+                  <option value="54">54px · 여유</option>
+                  <option value="58" selected>58px · 권장</option>
+                  <option value="62">62px · 넓게</option>
+                  <option value="66">66px · 매우 넓게</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="profileTopPadding">프로필 상단 여백</label>
+                <select id="profileTopPadding">
+                  <option value="4">4px · 조밀</option>
+                  <option value="6">6px · 보통</option>
+                  <option value="8" selected>8px · 권장</option>
+                  <option value="10">10px · 여유</option>
+                  <option value="12">12px · 넓게</option>
                 </select>
               </div>
               <div class="field">
@@ -339,6 +351,10 @@ input[type=color]{background:var(--ui-input)!important;border-color:var(--line)!
                   <option value="8">8px · 넓게</option>
                 </select>
               </div>
+            </div>
+            <div class="hint">
+              프로필 상단 여백은 카드 위쪽과 프로필 이미지 사이의 간격입니다.
+              헤더 높이는 선택한 상단 여백이 들어가도록 자동 보정됩니다.
             </div>
             <div class="row2" style="margin-top:10px">
               <div class="field">
@@ -452,7 +468,7 @@ input[type=color]{background:var(--ui-input)!important;border-color:var(--line)!
           </div>
           <div class="notice">
             Roll20의 스타일 링크 우회 방식을 사용합니다. 캐릭터 Ability에 한 줄 그대로 붙여 넣으세요.
-            v20은 시각을 오전/오후 선택, 고정 문구, 실행 시 전체 입력 또는 숨김으로 설정하고 크기·간격·색상을 조절할 수 있습니다.
+            v23은 프로필 상단 여백과 헤더 높이를 별도로 조절하고, 시각을 오전/오후 선택, 고정 문구, 실행 시 전체 입력 또는 숨김으로 설정하고 크기·간격·색상을 조절할 수 있습니다.
             실행 시 입력형 메시지·멘션·이모지는 실제 길이를 미리 알 수 없으므로 각 칸의 ‘높이 예약’을 충분히 설정해야 합니다.
           </div>
         </div>
@@ -467,7 +483,7 @@ input[type=color]{background:var(--ui-input)!important;border-color:var(--line)!
 const $ = id => document.getElementById(id);
 
 const LANG_KEY='r20MacroLanguageV1';
-const I18N_MAP={"언어":{"ja":"言語","en":"Language"},"브라우저 언어":{"ja":"ブラウザーの言語","en":"Browser language"},"자동":{"ja":"自動","en":"Auto"},"일본어":{"ja":"日本語","en":"Japanese"},"한국어":{"ja":"韓国語","en":"Korean"},"영어":{"ja":"英語","en":"English"},"준비됨":{"ja":"準備完了","en":"Ready"},"자동 저장됨":{"ja":"自動保存しました","en":"Auto-saved"},"설정":{"ja":"設定","en":"Settings"},"사용":{"ja":"使用","en":"Use"},"선택":{"ja":"選択","en":"Select"},"빠른 불러오기":{"ja":"クイック読込","en":"Quick load"},"불러오기":{"ja":"読み込む","en":"Load"},"삭제":{"ja":"削除","en":"Delete"},"삭제됨":{"ja":"削除しました","en":"Deleted"},"초기화됨":{"ja":"初期化しました","en":"Reset"},"프리셋 적용됨":{"ja":"プリセットを適用しました","en":"Preset applied"},"저장 항목 없음":{"ja":"保存項目はありません","en":"No saved items"},"이름 없음":{"ja":"名称なし","en":"Untitled"},"프로필":{"ja":"プロフィール","en":"Profile"},"프로필 저장":{"ja":"プロフィールを保存","en":"Save profile"},"프로필 저장됨":{"ja":"プロフィールを保存しました","en":"Profile saved"},"프로필 불러옴":{"ja":"プロフィールを読み込みました","en":"Profile loaded"},"프로필 저장 이름":{"ja":"プロフィールの保存名","en":"Profile save name"},"저장 프로필":{"ja":"保存済みプロフィール","en":"Saved profiles"},"저장 프로필 빠른 불러오기":{"ja":"保存済みプロフィールをクイック読込","en":"Quick-load saved profile"},"구성 저장":{"ja":"構成を保存","en":"Save layout"},"구성 저장됨":{"ja":"構成を保存しました","en":"Layout saved"},"구성 불러옴":{"ja":"構成を読み込みました","en":"Layout loaded"},"구성 저장 이름":{"ja":"構成の保存名","en":"Layout save name"},"현재 구성 저장":{"ja":"現在の構成を保存","en":"Save current layout"},"조립식 구성":{"ja":"組み立て式構成","en":"Assembler layout"},"저장 데이터 내보내기":{"ja":"保存データを書き出す","en":"Export saved data"},"저장 데이터 가져옴":{"ja":"保存データを読み込みました","en":"Saved data imported"},"저장 데이터 내보냄":{"ja":"保存データを書き出しました","en":"Saved data exported"},"저장 데이터 전체 삭제":{"ja":"保存データをすべて削除","en":"Delete all saved data"},"저장 데이터 삭제됨":{"ja":"保存データを削除しました","en":"Saved data deleted"},"가져오기":{"ja":"読み込む","en":"Import"},"가져오기 실패":{"ja":"読み込みに失敗しました","en":"Import failed"},"JSON 가져오기":{"ja":"JSONを読み込む","en":"Import JSON"},"JSON 내보내기":{"ja":"JSONを書き出す","en":"Export JSON"},"JSON을 읽을 수 없습니다.":{"ja":"JSONを読み込めません。","en":"Could not read the JSON file."},"TXT 다운로드":{"ja":"TXTをダウンロード","en":"Download TXT"},"TXT 저장":{"ja":"TXTを保存","en":"Save TXT"},"매크로 복사":{"ja":"マクロをコピー","en":"Copy macro"},"복사":{"ja":"コピー","en":"Copy"},"매크로 복사됨":{"ja":"マクロをコピーしました","en":"Macro copied"},"Roll20 매크로":{"ja":"Roll20マクロ","en":"Roll20 macro"},"미리보기":{"ja":"プレビュー","en":"Preview"},"전체 초기화":{"ja":"すべて初期化","en":"Reset all"},"초기화":{"ja":"初期化","en":"Reset"},"입력 지우기":{"ja":"入力を消去","en":"Clear inputs"},"캐릭터명":{"ja":"キャラクター名","en":"Character name"},"상대 캐릭터명":{"ja":"相手のキャラクター名","en":"Other character name"},"내용을 입력하세요":{"ja":"メッセージを入力してください","en":"Enter a message"},"메시지":{"ja":"メッセージ","en":"Message"},"메시지 문구":{"ja":"メッセージ文","en":"Message text"},"멘션":{"ja":"メンション","en":"Mention"},"멘션 대상":{"ja":"メンション先","en":"Mention target"},"멘션 이름":{"ja":"メンション名","en":"Mention name"},"이모지":{"ja":"絵文字","en":"Emoji"},"이미지":{"ja":"画像","en":"Image"},"여백":{"ja":"余白","en":"Spacer"},"텍스트":{"ja":"テキスト","en":"Text"},"시스템":{"ja":"システム","en":"System"},"시스템 문구":{"ja":"システム文","en":"System text"},"실행 시 입력":{"ja":"実行時に入力","en":"Prompt when run"},"실행 시 URL 입력":{"ja":"実行時にURLを入力","en":"Prompt for URL when run"},"이미지 직접 URL":{"ja":"画像の直接URL","en":"Direct image URL"},"프로필 이미지 URL":{"ja":"プロフィール画像URL","en":"Profile image URL"},"프로필 이미지 직접 URL":{"ja":"プロフィール画像の直接URL","en":"Direct profile image URL"},"표시 이름":{"ja":"表示名","en":"Display name"},"상대 이름":{"ja":"相手の名前","en":"Other person's name"},"크기":{"ja":"サイズ","en":"Size"},"출력 크기":{"ja":"表示サイズ","en":"Output size"},"크기 및 실제 열 폭":{"ja":"サイズと実際の列幅","en":"Size and actual column width"},"여백 높이":{"ja":"余白の高さ","en":"Spacer height"},"높이 예약":{"ja":"高さを予約","en":"Reserve height"},"문구 불러오기":{"ja":"文を読み込む","en":"Load text"},"현재 문구 저장":{"ja":"現在の文を保存","en":"Save current text"},"문구 저장 이름":{"ja":"文の保存名","en":"Text save name"},"문구 저장됨":{"ja":"文を保存しました","en":"Text saved"},"문구를 클립보드에 복사함":{"ja":"文をクリップボードにコピーしました","en":"Text copied to clipboard"},"행 추가":{"ja":"行を追加","en":"Add row"},"행 삭제":{"ja":"行を削除","en":"Delete row"},"행이 없습니다.":{"ja":"行がありません。","en":"No rows."},"메시지가 없습니다.":{"ja":"メッセージがありません。","en":"No messages."},"글자 크기":{"ja":"文字サイズ","en":"Font size"},"글자 색상":{"ja":"文字色","en":"Text color"},"이름과의 간격":{"ja":"名前との間隔","en":"Gap after name"},"카드 헤더 높이":{"ja":"カードヘッダーの高さ","en":"Card header height"},"콘텐츠 하단 여백":{"ja":"コンテンツ下部の余白","en":"Content bottom padding"},"계산 예시":{"ja":"計算例","en":"Calculation example"},"줄바꿈 안 함":{"ja":"折り返さない","en":"Do not wrap"},"이모지 줄바꿈 기준 콘텐츠 폭":{"ja":"絵文字の折り返し基準幅","en":"Emoji wrap content width"},"일반 메시지":{"ja":"通常メッセージ","en":"Standard message"},"멘션 + 메시지":{"ja":"メンション＋メッセージ","en":"Mention + message"},"다중 멘션":{"ja":"複数メンション","en":"Multiple mentions"},"빈 레이아웃":{"ja":"空のレイアウト","en":"Blank layout"},"혼합 예시":{"ja":"混合例","en":"Mixed example"},"프로필·이름·가려진 시각 표시":{"ja":"プロフィール・名前・時刻を表示","en":"Show profile, name, and time"},"시각 입력 방식":{"ja":"時刻の入力方法","en":"Time input mode"},"기본 시각 입력 방식":{"ja":"既定の時刻入力方法","en":"Default time input mode"},"실행 시 오전/오후 선택":{"ja":"実行時に午前/午後を選択","en":"Choose AM/PM when run"},"고정 문구":{"ja":"固定テキスト","en":"Fixed text"},"실행 시 전체 문구 입력":{"ja":"実行時に全文を入力","en":"Prompt for full text when run"},"시각 숨김":{"ja":"時刻を非表示","en":"Hide time"},"숨김":{"ja":"非表示","en":"Hidden"},"시각 문구 또는 기본값":{"ja":"時刻テキストまたは初期値","en":"Time text or default"},"기본 시각 문구":{"ja":"既定の時刻テキスト","en":"Default time text"},"전체 문구 입력 질문":{"ja":"全文入力の質問","en":"Full-text prompt"},"시각 표시":{"ja":"時刻表示","en":"Time display"},"예: XX:XX, 방금, 오늘 오후 3:20":{"ja":"例: XX:XX、たった今、今日 午後3:20","en":"e.g. XX:XX, just now, today 3:20 PM"},"예: XX:XX, 방금":{"ja":"例: XX:XX、たった今","en":"e.g. XX:XX, just now"},"예: 시각 표시":{"ja":"例: 時刻表示","en":"e.g. Time display"},"오전":{"ja":"午前","en":"AM"},"오후":{"ja":"午後","en":"PM"},"시간대":{"ja":"時間帯","en":"AM/PM"},"오후 XX:XX":{"ja":"午後 XX:XX","en":"PM XX:XX"},"빠른 구성":{"ja":"クイック構成","en":"Quick layouts"},"내부 저장 관리":{"ja":"内部保存管理","en":"Local storage"},"프로필 헤더":{"ja":"プロフィールヘッダー","en":"Profile header"},"조립식 행·열 편집기":{"ja":"行・列アセンブラー","en":"Row and column assembler"},"프로필·문구·구성 저장 데이터를 모두 삭제할까요?":{"ja":"プロフィール・文・構成の保存データをすべて削除しますか？","en":"Delete all saved profiles, text snippets, and layouts?"},"localStorage를 사용할 수 없습니다.":{"ja":"localStorageを使用できません。","en":"localStorage is unavailable."},"localStorage 사용 불가 — 내보내기/가져오기를 이용하세요.":{"ja":"localStorageを使用できません。書き出し/読み込みを利用してください。","en":"localStorage is unavailable—use export/import."},"1. 프로필 헤더":{"ja":"1. プロフィールヘッダー","en":"1. Profile header"},"2. 빠른 구성":{"ja":"2. クイック構成","en":"2. Quick layouts"},"3. 조립식 행·열 편집기":{"ja":"3. 行・列アセンブラー","en":"3. Row and column assembler"},"4. 구성 저장":{"ja":"4. 構成を保存","en":"4. Save layout"},"5. 내부 저장 관리":{"ja":"5. 内部保存管理","en":"5. Local storage"},"행과 열을 만들고 각 칸에 메시지, 멘션, 커스텀 이모지 또는 여백을 끼워 넣는 방식입니다.":{"ja":"行と列を作り、各セルにメッセージ、メンション、カスタム絵文字、余白を配置します。","en":"Build rows and columns, then place messages, mentions, custom emoji, or spacers in each cell."},"프리셋을 적용한 뒤 행·열과 칸 유형을 자유롭게 바꿀 수 있습니다.":{"ja":"プリセット適用後も行・列とセル種別を自由に変更できます。","en":"After applying a preset, you can freely change rows, columns, and cell types."},"행마다 최대 4개의 열을 추가할 수 있습니다. 이모지만 있는 행은 네 칸을 자동 분할하지 않으며, 각 이모지의 선택 크기를 실제 열 폭으로 사용해 이름 아래에서 가로로 출력합니다. 메시지·멘션이 섞인 행만 폭 합계에 따라 다음 출력 줄로 분리됩니다.":{"ja":"1行には最大4列を追加できます。絵文字だけの行は4セルを自動分割せず、選択した絵文字サイズを実際の列幅として名前の下に横並びで表示します。メッセージやメンションを含む行だけが幅の合計に応じて次の表示行へ分割されます。","en":"Each row supports up to four columns. Emoji-only rows are not auto-split; each emoji uses its selected pixel size as the actual column width and appears horizontally below the name. Rows containing messages or mentions may split according to their combined widths."},"같은 행의 이모지 합계가 기준 폭을 넘으면 3+1 또는 2+2처럼 출력 줄을 자동 분할합니다. 분할된 줄 수만큼 카드 배경 높이도 아래로 늘어납니다.":{"ja":"同じ行の絵文字の合計幅が基準を超えると、3+1や2+2のように表示行を自動分割します。分割された行数に応じてカード背景の高さも伸びます。","en":"When the combined emoji width exceeds the threshold, the output is split into lines such as 3+1 or 2+2. The card background grows by the same number of lines."},"오전/오후 선택에서는 문구가 시간대 뒤에 붙습니다. 고정 문구는 입력값을 그대로 표시하고, 전체 문구 입력은 실행 시 입력창의 기본값으로 사용합니다.":{"ja":"午前/午後選択では、入力した文が時間帯の後ろに付きます。固定テキストはそのまま表示され、全文入力では実行時ダイアログの初期値として使われます。","en":"In AM/PM mode, the text is appended after the period. Fixed text is shown as entered, while full-text prompt mode uses it as the default value."},"Roll20의 스타일 링크 우회 방식을 사용합니다. 캐릭터 Ability에 한 줄 그대로 붙여 넣으세요. v20은 시각을 오전/오후 선택, 고정 문구, 실행 시 전체 입력 또는 숨김으로 설정하고 크기·간격·색상을 조절할 수 있습니다. 실행 시 입력형 메시지·멘션·이모지는 실제 길이를 미리 알 수 없으므로 각 칸의 ‘높이 예약’을 충분히 설정해야 합니다.":{"ja":"Roll20のスタイル付きリンク方式を使用します。キャラクターAbilityに1行のまま貼り付けてください。時刻は午前/午後選択、固定テキスト、実行時の全文入力、非表示から選べ、サイズ・間隔・色も調整できます。実行時入力のメッセージ、メンション、絵文字は長さを事前に判断できないため、各セルの「高さを予約」を十分に設定してください。","en":"This uses Roll20's styled-link workaround. Paste the generated text into a character Ability as a single line. Time can use AM/PM selection, fixed text, a full-text prompt, or be hidden, with configurable size, spacing, and color. Prompted messages, mentions, and emoji have unknown runtime length, so reserve enough height for each cell."},"웹페이지 주소가 아니라 이미지 파일이 직접 열리는 URL을 사용하세요. 이모지는 백분율 폭이나 calc()를 사용하지 않고 선택 크기의 고정 픽셀 상자로 출력됩니다.":{"ja":"Webページではなく画像ファイルが直接開くURLを使用してください。絵文字はパーセント幅やcalc()を使わず、選択サイズの固定ピクセル枠で出力されます。","en":"Use a URL that opens the image file directly, not a webpage. Emoji are output in fixed pixel boxes using the selected size, without percentage widths or calc()."},"이모지는 선택한 픽셀 크기를 실제 열 폭으로 사용합니다.":{"ja":"絵文字は選択したピクセルサイズを実際の列幅として使用します。","en":"Emoji use the selected pixel size as their actual column width."},"48px × 4개 = 204px":{"ja":"48px × 4個 = 204px","en":"48px × 4 = 204px"},"44px · 조밀":{"ja":"44px・コンパクト","en":"44px · Compact"},"46px · 권장":{"ja":"46px・推奨","en":"46px · Recommended"},"48px · 여유":{"ja":"48px・ゆったり","en":"48px · Roomy"},"50px · 넓게":{"ja":"50px・広め","en":"50px · Wide"},"2px · 매우 조밀":{"ja":"2px・最小","en":"2px · Very compact"},"4px · 권장":{"ja":"4px・推奨","en":"4px · Recommended"},"6px · 보통":{"ja":"6px・標準","en":"6px · Standard"},"8px · 넓게":{"ja":"8px・広め","en":"8px · Wide"},"144px · 매우 좁음":{"ja":"144px・非常に狭い","en":"144px · Very narrow"},"192px · 좁음":{"ja":"192px・狭い","en":"192px · Narrow"},"240px · 권장":{"ja":"240px・推奨","en":"240px · Recommended"},"288px · 넓음":{"ja":"288px・広い","en":"288px · Wide"},"336px · 매우 넓음":{"ja":"336px・非常に広い","en":"336px · Very wide"},"같이 확인해 봐.":{"ja":"一緒に確認しよう。","en":"Let's check it together."},"Roll20 LINE 메시지 매크로 생성기 v5":{"ja":"Roll20 LINE メッセージマクロ生成ツール v5","en":"Roll20 LINE Message Macro Generator v5"},"상대 메시지, 내 메시지, 시각, 읽음 표시, 이모지와 이미지 메시지를 LINE풍 말풍선으로 조립합니다.":{"ja":"相手と自分のメッセージ、時刻、既読表示、絵文字、画像メッセージをLINE風の吹き出しで組み立てます。","en":"Build other-person and self messages, timestamps, read indicators, emoji, and image messages as LINE-style bubbles."},"1. 상대 프로필과 기본 시각":{"ja":"1. 相手プロフィールと既定時刻","en":"1. Other profile and default time"},"2. 말풍선 스타일":{"ja":"2. 吹き出しスタイル","en":"2. Bubble style"},"3. 빠른 구성":{"ja":"3. クイック構成","en":"3. Quick layouts"},"4. 메시지 조립":{"ja":"4. メッセージ組み立て","en":"4. Message assembly"},"5. 저장":{"ja":"5. 保存","en":"5. Save"},"상대 말풍선":{"ja":"相手の吹き出し","en":"Other bubble"},"내 말풍선":{"ja":"自分の吹き出し","en":"My bubble"},"시각·읽음 색상":{"ja":"時刻・既読の色","en":"Time/read color"},"본문 크기":{"ja":"本文サイズ","en":"Body size"},"메시지 간격":{"ja":"メッセージ間隔","en":"Message spacing"},"프로필 크기":{"ja":"プロフィールサイズ","en":"Profile size"},"대화 예시":{"ja":"会話例","en":"Conversation example"},"상대 메시지":{"ja":"相手メッセージ","en":"Other message"},"내 메시지":{"ja":"自分のメッセージ","en":"My message"},"이모지 답장":{"ja":"絵文字返信","en":"Emoji reply"},"이미지 메시지":{"ja":"画像メッセージ","en":"Image message"},"모두 지우기":{"ja":"すべて消去","en":"Clear all"},"+ 상대":{"ja":"＋ 相手","en":"+ Other"},"+ 내 메시지":{"ja":"＋ 自分","en":"+ Mine"},"+ 시스템":{"ja":"＋ システム","en":"+ System"},"상대 메시지는 왼쪽 프로필 옆에, 내 메시지는 오른쪽에 정렬됩니다. 폭 설정은 고정 폭이 아니라 말풍선의 최대 폭이며, 짧은 문장은 내용만큼만 줄어듭니다. 메시지별로 시각과 읽음 표시를 따로 설정할 수 있습니다.":{"ja":"相手メッセージは左のプロフィール横、自分のメッセージは右に配置されます。幅設定は固定幅ではなく吹き出しの最大幅で、短い文は内容に合わせて縮みます。時刻と既読表示はメッセージごとに設定できます。","en":"Other messages align beside the profile on the left, while your messages align right. Width is a maximum rather than a fixed size, so short text shrinks to fit. Time and read indicators can be configured per message."},"대화 구성":{"ja":"会話構成","en":"Conversation layouts"},"대화 구성 저장 이름":{"ja":"会話構成の保存名","en":"Conversation layout name"},"이름에 @{character_name} 사용":{"ja":"名前に @{character_name} を使用","en":"Use @{character_name} for the name"},"이미지에 @{profile_image} 사용":{"ja":"画像に @{profile_image} を使用","en":"Use @{profile_image} for the image"},"프로필 표시":{"ja":"プロフィールを表示","en":"Show profile"},"이름 표시":{"ja":"名前を表示","en":"Show name"},"기본값":{"ja":"既定値","en":"Default"},"개별 시각 문구":{"ja":"個別の時刻テキスト","en":"Per-message time text"},"비우면 기본값":{"ja":"空欄なら既定値","en":"Leave blank for default"},"읽음 표시":{"ja":"既読表示","en":"Read indicator"},"읽음":{"ja":"既読","en":"Read"},"상대":{"ja":"相手","en":"Other"},"나":{"ja":"自分","en":"Me"},"말풍선 최대 폭":{"ja":"吹き出しの最大幅","en":"Maximum bubble width"},"시각":{"ja":"時刻","en":"Time"},"대화가 시작되었습니다.":{"ja":"トークを開始しました。","en":"Conversation started."},"귀엽다.":{"ja":"かわいい。","en":"Cute."},"지금 어디야?":{"ja":"今どこ？","en":"Where are you?"},"곧 도착해.":{"ja":"もうすぐ着くよ。","en":"I'll be there soon."},"오후 3:20":{"ja":"午後3:20","en":"3:20 PM"},"Roll20 바깥 채팅 배경은 수정하지 않습니다. LINE풍 요소만 개별 링크로 출력하므로 사용자별 채팅 배경색과 충돌하지 않습니다. 일반 매크로는 실제 채팅창 폭을 읽을 수 없으므로 메시지별 선택값을 최대 폭으로 사용합니다. 실제 말풍선 폭은 내용 길이에 따라 그보다 작아질 수 있습니다. 이미지·이모지 미리보기는 CSS 배경이 아니라 실제 img 요소로 표시합니다. 원본 비율을 유지하며, 미리보기의 실측 가용 폭보다 클 때만 전체가 들어오도록 축소합니다.":{"ja":"Roll20の外側のチャット背景は変更しません。LINE風の要素だけを個別リンクとして出力するため、ユーザーごとのチャット背景色と競合しません。通常のマクロは実際のチャット幅を取得できないため、各メッセージの選択値を最大幅として使用します。実際の吹き出し幅は内容に応じてそれより小さくなります。画像・絵文字のプレビューはCSS背景ではなく実際のimg要素で表示し、元の比率を保ったまま実測可能幅を超える場合だけ縮小します。","en":"The outer Roll20 chat background is not modified. Only LINE-style elements are output as individual links, so they do not conflict with each user's chat background. Standard macros cannot read the actual chat width, so each message's selected value is used as a maximum width. The actual bubble may be smaller depending on content. Image and emoji previews use real img elements rather than CSS backgrounds, preserving aspect ratio and shrinking only when larger than the measured available preview width."},"Roll20 디스코드 DM 조립식 매크로 생성기 v22":{"ja":"Roll20 Discord DM 組み立て式マクロ生成ツール v22","en":"Roll20 Discord DM Macro Assembler v22"},"돌아가기":{"ja":"戻る","en":"Back"}};
+const I18N_MAP={"언어":{"ja":"言語","en":"Language"},"브라우저 언어":{"ja":"ブラウザーの言語","en":"Browser language"},"자동":{"ja":"自動","en":"Auto"},"일본어":{"ja":"日本語","en":"Japanese"},"한국어":{"ja":"韓国語","en":"Korean"},"영어":{"ja":"英語","en":"English"},"준비됨":{"ja":"準備完了","en":"Ready"},"자동 저장됨":{"ja":"自動保存しました","en":"Auto-saved"},"설정":{"ja":"設定","en":"Settings"},"사용":{"ja":"使用","en":"Use"},"선택":{"ja":"選択","en":"Select"},"빠른 불러오기":{"ja":"クイック読込","en":"Quick load"},"불러오기":{"ja":"読み込む","en":"Load"},"삭제":{"ja":"削除","en":"Delete"},"삭제됨":{"ja":"削除しました","en":"Deleted"},"초기화됨":{"ja":"初期化しました","en":"Reset"},"프리셋 적용됨":{"ja":"プリセットを適用しました","en":"Preset applied"},"저장 항목 없음":{"ja":"保存項目はありません","en":"No saved items"},"이름 없음":{"ja":"名称なし","en":"Untitled"},"프로필":{"ja":"プロフィール","en":"Profile"},"프로필 저장":{"ja":"プロフィールを保存","en":"Save profile"},"프로필 저장됨":{"ja":"プロフィールを保存しました","en":"Profile saved"},"프로필 불러옴":{"ja":"プロフィールを読み込みました","en":"Profile loaded"},"프로필 저장 이름":{"ja":"プロフィールの保存名","en":"Profile save name"},"저장 프로필":{"ja":"保存済みプロフィール","en":"Saved profiles"},"저장 프로필 빠른 불러오기":{"ja":"保存済みプロフィールをクイック読込","en":"Quick-load saved profile"},"구성 저장":{"ja":"構成を保存","en":"Save layout"},"구성 저장됨":{"ja":"構成を保存しました","en":"Layout saved"},"구성 불러옴":{"ja":"構成を読み込みました","en":"Layout loaded"},"구성 저장 이름":{"ja":"構成の保存名","en":"Layout save name"},"현재 구성 저장":{"ja":"現在の構成を保存","en":"Save current layout"},"조립식 구성":{"ja":"組み立て式構成","en":"Assembler layout"},"저장 데이터 내보내기":{"ja":"保存データを書き出す","en":"Export saved data"},"저장 데이터 가져옴":{"ja":"保存データを読み込みました","en":"Saved data imported"},"저장 데이터 내보냄":{"ja":"保存データを書き出しました","en":"Saved data exported"},"저장 데이터 전체 삭제":{"ja":"保存データをすべて削除","en":"Delete all saved data"},"저장 데이터 삭제됨":{"ja":"保存データを削除しました","en":"Saved data deleted"},"가져오기":{"ja":"読み込む","en":"Import"},"가져오기 실패":{"ja":"読み込みに失敗しました","en":"Import failed"},"JSON 가져오기":{"ja":"JSONを読み込む","en":"Import JSON"},"JSON 내보내기":{"ja":"JSONを書き出す","en":"Export JSON"},"JSON을 읽을 수 없습니다.":{"ja":"JSONを読み込めません。","en":"Could not read the JSON file."},"TXT 다운로드":{"ja":"TXTをダウンロード","en":"Download TXT"},"TXT 저장":{"ja":"TXTを保存","en":"Save TXT"},"매크로 복사":{"ja":"マクロをコピー","en":"Copy macro"},"복사":{"ja":"コピー","en":"Copy"},"매크로 복사됨":{"ja":"マクロをコピーしました","en":"Macro copied"},"Roll20 매크로":{"ja":"Roll20マクロ","en":"Roll20 macro"},"미리보기":{"ja":"プレビュー","en":"Preview"},"전체 초기화":{"ja":"すべて初期化","en":"Reset all"},"초기화":{"ja":"初期化","en":"Reset"},"입력 지우기":{"ja":"入力を消去","en":"Clear inputs"},"캐릭터명":{"ja":"キャラクター名","en":"Character name"},"상대 캐릭터명":{"ja":"相手のキャラクター名","en":"Other character name"},"내용을 입력하세요":{"ja":"メッセージを入力してください","en":"Enter a message"},"메시지":{"ja":"メッセージ","en":"Message"},"메시지 문구":{"ja":"メッセージ文","en":"Message text"},"멘션":{"ja":"メンション","en":"Mention"},"멘션 대상":{"ja":"メンション先","en":"Mention target"},"멘션 이름":{"ja":"メンション名","en":"Mention name"},"이모지":{"ja":"絵文字","en":"Emoji"},"이미지":{"ja":"画像","en":"Image"},"여백":{"ja":"余白","en":"Spacer"},"텍스트":{"ja":"テキスト","en":"Text"},"시스템":{"ja":"システム","en":"System"},"시스템 문구":{"ja":"システム文","en":"System text"},"실행 시 입력":{"ja":"実行時に入力","en":"Prompt when run"},"실행 시 URL 입력":{"ja":"実行時にURLを入力","en":"Prompt for URL when run"},"이미지 직접 URL":{"ja":"画像の直接URL","en":"Direct image URL"},"프로필 이미지 URL":{"ja":"プロフィール画像URL","en":"Profile image URL"},"프로필 이미지 직접 URL":{"ja":"プロフィール画像の直接URL","en":"Direct profile image URL"},"표시 이름":{"ja":"表示名","en":"Display name"},"상대 이름":{"ja":"相手の名前","en":"Other person's name"},"크기":{"ja":"サイズ","en":"Size"},"출력 크기":{"ja":"表示サイズ","en":"Output size"},"크기 및 실제 열 폭":{"ja":"サイズと実際の列幅","en":"Size and actual column width"},"여백 높이":{"ja":"余白の高さ","en":"Spacer height"},"높이 예약":{"ja":"高さを予約","en":"Reserve height"},"문구 불러오기":{"ja":"文を読み込む","en":"Load text"},"현재 문구 저장":{"ja":"現在の文を保存","en":"Save current text"},"문구 저장 이름":{"ja":"文の保存名","en":"Text save name"},"문구 저장됨":{"ja":"文を保存しました","en":"Text saved"},"문구를 클립보드에 복사함":{"ja":"文をクリップボードにコピーしました","en":"Text copied to clipboard"},"행 추가":{"ja":"行を追加","en":"Add row"},"행 삭제":{"ja":"行を削除","en":"Delete row"},"행이 없습니다.":{"ja":"行がありません。","en":"No rows."},"메시지가 없습니다.":{"ja":"メッセージがありません。","en":"No messages."},"글자 크기":{"ja":"文字サイズ","en":"Font size"},"글자 색상":{"ja":"文字色","en":"Text color"},"이름과의 간격":{"ja":"名前との間隔","en":"Gap after name"},"카드 헤더 높이":{"ja":"カードヘッダーの高さ","en":"Card header height"},"콘텐츠 하단 여백":{"ja":"コンテンツ下部の余白","en":"Content bottom padding"},"계산 예시":{"ja":"計算例","en":"Calculation example"},"줄바꿈 안 함":{"ja":"折り返さない","en":"Do not wrap"},"이모지 줄바꿈 기준 콘텐츠 폭":{"ja":"絵文字の折り返し基準幅","en":"Emoji wrap content width"},"일반 메시지":{"ja":"通常メッセージ","en":"Standard message"},"멘션 + 메시지":{"ja":"メンション＋メッセージ","en":"Mention + message"},"다중 멘션":{"ja":"複数メンション","en":"Multiple mentions"},"빈 레이아웃":{"ja":"空のレイアウト","en":"Blank layout"},"혼합 예시":{"ja":"混合例","en":"Mixed example"},"프로필·이름·가려진 시각 표시":{"ja":"プロフィール・名前・時刻を表示","en":"Show profile, name, and time"},"시각 입력 방식":{"ja":"時刻の入力方法","en":"Time input mode"},"기본 시각 입력 방식":{"ja":"既定の時刻入力方法","en":"Default time input mode"},"실행 시 오전/오후 선택":{"ja":"実行時に午前/午後を選択","en":"Choose AM/PM when run"},"고정 문구":{"ja":"固定テキスト","en":"Fixed text"},"실행 시 전체 문구 입력":{"ja":"実行時に全文を入力","en":"Prompt for full text when run"},"시각 숨김":{"ja":"時刻を非表示","en":"Hide time"},"숨김":{"ja":"非表示","en":"Hidden"},"시각 문구 또는 기본값":{"ja":"時刻テキストまたは初期値","en":"Time text or default"},"기본 시각 문구":{"ja":"既定の時刻テキスト","en":"Default time text"},"전체 문구 입력 질문":{"ja":"全文入力の質問","en":"Full-text prompt"},"시각 표시":{"ja":"時刻表示","en":"Time display"},"예: XX:XX, 방금, 오늘 오후 3:20":{"ja":"例: XX:XX、たった今、今日 午後3:20","en":"e.g. XX:XX, just now, today 3:20 PM"},"예: XX:XX, 방금":{"ja":"例: XX:XX、たった今","en":"e.g. XX:XX, just now"},"예: 시각 표시":{"ja":"例: 時刻表示","en":"e.g. Time display"},"오전":{"ja":"午前","en":"AM"},"오후":{"ja":"午後","en":"PM"},"시간대":{"ja":"時間帯","en":"AM/PM"},"오후 XX:XX":{"ja":"午後 XX:XX","en":"PM XX:XX"},"빠른 구성":{"ja":"クイック構成","en":"Quick layouts"},"내부 저장 관리":{"ja":"内部保存管理","en":"Local storage"},"프로필 헤더":{"ja":"プロフィールヘッダー","en":"Profile header"},"조립식 행·열 편집기":{"ja":"行・列アセンブラー","en":"Row and column assembler"},"프로필·문구·구성 저장 데이터를 모두 삭제할까요?":{"ja":"プロフィール・文・構成の保存データをすべて削除しますか？","en":"Delete all saved profiles, text snippets, and layouts?"},"localStorage를 사용할 수 없습니다.":{"ja":"localStorageを使用できません。","en":"localStorage is unavailable."},"localStorage 사용 불가 — 내보내기/가져오기를 이용하세요.":{"ja":"localStorageを使用できません。書き出し/読み込みを利用してください。","en":"localStorage is unavailable—use export/import."},"1. 프로필 헤더":{"ja":"1. プロフィールヘッダー","en":"1. Profile header"},"2. 빠른 구성":{"ja":"2. クイック構成","en":"2. Quick layouts"},"3. 조립식 행·열 편집기":{"ja":"3. 行・列アセンブラー","en":"3. Row and column assembler"},"4. 구성 저장":{"ja":"4. 構成を保存","en":"4. Save layout"},"5. 내부 저장 관리":{"ja":"5. 内部保存管理","en":"5. Local storage"},"행과 열을 만들고 각 칸에 메시지, 멘션, 커스텀 이모지 또는 여백을 끼워 넣는 방식입니다.":{"ja":"行と列を作り、各セルにメッセージ、メンション、カスタム絵文字、余白を配置します。","en":"Build rows and columns, then place messages, mentions, custom emoji, or spacers in each cell."},"프리셋을 적용한 뒤 행·열과 칸 유형을 자유롭게 바꿀 수 있습니다.":{"ja":"プリセット適用後も行・列とセル種別を自由に変更できます。","en":"After applying a preset, you can freely change rows, columns, and cell types."},"행마다 최대 4개의 열을 추가할 수 있습니다. 이모지만 있는 행은 네 칸을 자동 분할하지 않으며, 각 이모지의 선택 크기를 실제 열 폭으로 사용해 이름 아래에서 가로로 출력합니다. 메시지·멘션이 섞인 행만 폭 합계에 따라 다음 출력 줄로 분리됩니다.":{"ja":"1行には最大4列を追加できます。絵文字だけの行は4セルを自動分割せず、選択した絵文字サイズを実際の列幅として名前の下に横並びで表示します。メッセージやメンションを含む行だけが幅の合計に応じて次の表示行へ分割されます。","en":"Each row supports up to four columns. Emoji-only rows are not auto-split; each emoji uses its selected pixel size as the actual column width and appears horizontally below the name. Rows containing messages or mentions may split according to their combined widths."},"같은 행의 이모지 합계가 기준 폭을 넘으면 3+1 또는 2+2처럼 출력 줄을 자동 분할합니다. 분할된 줄 수만큼 카드 배경 높이도 아래로 늘어납니다.":{"ja":"同じ行の絵文字の合計幅が基準を超えると、3+1や2+2のように表示行を自動分割します。分割された行数に応じてカード背景の高さも伸びます。","en":"When the combined emoji width exceeds the threshold, the output is split into lines such as 3+1 or 2+2. The card background grows by the same number of lines."},"오전/오후 선택에서는 문구가 시간대 뒤에 붙습니다. 고정 문구는 입력값을 그대로 표시하고, 전체 문구 입력은 실행 시 입력창의 기본값으로 사용합니다.":{"ja":"午前/午後選択では、入力した文が時間帯の後ろに付きます。固定テキストはそのまま表示され、全文入力では実行時ダイアログの初期値として使われます。","en":"In AM/PM mode, the text is appended after the period. Fixed text is shown as entered, while full-text prompt mode uses it as the default value."},"Roll20의 스타일 링크 우회 방식을 사용합니다. 캐릭터 Ability에 한 줄 그대로 붙여 넣으세요. v20은 시각을 오전/오후 선택, 고정 문구, 실행 시 전체 입력 또는 숨김으로 설정하고 크기·간격·색상을 조절할 수 있습니다. 실행 시 입력형 메시지·멘션·이모지는 실제 길이를 미리 알 수 없으므로 각 칸의 ‘높이 예약’을 충분히 설정해야 합니다.":{"ja":"Roll20のスタイル付きリンク方式を使用します。キャラクターAbilityに1行のまま貼り付けてください。時刻は午前/午後選択、固定テキスト、実行時の全文入力、非表示から選べ、サイズ・間隔・色も調整できます。実行時入力のメッセージ、メンション、絵文字は長さを事前に判断できないため、各セルの「高さを予約」を十分に設定してください。","en":"This uses Roll20's styled-link workaround. Paste the generated text into a character Ability as a single line. Time can use AM/PM selection, fixed text, a full-text prompt, or be hidden, with configurable size, spacing, and color. Prompted messages, mentions, and emoji have unknown runtime length, so reserve enough height for each cell."},"웹페이지 주소가 아니라 이미지 파일이 직접 열리는 URL을 사용하세요. 이모지는 백분율 폭이나 calc()를 사용하지 않고 선택 크기의 고정 픽셀 상자로 출력됩니다.":{"ja":"Webページではなく画像ファイルが直接開くURLを使用してください。絵文字はパーセント幅やcalc()を使わず、選択サイズの固定ピクセル枠で出力されます。","en":"Use a URL that opens the image file directly, not a webpage. Emoji are output in fixed pixel boxes using the selected size, without percentage widths or calc()."},"이모지는 선택한 픽셀 크기를 실제 열 폭으로 사용합니다.":{"ja":"絵文字は選択したピクセルサイズを実際の列幅として使用します。","en":"Emoji use the selected pixel size as their actual column width."},"48px × 4개 = 204px":{"ja":"48px × 4個 = 204px","en":"48px × 4 = 204px"},"44px · 조밀":{"ja":"44px・コンパクト","en":"44px · Compact"},"46px · 권장":{"ja":"46px・推奨","en":"46px · Recommended"},"48px · 여유":{"ja":"48px・ゆったり","en":"48px · Roomy"},"50px · 넓게":{"ja":"50px・広め","en":"50px · Wide"},"2px · 매우 조밀":{"ja":"2px・最小","en":"2px · Very compact"},"4px · 권장":{"ja":"4px・推奨","en":"4px · Recommended"},"6px · 보통":{"ja":"6px・標準","en":"6px · normal"},"8px · 넓게":{"ja":"8px・広め","en":"8px · Wide"},"144px · 매우 좁음":{"ja":"144px・非常に狭い","en":"144px · Very narrow"},"192px · 좁음":{"ja":"192px・狭い","en":"192px · Narrow"},"240px · 권장":{"ja":"240px・推奨","en":"240px · Recommended"},"288px · 넓음":{"ja":"288px・広い","en":"288px · Wide"},"336px · 매우 넓음":{"ja":"336px・非常に広い","en":"336px · Very wide"},"같이 확인해 봐.":{"ja":"一緒に確認しよう。","en":"Let's check it together."},"Roll20 LINE 메시지 매크로 생성기 v5":{"ja":"Roll20 LINE メッセージマクロ生成ツール v5","en":"Roll20 LINE Message Macro Generator v5"},"상대 메시지, 내 메시지, 시각, 읽음 표시, 이모지와 이미지 메시지를 LINE풍 말풍선으로 조립합니다.":{"ja":"相手と自分のメッセージ、時刻、既読表示、絵文字、画像メッセージをLINE風の吹き出しで組み立てます。","en":"Build other-person and self messages, timestamps, read indicators, emoji, and image messages as LINE-style bubbles."},"1. 상대 프로필과 기본 시각":{"ja":"1. 相手プロフィールと既定時刻","en":"1. Other profile and default time"},"2. 말풍선 스타일":{"ja":"2. 吹き出しスタイル","en":"2. Bubble style"},"3. 빠른 구성":{"ja":"3. クイック構成","en":"3. Quick layouts"},"4. 메시지 조립":{"ja":"4. メッセージ組み立て","en":"4. Message assembly"},"5. 저장":{"ja":"5. 保存","en":"5. Save"},"상대 말풍선":{"ja":"相手の吹き出し","en":"Other bubble"},"내 말풍선":{"ja":"自分の吹き出し","en":"My bubble"},"시각·읽음 색상":{"ja":"時刻・既読の色","en":"Time/read color"},"본문 크기":{"ja":"本文サイズ","en":"Body size"},"메시지 간격":{"ja":"メッセージ間隔","en":"Message spacing"},"프로필 크기":{"ja":"プロフィールサイズ","en":"Profile size"},"대화 예시":{"ja":"会話例","en":"Conversation example"},"상대 메시지":{"ja":"相手メッセージ","en":"Other message"},"내 메시지":{"ja":"自分のメッセージ","en":"My message"},"이모지 답장":{"ja":"絵文字返信","en":"Emoji reply"},"이미지 메시지":{"ja":"画像メッセージ","en":"Image message"},"모두 지우기":{"ja":"すべて消去","en":"Clear all"},"+ 상대":{"ja":"＋ 相手","en":"+ Other"},"+ 내 메시지":{"ja":"＋ 自分","en":"+ Mine"},"+ 시스템":{"ja":"＋ システム","en":"+ System"},"상대 메시지는 왼쪽 프로필 옆에, 내 메시지는 오른쪽에 정렬됩니다. 폭 설정은 고정 폭이 아니라 말풍선의 최대 폭이며, 짧은 문장은 내용만큼만 줄어듭니다. 메시지별로 시각과 읽음 표시를 따로 설정할 수 있습니다.":{"ja":"相手メッセージは左のプロフィール横、自分のメッセージは右に配置されます。幅設定は固定幅ではなく吹き出しの最大幅で、短い文は内容に合わせて縮みます。時刻と既読表示はメッセージごとに設定できます。","en":"Other messages align beside the profile on the left, while your messages align right. Width is a maximum rather than a fixed size, so short text shrinks to fit. Time and read indicators can be configured per message."},"대화 구성":{"ja":"会話構成","en":"Conversation layouts"},"대화 구성 저장 이름":{"ja":"会話構成の保存名","en":"Conversation layout name"},"이름에 @{character_name} 사용":{"ja":"名前に @{character_name} を使用","en":"Use @{character_name} for the name"},"이미지에 @{profile_image} 사용":{"ja":"画像に @{profile_image} を使用","en":"Use @{profile_image} for the image"},"프로필 표시":{"ja":"プロフィールを表示","en":"Show profile"},"이름 표시":{"ja":"名前を表示","en":"Show name"},"기본값":{"ja":"既定値","en":"Default"},"개별 시각 문구":{"ja":"個別の時刻テキスト","en":"Per-message time text"},"비우면 기본값":{"ja":"空欄なら既定値","en":"Leave blank for default"},"읽음 표시":{"ja":"既読表示","en":"Read indicator"},"읽음":{"ja":"既読","en":"Read"},"상대":{"ja":"相手","en":"Other"},"나":{"ja":"自分","en":"Me"},"말풍선 최대 폭":{"ja":"吹き出しの最大幅","en":"Maximum bubble width"},"시각":{"ja":"時刻","en":"Time"},"대화가 시작되었습니다.":{"ja":"トークを開始しました。","en":"Conversation started."},"귀엽다.":{"ja":"かわいい。","en":"Cute."},"지금 어디야?":{"ja":"今どこ？","en":"Where are you?"},"곧 도착해.":{"ja":"もうすぐ着くよ。","en":"I'll be there soon."},"오후 3:20":{"ja":"午後3:20","en":"3:20 PM"},"Roll20 바깥 채팅 배경은 수정하지 않습니다. LINE풍 요소만 개별 링크로 출력하므로 사용자별 채팅 배경색과 충돌하지 않습니다. 일반 매크로는 실제 채팅창 폭을 읽을 수 없으므로 메시지별 선택값을 최대 폭으로 사용합니다. 실제 말풍선 폭은 내용 길이에 따라 그보다 작아질 수 있습니다. 이미지·이모지 미리보기는 CSS 배경이 아니라 실제 img 요소로 표시합니다. 원본 비율을 유지하며, 미리보기의 실측 가용 폭보다 클 때만 전체가 들어오도록 축소합니다.":{"ja":"Roll20の外側のチャット背景は変更しません。LINE風の要素だけを個別リンクとして出力するため、ユーザーごとのチャット背景色と競合しません。通常のマクロは実際のチャット幅を取得できないため、各メッセージの選択値を最大幅として使用します。実際の吹き出し幅は内容に応じてそれより小さくなります。画像・絵文字のプレビューはCSS背景ではなく実際のimg要素で表示し、元の比率を保ったまま実測可能幅を超える場合だけ縮小します。","en":"The outer Roll20 chat background is not modified. Only LINE-style elements are output as individual links, so they do not conflict with each user's chat background. Standard macros cannot read the actual chat width, so each message's selected value is used as a maximum width. The actual bubble may be smaller depending on content. Image and emoji previews use real img elements rather than CSS backgrounds, preserving aspect ratio and shrinking only when larger than the measured available preview width."},"Roll20 디스코드 DM 조립식 매크로 생성기 v23":{"ja":"Roll20 Discord DM 組み立て式マクロ生成ツール v23","en":"Roll20 Discord DM Macro Assembler v23"},"돌아가기":{"ja":"戻る","en":"Back"},"프로필 상단 여백":{"ja":"プロフィール上部の余白","en":"Profile top padding"},"4px · 조밀":{"ja":"4px・詰める","en":"4px · compact"},"8px · 권장":{"ja":"8px・推奨","en":"8px · recommended"},"10px · 여유":{"ja":"10px・ゆったり","en":"10px · roomy"},"12px · 넓게":{"ja":"12px・広い","en":"12px · wide"},"프로필 상단 여백은 카드 위쪽과 프로필 이미지 사이의 간격입니다. 헤더 높이는 선택한 상단 여백이 들어가도록 자동 보정됩니다.":{"ja":"プロフィール上部の余白は、カード上端とプロフィール画像の間隔です。選択した余白が入るようヘッダー高を自動調整します。","en":"Profile top padding is the gap between the card top and the avatar. Header height is automatically expanded to preserve it."}};
 const i18nTextOriginal=new WeakMap();
 const i18nAttrOriginal=new WeakMap();
 
@@ -586,8 +602,8 @@ const els = {
   timeMode:$('timeMode'),timeFields:$('timeFields'),timeText:$('timeText'),
   timePrompt:$('timePrompt'),timeFontSize:$('timeFontSize'),timeGap:$('timeGap'),
   timeColor:$('timeColor'),
-  cardHeaderHeight:$('cardHeaderHeight'),contentBottomPadding:$('contentBottomPadding'),
-  emojiWrapWidth:$('emojiWrapWidth'),
+  cardHeaderHeight:$('cardHeaderHeight'),profileTopPadding:$('profileTopPadding'),
+  contentBottomPadding:$('contentBottomPadding'),emojiWrapWidth:$('emojiWrapWidth'),
   previewStage:$('previewStage'),macroOutput:$('macroOutput')
 };
 
@@ -891,14 +907,23 @@ function timeMacro(){
 
   return rollText(text||tr('오후 XX:XX'));
 }
+function profileTopPaddingValue(){
+  return Math.max(4,Math.min(12,Number(els.profileTopPadding.value)||8))
+}
+function effectiveHeaderHeight(){
+  const avatarSize=42;
+  const top=profileTopPaddingValue();
+  const minimum=avatarSize+top+6;
+  return Math.max(minimum,Math.max(46,Math.min(66,Number(els.cardHeaderHeight.value)||58)))
+}
 function commonHeaderMacro(){
   if(!els.headerEnabled.checked)return'';
 
-  const headerHeight=Math.max(44,Math.min(50,Number(els.cardHeaderHeight.value)||46));
+  const headerHeight=effectiveHeaderHeight();
   const avatarSize=42;
-  const avatarTop=Math.max(1,Math.floor((headerHeight-avatarSize)/2));
-  const avatarBottom=Math.max(0,headerHeight-avatarTop-avatarSize);
-  const textTop=Math.max(5,avatarTop+3);
+  const avatarTop=profileTopPaddingValue();
+  const avatarBottom=Math.max(6,headerHeight-avatarTop-avatarSize);
+  const textTop=avatarTop+3;
   const url=profileUrlMacro();
 
   /*
@@ -1132,7 +1157,7 @@ function contentMacro(){
   });
   if(!flattened.length)return'';
 
-  const headerHeight=Math.max(44,Math.min(50,Number(els.cardHeaderHeight.value)||46));
+  const headerHeight=effectiveHeaderHeight();
   /*
     이름 행의 실질 높이는 약 24px이다. 첫 콘텐츠를 그 바로 아래에 배치한다.
     각 행 높이는 콘텐츠 실제 높이 + 상단 4px + 선택한 하단 여백으로만 계산한다.
@@ -1263,10 +1288,11 @@ function applyTimeSettings(data,onlyWhenPresent=false){
 }
 function draftData(){
   return{
-    version:20,headerEnabled:els.headerEnabled.checked,displayName:els.displayName.value,
+    version:23,headerEnabled:els.headerEnabled.checked,displayName:els.displayName.value,
     profileUrl:els.profileUrl.value,useCharacterAttr:els.useCharacterAttr.checked,
     useProfileAttr:els.useProfileAttr.checked,...timeSettingsData(),
     cardHeaderHeight:els.cardHeaderHeight.value,
+    profileTopPadding:els.profileTopPadding.value,
     contentBottomPadding:els.contentBottomPadding.value,
     emojiWrapWidth:els.emojiWrapWidth.value,
     layoutRows:cloneRows(rows)
@@ -1285,7 +1311,8 @@ function loadDraft(){
     els.useCharacterAttr.checked=!!data.useCharacterAttr;
     els.useProfileAttr.checked=!!data.useProfileAttr;
     applyTimeSettings(data);
-    els.cardHeaderHeight.value=String(data.cardHeaderHeight||'46');
+    els.cardHeaderHeight.value=String(data.cardHeaderHeight||'58');
+    els.profileTopPadding.value=String(data.profileTopPadding||'8');
     els.contentBottomPadding.value=String(data.contentBottomPadding||'4');
     els.emojiWrapWidth.value=String(data.emojiWrapWidth||'240');
     rows=legacyToRows(data);
@@ -1323,8 +1350,9 @@ function saveSnippetFromCell(cell){
 function saveLayout(){
   const label=$('layoutLabel').value.trim()||tr('조립식 구성');
   const list=readArray(KEYS.layouts);
-  list.unshift({id:uid(),label,kind:'assembler-v20',headerEnabled:els.headerEnabled.checked,
+  list.unshift({id:uid(),label,kind:'assembler-v23',headerEnabled:els.headerEnabled.checked,
     ...timeSettingsData(),cardHeaderHeight:els.cardHeaderHeight.value,
+    profileTopPadding:els.profileTopPadding.value,
     contentBottomPadding:els.contentBottomPadding.value,
     emojiWrapWidth:els.emojiWrapWidth.value,
     layoutRows:cloneRows(rows)});
@@ -1335,6 +1363,7 @@ function loadLayout(id){
   rows=legacyToRows(item);if(typeof item.headerEnabled==='boolean')els.headerEnabled.checked=item.headerEnabled;
   applyTimeSettings(item,true);
   if(item.cardHeaderHeight)els.cardHeaderHeight.value=String(item.cardHeaderHeight);
+  els.profileTopPadding.value=String(item.profileTopPadding||'8');
   if(item.contentBottomPadding)els.contentBottomPadding.value=String(item.contentBottomPadding);
   if(item.emojiWrapWidth)els.emojiWrapWidth.value=String(item.emojiWrapWidth);
   renderBuilder();update();setStatus('구성 불러옴')
@@ -1379,7 +1408,7 @@ function resetAll(){
   els.useCharacterAttr.checked=false;els.useProfileAttr.checked=false;
   applyTimeSettings({timeMode:'periodQuery',timeText:'XX:XX',timePrompt:tr('시각 표시'),
     timeFontSize:'11',timeGap:'5',timeColor:'#949ba4'});
-  els.cardHeaderHeight.value='46';els.contentBottomPadding.value='4';
+  els.cardHeaderHeight.value='58';els.profileTopPadding.value='8';els.contentBottomPadding.value='4';
   els.emojiWrapWidth.value='240';
   rows=presetRows('message');renderBuilder();update();setStatus('초기화됨')
 }
@@ -1394,9 +1423,9 @@ function downloadMacro(){
   setTimeout(()=>URL.revokeObjectURL(a.href),1000)
 }
 function exportData(){
-  const data={version:20,profiles:readArray(KEYS.profiles),snippets:readArray(KEYS.snippets),layouts:readArray(KEYS.layouts)};
+  const data={version:23,profiles:readArray(KEYS.profiles),snippets:readArray(KEYS.snippets),layouts:readArray(KEYS.layouts)};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='roll20-discord-assembler-v20-data.json';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='roll20-discord-assembler-v23-data.json';a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);setStatus('저장 데이터 내보냄')
 }
 function importData(file){
@@ -1414,7 +1443,7 @@ function importData(file){
 
 ['headerEnabled','displayName','profileUrl','useCharacterAttr','useProfileAttr',
   'timeMode','timeText','timePrompt','timeFontSize','timeGap','timeColor',
-  'cardHeaderHeight','contentBottomPadding','emojiWrapWidth'].forEach(id=>{
+  'cardHeaderHeight','profileTopPadding','contentBottomPadding','emojiWrapWidth'].forEach(id=>{
   $(id).addEventListener('input',()=>update());$(id).addEventListener('change',()=>update())
 });
 document.querySelectorAll('[data-preset]').forEach(btn=>btn.onclick=()=>{
